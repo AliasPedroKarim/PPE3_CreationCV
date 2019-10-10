@@ -63,15 +63,16 @@ public class DaoSIOExample {
 
     /**
      * Permet d'obtenir l'objet instancié
+     *
      * @return un Objet DaoSIO avec connexion active ... pour une certaine durée
      */
     public static DaoSIOExample getInstance() {
 
-        if (DaoSIOExample.monDao==null ) {
+        if (DaoSIOExample.monDao == null) {
             DaoSIOExample.monDao = new DaoSIOExample();
-        }else{
-            if(!DaoSIOExample.monDao.connexionActive()){
-            DaoSIOExample.monDao = new DaoSIOExample();    
+        } else {
+            if (!DaoSIOExample.monDao.connexionActive()) {
+                DaoSIOExample.monDao = new DaoSIOExample();
             }
         }
         return DaoSIOExample.monDao;
@@ -80,7 +81,7 @@ public class DaoSIOExample {
     public Boolean connexionActive() {
         Boolean connexionActive = true;
         try {
-            if (this.connexion.isClosed()) {
+            if (this.connexion != null && this.connexion.isClosed()) {
                 connexionActive = false;
             }
         } catch (SQLException ex) {
@@ -88,39 +89,58 @@ public class DaoSIOExample {
         }
         return connexionActive;
     }
-/**
- * 
- * @param sql, comportera un ordre selec
- * @return 
- */
-    public ResultSet requeteSelection(String sql){
-   
-        try {
-            Statement requete=new DaoSIOExample().connexion.createStatement();
-            return requete.executeQuery(sql);
-           
-        } catch (SQLException ex) {
-            Logger.getLogger(DaoSIOExample.class.getName()).log(Level.SEVERE, null, ex);
+
+    /**
+     *
+     * @param sql, comportera un ordre selec
+     * @return
+     */
+    public ResultSet requeteSelection(String sql) {
+        if(sql != null && sql.equals("")){
+            try {
+                Statement requete = new DaoSIOExample().connexion.createStatement();
+                return requete.executeQuery(sql);
+
+            } catch (SQLException ex) {
+                Logger.getLogger(DaoSIOExample.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return null;
-       
     }
+
     /**
-     * 
+     *
      * @param sql, comportera un ordre insert, update, select, alter, etc.
      * @return le nombre de lignes impactées par la requête action
-     * 
+     *
      */
-      public Integer requeteAction(String sql){
-   
+    public Integer requeteAction(String sql) {
         try {
-            Statement requete=new DaoSIOExample().connexion.createStatement();
+            Statement requete = new DaoSIOExample().connexion.createStatement();
             return requete.executeUpdate(sql);
-           
+
         } catch (SQLException ex) {
             Logger.getLogger(DaoSIOExample.class.getName()).log(Level.SEVERE, null, ex);
         }
         return 0;
-       
-    }  
+    }
+    
+    /**
+     *
+     * @param table
+     * @param args
+     * @return
+     * @throws java.sql.SQLException
+     */
+    public Integer getLastID(String table, String ...args) throws SQLException{
+        
+        ResultSet result = this.requeteSelection("SELECT " + (!args.equals("") ? String.join(",", args) : "*" ) 
+                + " FROM " + table + " ORDER BY id DESC LIMIT 0, 1");
+        
+        if(result.next()){
+            return Integer.parseInt(result.getString("id"));
+        }
+        
+        return null;
+    }
 }

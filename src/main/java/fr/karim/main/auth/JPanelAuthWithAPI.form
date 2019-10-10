@@ -18,7 +18,9 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jButtonGoogle" min="-2" max="-2" attributes="0"/>
+              <Component id="jPanelGoogle1" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="jPanelFacebook1" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
@@ -27,19 +29,19 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jButtonGoogle" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="jPanelGoogle1" min="-2" max="-2" attributes="0"/>
+                  <Component id="jPanelFacebook1" min="-2" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JButton" name="jButtonGoogle">
-      <Properties>
-        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/icon/google.png"/>
-        </Property>
-      </Properties>
+    <Component class="fr.karim.main.auth.JPanelFacebook" name="jPanelFacebook1">
+    </Component>
+    <Component class="fr.karim.main.auth.JPanelGoogle" name="jPanelGoogle1">
     </Component>
   </SubComponents>
 </Form>

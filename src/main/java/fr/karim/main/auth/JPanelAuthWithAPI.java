@@ -9,12 +9,12 @@ package fr.karim.main.auth;
  *
  * @author karim
  */
-public class JPanelGoogle extends javax.swing.JPanel {
+public class JPanelAuthWithAPI extends javax.swing.JPanel {
 
     /**
-     * Creates new form JPanelGoogle
+     * Creates new form AuthWithAPI
      */
-    public JPanelGoogle() {
+    public JPanelAuthWithAPI() {
         initComponents();
     }
 
@@ -27,9 +27,8 @@ public class JPanelGoogle extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButtonGoogle = new javax.swing.JButton();
-
-        jButtonGoogle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/google.png"))); // NOI18N
+        jPanelFacebook1 = new fr.karim.main.auth.JPanelFacebook();
+        jPanelGoogle1 = new fr.karim.main.auth.JPanelGoogle();
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -37,20 +36,25 @@ public class JPanelGoogle extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButtonGoogle)
+                .addComponent(jPanelGoogle1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanelFacebook1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButtonGoogle)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanelGoogle1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanelFacebook1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonGoogle;
+    private fr.karim.main.auth.JPanelFacebook jPanelFacebook1;
+    private fr.karim.main.auth.JPanelGoogle jPanelGoogle1;
     // End of variables declaration//GEN-END:variables
 }
