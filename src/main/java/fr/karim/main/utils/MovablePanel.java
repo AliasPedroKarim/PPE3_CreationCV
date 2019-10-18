@@ -21,6 +21,7 @@ public class MovablePanel {
     private int yy=0;
 
     public MovablePanel(JPanel panel, JFrame jFrame) {
+        
         this.setPanel(panel);
         this.panel.addMouseListener(new MouseListener() {
             @Override

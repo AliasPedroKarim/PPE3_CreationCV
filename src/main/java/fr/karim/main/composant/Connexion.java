@@ -5,10 +5,8 @@
  */
 package fr.karim.main.composant;
 
-import java.awt.Dialog;
-import java.awt.Frame;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
+import java.awt.Color;
+import javax.swing.JButton;
 
 /**
  *
@@ -16,11 +14,23 @@ import javax.swing.JFrame;
  */
 public class Connexion extends javax.swing.JPanel {
 
+    JDialogInscription inscriptionDialog;
+    
     /**
      * Creates new form Connexion
      */
     public Connexion() {
         initComponents();
+        panelPassword1.setBackground(Color.WHITE);
+        panneauChamp1.setBackground(Color.WHITE);
+        
+        panneauChamp1.getChamp2().setBackground(Color.WHITE);
+        panneauChamp1.getChamp2().setForeground(new Color(25, 28, 32));
+        
+        panneauChamp1.getjLabelNomChamp().setText("Indentifiant ou Email");
+        panneauChamp1.getjLabelNomChamp().setForeground(new Color(25, 28, 32));
+        
+        panneauChamp1.getjSeparator1().setBackground(new Color(25, 28, 32));
     }
 
     /**
@@ -38,6 +48,8 @@ public class Connexion extends javax.swing.JPanel {
         jButtonSinscrire = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
+        setBackground(new java.awt.Color(255, 255, 255));
+
         jButtonConnexion.setText("Connexion");
 
         jButtonSinscrire.setText("S'inscrire");
@@ -48,6 +60,7 @@ public class Connexion extends javax.swing.JPanel {
         });
 
         jLabel1.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(25, 28, 32));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Se Connecter");
 
@@ -57,16 +70,13 @@ public class Connexion extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButtonSinscrire, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(panneauChamp1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(panelPassword1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonConnexion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                            .addComponent(panelPassword1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(panneauChamp1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                    .addComponent(jButtonSinscrire, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -86,13 +96,14 @@ public class Connexion extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonSinscrireMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonSinscrireMouseClicked
-        JFrame f = new JFrame();
-        f.add(new Inscription());
-        
-        JDialog dialogInscription = new JDialog(f, "Inscription", Dialog.ModalityType.APPLICATION_MODAL);
-        dialogInscription.setVisible(true);
+        inscriptionDialog = new JDialogInscription();
+        inscriptionDialog.setModal(true);
+        inscriptionDialog.setVisible(true);
     }//GEN-LAST:event_jButtonSinscrireMouseClicked
 
+    public JButton getjButtonConnexion() {
+        return jButtonConnexion;
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonConnexion;

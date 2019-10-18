@@ -5,10 +5,13 @@
  */
 package com.karimandco.auth;
 
+import com.karimandco.auth.bdd.DaoSIO;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.sql.ResultSet;
+import javax.swing.JButton;
+import javax.swing.JLabel;
 
 /**
  *
@@ -16,8 +19,12 @@ import java.sql.ResultSet;
  */
 public class PanneauFormConnexion extends javax.swing.JPanel {
 
+    javax.swing.JDialog panneauPereConnexion = null;
+
     private Boolean identifiantOK = false;
     private Boolean mdpOK = false;
+
+    private Boolean connexionOK = false;
 
     public void setIdentifiantOK(Boolean identifiantOK) {
         this.identifiantOK = identifiantOK;
@@ -25,6 +32,34 @@ public class PanneauFormConnexion extends javax.swing.JPanel {
 
     public void setMdpOK(Boolean mdpOK) {
         this.mdpOK = mdpOK;
+    }
+
+    public JButton getjButtonConnexion() {
+        return jButtonConnexion;
+    }
+
+    public JLabel getjLabel1() {
+        return jLabel1;
+    }
+
+    public void setFenParentConnexion(javax.swing.JDialog i) {
+        this.panneauPereConnexion = i;
+    }
+
+    public Boolean getConnexionOK() {
+        return connexionOK;
+    }
+
+    public void setConnexionOK(Boolean connexionOK) {
+        this.connexionOK = connexionOK;
+    }
+
+    public JLabel getjLabelEtatConnexion() {
+        return jLabelEtatConnexion;
+    }
+
+    public PanneauChamp getPanneauIdentifiant() {
+        return panneauIdentifiant;
     }
 
     /**
@@ -35,7 +70,7 @@ public class PanneauFormConnexion extends javax.swing.JPanel {
         initComponents();
 
         panneauIdentifiant.setjLabelNomChamp("Identifiant");
-        panneauMdp.setjLabelNomChampSecret("Mot de passe");
+        panneauMdp.setjLabelNomChampSecret("Mot de passe (6 à 12 chiffres)");
 
         panneauIdentifiant.getChamp2().addKeyListener(new KeyListener() {
             @Override
@@ -136,21 +171,26 @@ public class PanneauFormConnexion extends javax.swing.JPanel {
 
     private void jButtonConnexionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConnexionActionPerformed
         if (identifiantOK && mdpOK) {
-            ResultSet lesResultats = DaoSIO.getInstance().requeteSelection("SELECT * FROM utilisateurs WHERE identifiant='" + this.panneauIdentifiant.getChamp2().getText() + "' AND mot_de_passe='" + String.valueOf(this.panneauMdp.getChampSecret1().getPassword()) + "'");
+            String mdp_sha256 = Cryptage.sha256(Cryptage.sha256(String.valueOf(this.panneauMdp.getChampSecret1().getPassword())));
+            ResultSet lesResultats = DaoSIO.getInstance().requeteSelection("SELECT * FROM utilisateurs WHERE identifiant='" + this.panneauIdentifiant.getChamp2().getText() + "' AND mot_de_passe='" + mdp_sha256 + "'");
             try {
                 if (lesResultats.next()) {
                     jLabelEtatConnexion.setForeground(Color.blue);
                     jLabelEtatConnexion.setText("Connexion réussie");
-                    Utilisateur.getInstance(this.panneauIdentifiant.getChamp2().getText());
+                    Utilisateur.setIdentifiant(this.panneauIdentifiant.getChamp2().getText());
+                    Utilisateur.getInstance().getAll();
+                    this.setConnexionOK(true);
                 } else {
                     jLabelEtatConnexion.setForeground(Color.red);
                     jLabelEtatConnexion.setText("Identifiant et/ou mot de passe incorrect(s)");
+                    this.setConnexionOK(false);
                 }
             } catch (Exception e) {
             }
         } else {
             jLabelEtatConnexion.setForeground(Color.red);
             jLabelEtatConnexion.setText("Champ(s) manquant(s)");
+            this.setConnexionOK(false);
         }
     }//GEN-LAST:event_jButtonConnexionActionPerformed
 

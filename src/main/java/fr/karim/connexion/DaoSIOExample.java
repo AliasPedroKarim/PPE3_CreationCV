@@ -9,11 +9,9 @@ package fr.karim.connexion;
  *
  * @author c.nadal
  */
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+
+import java.sql.*;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -81,7 +79,7 @@ public class DaoSIOExample {
     public Boolean connexionActive() {
         Boolean connexionActive = true;
         try {
-            if (this.connexion != null && this.connexion.isClosed()) {
+            if (this.connexion != null && !this.connexion.isValid(0)) {
                 connexionActive = false;
             }
         } catch (SQLException ex) {
@@ -96,11 +94,12 @@ public class DaoSIOExample {
      * @return
      */
     public ResultSet requeteSelection(String sql) {
-        if(sql != null && sql.equals("")){
+        if(sql != null && !sql.equals("")){
             try {
-                Statement requete = new DaoSIOExample().connexion.createStatement();
-                return requete.executeQuery(sql);
-
+                if(DaoSIOExample.getInstance().connexion != null){
+                    Statement requete =  DaoSIOExample.getInstance().connexion.createStatement();
+                    return requete.executeQuery(sql);
+                }
             } catch (SQLException ex) {
                 Logger.getLogger(DaoSIOExample.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -116,31 +115,43 @@ public class DaoSIOExample {
      */
     public Integer requeteAction(String sql) {
         try {
-            Statement requete = new DaoSIOExample().connexion.createStatement();
-            return requete.executeUpdate(sql);
+            if(DaoSIOExample.getInstance().connexion != null){
+                Statement requete = DaoSIOExample.getInstance().connexion.createStatement();
+                return requete.executeUpdate(sql);
+            }
 
         } catch (SQLException ex) {
             Logger.getLogger(DaoSIOExample.class.getName()).log(Level.SEVERE, null, ex);
         }
         return 0;
     }
-    
+
     /**
      *
      * @param table
      * @param args
      * @return
-     * @throws java.sql.SQLException
+     * @throws SQLException
      */
     public Integer getLastID(String table, String ...args) throws SQLException{
-        
-        ResultSet result = this.requeteSelection("SELECT " + (!args.equals("") ? String.join(",", args) : "*" ) 
+
+        ResultSet result = this.requeteSelection("SELECT " + (!args.equals("") ? String.join(",", args) : "*" )
                 + " FROM " + table + " ORDER BY id DESC LIMIT 0, 1");
-        
+
         if(result.next()){
             return Integer.parseInt(result.getString("id"));
         }
-        
+
         return null;
+    }
+    
+    public static HashMap<String, Object> getDAOData(){
+        HashMap<String, Object> h = new HashMap<String, Object>();
+        h.put("NOM_SERVEUR", DaoSIOExample.NOM_SERVEUR);
+        h.put("PORT", DaoSIOExample.PORT);
+        h.put("NOM_BDD", DaoSIOExample.NOM_BDD);
+        h.put("NOM_UTILISATEUR", DaoSIOExample.NOM_UTILISATEUR);
+        h.put("MOT_DE_PASSE", DaoSIOExample.MOT_DE_PASSE);
+        return h;
     }
 }

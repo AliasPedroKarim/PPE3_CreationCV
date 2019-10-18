@@ -111,7 +111,7 @@ public class GoogleOAuth2 {
 	private Credential authorize() throws Exception {
 		// load client secrets
 		clientSecrets = GoogleClientSecrets.load(JSON_FACTORY,
-				new InputStreamReader(GoogleOAuth2.class.getResourceAsStream("/client_secrets.json")));
+				new InputStreamReader(GoogleOAuth2.class.getResourceAsStream("/client_secrets.google.json")));
 		if (clientSecrets.getDetails().getClientId().startsWith("Enter")
 				|| clientSecrets.getDetails().getClientSecret().startsWith("Enter ")) {
 			System.out.println("Enter Client ID and Secret from https://code.google.com/apis/console/ "

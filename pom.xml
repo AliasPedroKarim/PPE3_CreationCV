@@ -63,6 +63,11 @@
             <artifactId>restfb</artifactId>
             <version>3.0.0-rc.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-swing</artifactId>
+            <version>1.11</version>
+        </dependency>
     </dependencies>
     <properties>
         <project.http.version>1.32.1</project.http.version>

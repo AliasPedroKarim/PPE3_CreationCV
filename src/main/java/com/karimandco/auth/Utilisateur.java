@@ -5,6 +5,7 @@
  */
 package com.karimandco.auth;
 
+import com.karimandco.auth.bdd.DaoSIO;
 import java.sql.Blob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,51 +18,35 @@ import java.util.logging.Logger;
  */
 public class Utilisateur {
 
-    private static Utilisateur monUtilisateur = null;
+    protected static Utilisateur monUtilisateur = null;
 
-    public Boolean estConnecte = false;
+    private static String identifiant;
 
-    public Integer id;
-    public Integer statut;
-    public String identifiant;
-    public String nom;
-    public String prenom;
-    public String numeroTelephone;
-    public String courriel;
-    public String dateNaissance;
-    public Blob photo;
+    private Boolean estConnecte = false;
 
-    /**
-     * Ce constructeur permet d'initialiser les propriétés contenant les
-     * informations de l'utilisateur en fesant une requête à la bdd avec
-     * l'identifiant de l'utilisateur.
-     *
-     * @param identifiant String identifiant de l'utilisateur
-     */
-    private Utilisateur(String identifiant) {
-        ResultSet lesResultats = DaoSIO.getInstance().requeteSelection("SELECT * FROM utilisateurs WHERE identifiant='" + identifiant + "'");
+    private Integer id;
+    private Integer statut;
+    private String nom;
+    private String prenom;
+    private String numeroTelephone;
+    private String courriel;
+    private String dateNaissance;
+    private Blob photo;
 
-        try {
-            if (lesResultats.next()) {
-                this.id = lesResultats.getInt("id");
-                this.statut = lesResultats.getInt("statut");
-                this.identifiant = identifiant;
-                this.nom = lesResultats.getString("nom");
-                this.prenom = lesResultats.getString("prenom");
-                this.numeroTelephone = lesResultats.getString("num_telephone");
-                this.courriel = lesResultats.getString("courriel");
-                this.dateNaissance = lesResultats.getString("date_de_naissance");
-                this.photo = lesResultats.getBlob("photo");
+    protected Utilisateur() {
+        chargerInformationsUtilisateur();
+    }
 
-                this.estConnecte = true;
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(Utilisateur.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public static String getIdentifiant() {
+        return identifiant;
+    }
+
+    public static void setIdentifiant(String identifiant) {
+        Utilisateur.identifiant = identifiant;
     }
 
     /**
-     * Cette méthode renvoie la propriété estConnecte
+     * Cette méthode renvoie la propriété estConnecte.
      *
      * @return Boolean true or false
      */
@@ -70,7 +55,8 @@ public class Utilisateur {
     }
 
     /**
-     * Cette méthode permet de définir la propriété estConnecte
+     * Cette méthode permet de définir la propriété estConnecte.
+     *
      * @param estConnecte Boolean true or false
      */
     public void setEstConnecte(Boolean estConnecte) {
@@ -91,14 +77,6 @@ public class Utilisateur {
 
     public void setStatut(Integer statut) {
         this.statut = statut;
-    }
-
-    public String getIdentifiant() {
-        return identifiant;
-    }
-
-    public void setIdentifiant(String identifiant) {
-        this.identifiant = identifiant;
     }
 
     public String getNom() {
@@ -150,16 +128,85 @@ public class Utilisateur {
     }
 
     /**
-     * Permet d'obtenir l'objet instancié
+     * Permet d'obtenir l'objet instancié.
      *
-     * @param identifiant String identifiant de l'utilisateur
      * @return un Objet Utilisateur
      */
-    public static Utilisateur getInstance(String identifiant) {
+    public static Utilisateur getInstance() {
         if (Utilisateur.monUtilisateur == null) {
-            Utilisateur.monUtilisateur = new Utilisateur(identifiant);
+            Utilisateur.monUtilisateur = new Utilisateur();
         }
         return Utilisateur.monUtilisateur;
     }
 
+    /**
+     * Cette méthode permet d'initialiser les propriétés contenant les
+     * informations de l'utilisateur en fesant une requête à la bdd avec
+     * l'identifiant de l'utilisateur et de mettre true à la propriété
+     * estConnecte.
+     */
+    public void chargerInformationsUtilisateur() {
+        if (Utilisateur.identifiant != null) {
+            ResultSet lesResultats = DaoSIO.getInstance().requeteSelection("SELECT * FROM utilisateurs WHERE identifiant='" + Utilisateur.identifiant + "'");
+
+            try {
+                if (lesResultats.next()) {
+                    this.id = lesResultats.getInt("id");
+                    this.statut = lesResultats.getInt("statut");
+                    this.nom = lesResultats.getString("nom");
+                    this.prenom = lesResultats.getString("prenom");
+                    this.numeroTelephone = lesResultats.getString("num_telephone");
+                    this.courriel = lesResultats.getString("courriel");
+                    String[] date_split = lesResultats.getString("date_de_naissance").split("-");
+                    this.dateNaissance = date_split[2] + "/" + date_split[1] + "/" + date_split[0];
+                    this.photo = lesResultats.getBlob("photo");
+
+                    this.estConnecte = true;
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Utilisateur.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    /**
+     * Cette méthode permet de mettre à jour les informations de l'utilisateur
+     * sur la bdd et renvoie un booléen si la maj a été réussie.
+     *
+     * @return Boolean true or false
+     */
+    public Boolean updateInformationsUtilisateurBDD() {
+        Boolean resultat = false;
+        if (Utilisateur.identifiant != null) {
+            String[] date_split = this.getDateNaissance().split("/");
+            String data_split_ok = date_split[2] + "-" + date_split[1] + "-" + date_split[0];
+
+            Integer compteur = DaoSIO.getInstance().requeteAction("UPDATE utilisateurs SET nom='" + this.getNom() + "', prenom='" + this.getPrenom() + "', num_telephone='" + this.getNumeroTelephone() + "', courriel='" + this.getCourriel() + "', date_de_naissance='" + data_split_ok + "', photo='" + this.getPhoto() + "' WHERE identifiant='" + Utilisateur.getIdentifiant() + "'");
+
+            if (compteur > 0) {
+                resultat = true;
+            }
+        }
+        return resultat;
+    }
+
+    /**
+     * Cette méthode permet d'afficher toutes les propriétés contenant les
+     * informations de l'utilisateur (utile pour débug).
+     */
+    public void getAll() {
+        System.out.println();
+        System.out.println("============ Informations de l'utilisateur ============");
+        System.out.println("Id : " + this.getId());
+        System.out.println("Statut : " + this.getStatut());
+        System.out.println("Identifiant : " + Utilisateur.getIdentifiant());
+        System.out.println("Nom : " + this.getNom());
+        System.out.println("Prénom : " + this.getPrenom());
+        System.out.println("Numéro de téléphone : " + this.getNumeroTelephone());
+        System.out.println("Courriel : " + this.getCourriel());
+        System.out.println("Date de naissance : " + this.getDateNaissance());
+        System.out.println("Photo : " + this.getPhoto());
+        System.out.println("=======================================================");
+        System.out.println();
+    }
 }

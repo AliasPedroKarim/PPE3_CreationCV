@@ -5,17 +5,8 @@
  */
 package fr.karim.main.auth;
 
-import fr.karim.main.auth.facebook.Constants;
-import java.awt.Desktop;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.UUID;
+import fr.karim.main.auth.facebook.CustomUser;
+import javax.swing.JButton;
 
 /**
  *
@@ -23,6 +14,9 @@ import java.util.UUID;
  */
 public class JPanelFacebook extends javax.swing.JPanel {
 
+    private CustomUser userOAuth;
+    private FacebookOAuth2 facebookOAuth;
+    
     /**
      * Creates new form JPanelFacebook
      */
@@ -39,12 +33,12 @@ public class JPanelFacebook extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButton1 = new javax.swing.JButton();
+        jButtonOAuth = new javax.swing.JButton();
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/facebook.png"))); // NOI18N
-        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+        jButtonOAuth.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/facebook.png"))); // NOI18N
+        jButtonOAuth.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton1MouseClicked(evt);
+                jButtonOAuthMouseClicked(evt);
             }
         });
 
@@ -54,24 +48,36 @@ public class JPanelFacebook extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton1)
+                .addComponent(jButtonOAuth)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton1)
+                .addComponent(jButtonOAuth)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
-        new FacebookOAuth();
-    }//GEN-LAST:event_jButton1MouseClicked
+    private void jButtonOAuthMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonOAuthMouseClicked
+        this.facebookOAuth = new FacebookOAuth2();
+        userOAuth = this.facebookOAuth.getUserOAuth();
+    }//GEN-LAST:event_jButtonOAuthMouseClicked
 
+    public CustomUser getUserOAuth() {
+        return userOAuth;
+    }
+
+    public JButton getjButtonOAuth() {
+        return jButtonOAuth;
+    }
+
+    public void setjButtonOAuth(JButton jButtonOAuth) {
+        this.jButtonOAuth = jButtonOAuth;
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButtonOAuth;
     // End of variables declaration//GEN-END:variables
 }

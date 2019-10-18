@@ -7,6 +7,7 @@ package com.karimandco.auth;
 
 import java.awt.Color;
 import javax.swing.JLabel;
+import javax.swing.JSeparator;
 
 /**
  *
@@ -19,6 +20,14 @@ public class PanneauChamp extends javax.swing.JPanel {
      */
     public PanneauChamp() {
         initComponents();
+        
+        this.setBackground(new Color(25, 28, 32));
+        jLabelNomChamp.setForeground(Color.WHITE);
+        // champ2.setBackground(this.getBackground());
+        // note colore : 214,217,223
+        jLabelEtatChamp.setOpaque(true);
+        jLabelEtatChamp.setBackground(new Color(0,0,0,0));
+
     }
 
     /**
@@ -33,37 +42,49 @@ public class PanneauChamp extends javax.swing.JPanel {
         jLabelEtatChamp = new javax.swing.JLabel();
         jLabelNomChamp = new javax.swing.JLabel();
         champ2 = new com.karimandco.auth.Champ();
+        jSeparator1 = new javax.swing.JSeparator();
+
+        setBackground(new java.awt.Color(255, 255, 255));
 
         jLabelEtatChamp.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
+        jLabelNomChamp.setFont(new java.awt.Font("Century Gothic", 1, 13)); // NOI18N
+        jLabelNomChamp.setForeground(new java.awt.Color(25, 28, 32));
         jLabelNomChamp.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabelNomChamp.setText("champ");
+
+        champ2.setBorder(null);
+        champ2.setForeground(new java.awt.Color(255, 255, 255));
+
+        jSeparator1.setBackground(new java.awt.Color(255, 255, 255));
+        jSeparator1.setForeground(new java.awt.Color(255, 255, 255));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(0, 0, 0)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabelNomChamp, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(champ2, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
-                            .addComponent(jLabelEtatChamp, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                            .addComponent(jLabelEtatChamp, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jSeparator1))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabelNomChamp, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(champ2, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabelEtatChamp, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jLabelEtatChamp, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -103,9 +124,14 @@ public class PanneauChamp extends javax.swing.JPanel {
         this.jLabelNomChamp.setText(nom);
     }
 
+    public JSeparator getjSeparator1() {
+        return jSeparator1;
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.karimandco.auth.Champ champ2;
     private javax.swing.JLabel jLabelEtatChamp;
     private javax.swing.JLabel jLabelNomChamp;
+    private javax.swing.JSeparator jSeparator1;
     // End of variables declaration//GEN-END:variables
 }

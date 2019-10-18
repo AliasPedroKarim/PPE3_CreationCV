@@ -141,6 +141,7 @@ nbdist/
 # End of https://www.gitignore.io/api/java,maven,intellij,netbeans
 
 # Custom
-**/client_secrets.json
+**/client_secrets.google.json
+**/client_secrets.facebook.json
 **/DaoSIO.java
 **/Constants.java

@@ -5,15 +5,21 @@
  */
 package com.karimandco.auth;
 
+import com.karimandco.auth.bdd.DaoSIO;
 import java.awt.Color;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import javax.swing.JButton;
 
 /**
  *
  * @author Damien F, Pawel R, Théo M
  */
 public class PanneauFormInscription extends javax.swing.JPanel {
+
+    javax.swing.JDialog panneauPereInscription = null;
 
     private Boolean nomOK = false;
     private Boolean prenomOK = false;
@@ -22,6 +28,8 @@ public class PanneauFormInscription extends javax.swing.JPanel {
     private Boolean numeroTelephoneOK = false;
     private Boolean dateNaissanceOK = false;
     private Boolean mdpOK = false;
+
+    private Boolean inscriptionOK = false;
 
     /**
      * Ce constructeur permet d'initialiser le nom des labels et de générer les
@@ -37,7 +45,7 @@ public class PanneauFormInscription extends javax.swing.JPanel {
         panneauNumeroTelephone.setjLabelNomChamp("Numéro de téléphone");
         panneauDateNaissance.setjLabelNomChamp("Date de naissance (jj/mm/aaaa)");
 
-        panneauMdp.setjLabelNomChampSecret("Mot de passe");
+        panneauMdp.setjLabelNomChampSecret("Mot de passe (6 à 12 chiffres)");
         panneauMdpConfirmation.setjLabelNomChampSecret("Confirmation du mot de passe");
 
         KeyListener(panneauNom, 0);
@@ -51,6 +59,70 @@ public class PanneauFormInscription extends javax.swing.JPanel {
         KeyListener(panneauMdpConfirmation);
     }
 
+    public PanneauChamp getPanneauCourriel() {
+        return panneauCourriel;
+    }
+
+    public void setPanneauCourriel(PanneauChamp panneauCourriel) {
+        this.panneauCourriel = panneauCourriel;
+    }
+
+    public PanneauChamp getPanneauDateNaissance() {
+        return panneauDateNaissance;
+    }
+
+    public void setPanneauDateNaissance(PanneauChamp panneauDateNaissance) {
+        this.panneauDateNaissance = panneauDateNaissance;
+    }
+
+    public PanneauChamp getPanneauIdentifiant() {
+        return panneauIdentifiant;
+    }
+
+    public void setPanneauIdentifiant(PanneauChamp panneauIdentifiant) {
+        this.panneauIdentifiant = panneauIdentifiant;
+    }
+
+    public PanneauChampSecret getPanneauMdp() {
+        return panneauMdp;
+    }
+
+    public void setPanneauMdp(PanneauChampSecret panneauMdp) {
+        this.panneauMdp = panneauMdp;
+    }
+
+    public PanneauChampSecret getPanneauMdpConfirmation() {
+        return panneauMdpConfirmation;
+    }
+
+    public void setPanneauMdpConfirmation(PanneauChampSecret panneauMdpConfirmation) {
+        this.panneauMdpConfirmation = panneauMdpConfirmation;
+    }
+
+    public PanneauChamp getPanneauNom() {
+        return panneauNom;
+    }
+
+    public void setPanneauNom(PanneauChamp panneauNom) {
+        this.panneauNom = panneauNom;
+    }
+
+    public PanneauChamp getPanneauNumeroTelephone() {
+        return panneauNumeroTelephone;
+    }
+
+    public void setPanneauNumeroTelephone(PanneauChamp panneauNumeroTelephone) {
+        this.panneauNumeroTelephone = panneauNumeroTelephone;
+    }
+
+    public PanneauChamp getPanneauPrenom() {
+        return panneauPrenom;
+    }
+
+    public void setPanneauPrenom(PanneauChamp panneauPrenom) {
+        this.panneauPrenom = panneauPrenom;
+    }
+    
     public void setNomOK(Boolean nomOK) {
         this.nomOK = nomOK;
     }
@@ -79,6 +151,22 @@ public class PanneauFormInscription extends javax.swing.JPanel {
         this.mdpOK = mdpOK;
     }
 
+    public JButton getjButton1() {
+        return jButton1;
+    }
+
+    public void setFenParentInscription(javax.swing.JDialog i) {
+        this.panneauPereInscription = i;
+    }
+
+    public Boolean getInscriptionOK() {
+        return inscriptionOK;
+    }
+
+    public void setInscriptionOK(Boolean inscriptionOK) {
+        this.inscriptionOK = inscriptionOK;
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -99,6 +187,7 @@ public class PanneauFormInscription extends javax.swing.JPanel {
         jLabelEtatInscription = new javax.swing.JLabel();
         panneauMdp = new com.karimandco.auth.PanneauChampSecret();
         panneauMdpConfirmation = new com.karimandco.auth.PanneauChampSecret();
+        panelKeyboradPassword1 = new fr.karim.main.utils.PanelKeyboradPassword();
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Inscription");
@@ -117,60 +206,62 @@ public class PanneauFormInscription extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(10, 10, 10)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(panneauNom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(panneauPrenom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(panneauIdentifiant, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(panneauCourriel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabelEtatInscription, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(panneauNom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(panneauPrenom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(panneauIdentifiant, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(panneauCourriel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(panneauNumeroTelephone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(panneauDateNaissance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(panneauMdp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(panneauMdpConfirmation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 9, Short.MAX_VALUE))
+                        .addComponent(panneauNumeroTelephone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(panneauDateNaissance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(10, 10, 10)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabelEtatInscription, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addContainerGap())))
+                        .addComponent(panneauMdp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(panneauMdpConfirmation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(panelKeyboradPassword1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(10, 10, 10)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(panneauPrenom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(panneauNom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panneauIdentifiant, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(panneauCourriel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panneauNumeroTelephone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(panneauDateNaissance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panneauMdp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(panneauMdpConfirmation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(panneauPrenom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(panneauNom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(panneauIdentifiant, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(panneauCourriel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(panneauNumeroTelephone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(panneauDateNaissance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(10, 10, 10)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(panneauMdpConfirmation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(panneauMdp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(panelKeyboradPassword1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabelEtatInscription, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -179,16 +270,21 @@ public class PanneauFormInscription extends javax.swing.JPanel {
             String[] date_split = this.panneauDateNaissance.getChamp2().getText().split("/");
             String date_newFormat = date_split[2] + "-" + date_split[1] + "-" + date_split[0];
 
-            if (DaoSIO.getInstance().requeteAction("INSERT INTO utilisateurs (nom, prenom, identifiant, courriel, num_telephone, date_de_naissance, mot_de_passe, photo) VALUES ('" + this.panneauNom.getChamp2().getText() + "', '" + this.panneauPrenom.getChamp2().getText() + "', '" + this.panneauIdentifiant.getChamp2().getText() + "', '" + this.panneauCourriel.getChamp2().getText() + "', '" + this.panneauNumeroTelephone.getChamp2().getText() + "', '" + date_newFormat + "', '" + String.valueOf(this.panneauMdp.getChampSecret1().getPassword()) + "', '')") > 0) {
+            String mdp_sha256 = Cryptage.sha256(Cryptage.sha256(String.valueOf(this.panneauMdp.getChampSecret1().getPassword())));
+
+            if (DaoSIO.getInstance().requeteAction("INSERT INTO utilisateurs (nom, prenom, identifiant, courriel, num_telephone, date_de_naissance, mot_de_passe, photo) VALUES ('" + this.panneauNom.getChamp2().getText() + "', '" + this.panneauPrenom.getChamp2().getText() + "', '" + this.panneauIdentifiant.getChamp2().getText() + "', '" + this.panneauCourriel.getChamp2().getText() + "', '" + this.panneauNumeroTelephone.getChamp2().getText() + "', '" + date_newFormat + "', '" + mdp_sha256 + "', '')") > 0) {
                 jLabelEtatInscription.setForeground(Color.blue);
                 jLabelEtatInscription.setText("Inscription réussi");
+                this.setInscriptionOK(true);
             } else {
                 jLabelEtatInscription.setForeground(Color.red);
                 jLabelEtatInscription.setText("Echec de l'inscription");
+                this.setInscriptionOK(false);
             }
         } else {
             jLabelEtatInscription.setForeground(Color.red);
             jLabelEtatInscription.setText("Champ(s) manquant(s)");
+            this.setInscriptionOK(false);
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -196,6 +292,7 @@ public class PanneauFormInscription extends javax.swing.JPanel {
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabelEtatInscription;
+    private fr.karim.main.utils.PanelKeyboradPassword panelKeyboradPassword1;
     private com.karimandco.auth.PanneauChamp panneauCourriel;
     private com.karimandco.auth.PanneauChamp panneauDateNaissance;
     private com.karimandco.auth.PanneauChamp panneauIdentifiant;
@@ -255,6 +352,15 @@ public class PanneauFormInscription extends javax.swing.JPanel {
                 // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
                 updateJLabelEtat(champ);
             }
+        });
+        champ.getChampSecret1().addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) { 
+                panelKeyboradPassword1.setPasswordField(champ.getChampSecret1());
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) { }
         });
     }
 

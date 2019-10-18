@@ -5,6 +5,8 @@
  */
 package fr.karim.main.auth;
 
+import fr.karim.main.auth.facebook.CustomUser;
+
 /**
  *
  * @author karim
@@ -52,7 +54,18 @@ public class JPanelAuthWithAPI extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    public CustomUser getUserOAuth() {
+        return jPanelFacebook1.getUserOAuth();
+    }
 
+    public JPanelFacebook getjPanelFacebook1() {
+        return jPanelFacebook1;
+    }
+
+    public void setjPanelFacebook1(JPanelFacebook jPanelFacebook1) {
+        this.jPanelFacebook1 = jPanelFacebook1;
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private fr.karim.main.auth.JPanelFacebook jPanelFacebook1;
     private fr.karim.main.auth.JPanelGoogle jPanelGoogle1;

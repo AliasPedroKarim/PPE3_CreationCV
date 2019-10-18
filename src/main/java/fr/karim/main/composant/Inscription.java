@@ -5,6 +5,14 @@
  */
 package fr.karim.main.composant;
 
+import java.awt.Color;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
 /**
  *
  * @author karim
@@ -16,7 +24,28 @@ public class Inscription extends javax.swing.JPanel {
      */
     public Inscription() {
         initComponents();
+        panneauFormInscription1.setOpaque(true);
+        panneauFormInscription1.setBackground(new Color(0,0,0,0));
+        
+        jScrollPane1.setOpaque(true);
+        jScrollPane1.setBackground(new Color(0,0,0,0));
+        initialize();
     }
+    
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        int w = getWidth();
+        int h = getHeight();
+        Color color1 = new Color(25, 28, 32);
+        Color color2 = new Color(36, 41, 46);
+        GradientPaint gp = new GradientPaint(0, 0, color1, 0, h, color2);
+        g2d.setPaint(gp);
+        g2d.fillRect(0, 0, w, h);
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -27,18 +56,25 @@ public class Inscription extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        panneauFormInscription1 = new com.karimandco.auth.PanneauFormInscription();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jPanelAuthWithAPI1 = new fr.karim.main.auth.JPanelAuthWithAPI();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        panneauFormInscription1 = new com.karimandco.auth.PanneauFormInscription();
 
         jLabel1.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("S'incrire");
+        jLabel1.setText("S'inscrire");
 
         jLabel2.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("Utiliser Facebook ou Google");
+        jLabel2.setText("S'inscrire Facebook ou Google");
+
+        jScrollPane1.setBorder(null);
+        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane1.setViewportView(panneauFormInscription1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -47,11 +83,11 @@ public class Inscription extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jPanelAuthWithAPI1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(panneauFormInscription1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanelAuthWithAPI1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -59,19 +95,49 @@ public class Inscription extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(panneauFormInscription1, javax.swing.GroupLayout.PREFERRED_SIZE, 574, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 570, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanelAuthWithAPI1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
+    public void initialize(){
+        
+        jPanelAuthWithAPI1.getjPanelFacebook1().getjButtonOAuth().addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                
+                panneauFormInscription1.getPanneauNom().getChamp2().setText(jPanelAuthWithAPI1.getUserOAuth().getFirstName());
+                panneauFormInscription1.getPanneauPrenom().getChamp2().setText(jPanelAuthWithAPI1.getUserOAuth().getLastName());
+                panneauFormInscription1.getPanneauCourriel().getChamp2().setText(jPanelAuthWithAPI1.getUserOAuth().getEmail());
+                panneauFormInscription1.getPanneauDateNaissance().getChamp2().setText(jPanelAuthWithAPI1.getUserOAuth().getBirthday());
+                panneauFormInscription1.getPanneauIdentifiant().getChamp2().setText(jPanelAuthWithAPI1.getUserOAuth().getShortName().replace(" ", ""));
+            
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) { }
+
+            @Override
+            public void mouseReleased(MouseEvent e) { }
+
+            @Override
+            public void mouseEntered(MouseEvent e) { }
+
+            @Override
+            public void mouseExited(MouseEvent e) { }
+        });
+        
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private fr.karim.main.auth.JPanelAuthWithAPI jPanelAuthWithAPI1;
+    private javax.swing.JScrollPane jScrollPane1;
     private com.karimandco.auth.PanneauFormInscription panneauFormInscription1;
     // End of variables declaration//GEN-END:variables
 }
