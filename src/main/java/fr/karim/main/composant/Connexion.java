@@ -5,8 +5,20 @@
  */
 package fr.karim.main.composant;
 
+import com.karimandco.auth.Cryptage;
+import com.karimandco.auth.PanneauChamp;
+import fr.karim.connexion.DaoSIO;
+import fr.karim.main.auth.PanelPassword;
+import fr.karim.main.utils.Helpers;
+import fr.karim.main.utils.Utilisateur;
 import java.awt.Color;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -25,6 +37,7 @@ public class Connexion extends javax.swing.JPanel {
         panneauChamp1.setBackground(Color.WHITE);
         
         panneauChamp1.getChamp2().setBackground(Color.WHITE);
+        panneauChamp1.getChamp2().setCaretColor(Color.BLACK);
         panneauChamp1.getChamp2().setForeground(new Color(25, 28, 32));
         
         panneauChamp1.getjLabelNomChamp().setText("Indentifiant ou Email");
@@ -51,6 +64,11 @@ public class Connexion extends javax.swing.JPanel {
         setBackground(new java.awt.Color(255, 255, 255));
 
         jButtonConnexion.setText("Connexion");
+        jButtonConnexion.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonConnexionMouseClicked(evt);
+            }
+        });
 
         jButtonSinscrire.setText("S'inscrire");
         jButtonSinscrire.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -101,8 +119,53 @@ public class Connexion extends javax.swing.JPanel {
         inscriptionDialog.setVisible(true);
     }//GEN-LAST:event_jButtonSinscrireMouseClicked
 
+    private void jButtonConnexionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonConnexionMouseClicked
+        connexion();
+    }//GEN-LAST:event_jButtonConnexionMouseClicked
+
+    private void connexion(){
+        
+        String passText = String.valueOf(this.panelPassword1.getjPasswordField1().getPassword());
+        List<Map<String, Object>> res;
+        
+        if(passText.length() == 6){
+            String identifiable = panneauChamp1.getChamp2().getText();
+            String pass = Cryptage.sha256(Cryptage.sha256(passText));
+            
+            if(!identifiable.equals("") && !pass.equals("")){
+                
+                try {
+                    res = Helpers.getIntance().resultSetToList(DaoSIO.getInstance().requeteSelection("SELECT * FROM utilisateurs WHERE ( identifiant = '" + identifiable + "' OR courriel = '" + identifiable + "' ) AND mot_de_passe='" + pass + "'"));
+                    
+                    if(res.size() > 0){
+                        
+                        Utilisateur.getInstance().setEstConnecte(Utilisateur.getInstance().loadDataUser(res.get(0)));
+                        
+                    }else{
+                        JOptionPane.showMessageDialog(this, "Identifiant/Email ou Mot de passe incorrect.", "Echec de la connexion", JOptionPane.WARNING_MESSAGE);
+                    }
+                
+                } catch (SQLException ex) {
+                    Logger.getLogger(Connexion.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                
+            }
+        }else{
+            JOptionPane.showMessageDialog(this, "La longueur de votre mot de passe est trop court.", "Mot de passe trop court", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+    
     public JButton getjButtonConnexion() {
         return jButtonConnexion;
+    }
+
+    public PanelPassword getPanelPassword1() {
+        return panelPassword1;
+    }
+
+    public PanneauChamp getPanneauChamp1() {
+        return panneauChamp1;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

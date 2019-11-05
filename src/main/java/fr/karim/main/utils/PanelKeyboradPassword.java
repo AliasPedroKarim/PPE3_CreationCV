@@ -246,7 +246,6 @@ public class PanelKeyboradPassword extends javax.swing.JPanel {
                         if(oldContaint.length() < 6){
                             passwordField.setText(oldContaint + button.getText() );
                         }
-                        System.out.println(String.valueOf(passwordField.getPassword()));
                     }
 
                     @Override

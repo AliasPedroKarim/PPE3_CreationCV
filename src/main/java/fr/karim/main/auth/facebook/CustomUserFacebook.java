@@ -12,7 +12,7 @@ import com.restfb.Facebook;
  * @author karim
  */
  
-public class CustomUser {
+public class CustomUserFacebook {
 
     @Facebook("id")
     private String id;

@@ -13,7 +13,7 @@ import com.restfb.FacebookClient;
 import com.restfb.Parameter;
 import com.restfb.Version;
 import fr.karim.main.auth.facebook.Constants;
-import fr.karim.main.auth.facebook.CustomUser;
+import fr.karim.main.auth.facebook.CustomUserFacebook;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 
@@ -34,13 +34,13 @@ public class FacebookOAuth2 {
     private Map userResponseData;
     private LocalServerReceiveFB localServerReceiveFB;
 
-    private CustomUser userOAuth = null;
+    private CustomUserFacebook userOAuth = null;
 
-    public CustomUser getUserOAuth() {
+    public CustomUserFacebook getUserOAuth() {
         return userOAuth;
     }
 
-    private void setUserOAuth(CustomUser userOAuth) {
+    private void setUserOAuth(CustomUserFacebook userOAuth) {
         this.userOAuth = userOAuth;
     }
 
@@ -74,7 +74,7 @@ public class FacebookOAuth2 {
                     if (this.StuffData()){
                         FacebookClient facebookClient = new DefaultFacebookClient((String) this.userResponseData.get("access_token"), Constants.MY_APP_SECRET, Version.VERSION_4_0);
 
-                        CustomUser user = facebookClient.fetchObject("me", CustomUser.class,
+                        CustomUserFacebook user = facebookClient.fetchObject("me", CustomUserFacebook.class,
                                 Parameter.with("fields", "id, name, email, first_name, last_name, birthday, gender, short_name"));
 
                         this.setUserOAuth(user);

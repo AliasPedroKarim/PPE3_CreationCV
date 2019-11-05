@@ -5,12 +5,17 @@
  */
 package fr.karim.main.auth;
 
+import fr.karim.main.auth.google.CustomUserGoogle;
+import javax.swing.JButton;
+
 /**
  *
  * @author karim
  */
 public class JPanelGoogle extends javax.swing.JPanel {
-
+    private CustomUserGoogle userOAuth;
+    private GoogleOAuth2 googleOAuth;
+    
     /**
      * Creates new form JPanelGoogle
      */
@@ -27,9 +32,14 @@ public class JPanelGoogle extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButtonGoogle = new javax.swing.JButton();
+        jButtonOAuth = new javax.swing.JButton();
 
-        jButtonGoogle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/google.png"))); // NOI18N
+        jButtonOAuth.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/google.png"))); // NOI18N
+        jButtonOAuth.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonOAuthMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -37,20 +47,36 @@ public class JPanelGoogle extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButtonGoogle)
+                .addComponent(jButtonOAuth)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButtonGoogle)
+                .addComponent(jButtonOAuth)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButtonOAuthMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonOAuthMouseClicked
+        this.googleOAuth = new GoogleOAuth2();
+        this.userOAuth = googleOAuth.getUserOAuth();
+    }//GEN-LAST:event_jButtonOAuthMouseClicked
+
+    public CustomUserGoogle getUserOAuth() {
+        return userOAuth;
+    }
+
+    public JButton getjButtonOAuth() {
+        return jButtonOAuth;
+    }
+
+    public void setjButtonOAuth(JButton jButtonOAuth) {
+        this.jButtonOAuth = jButtonOAuth;
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonGoogle;
+    private javax.swing.JButton jButtonOAuth;
     // End of variables declaration//GEN-END:variables
 }

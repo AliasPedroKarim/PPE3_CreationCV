@@ -5,13 +5,22 @@
  */
 package fr.karim.main.composant;
 
+import fr.karim.main.utils.Helpers;
 import java.awt.Color;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.event.DocumentEvent;
 
 /**
  *
@@ -25,27 +34,27 @@ public class Inscription extends javax.swing.JPanel {
     public Inscription() {
         initComponents();
         panneauFormInscription1.setOpaque(true);
-        panneauFormInscription1.setBackground(new Color(0,0,0,0));
+        panneauFormInscription1.setBackground(new Color(25, 28, 32));
+        this.setBackground(new Color(25, 28, 32));
         
         jScrollPane1.setOpaque(true);
         jScrollPane1.setBackground(new Color(0,0,0,0));
         initialize();
     }
     
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        int w = getWidth();
-        int h = getHeight();
-        Color color1 = new Color(25, 28, 32);
-        Color color2 = new Color(36, 41, 46);
-        GradientPaint gp = new GradientPaint(0, 0, color1, 0, h, color2);
-        g2d.setPaint(gp);
-        g2d.fillRect(0, 0, w, h);
-    }
-
+//    @Override
+//    protected void paintComponent(Graphics g) {
+//        super.paintComponent(g);
+//        Graphics2D g2d = (Graphics2D) g;
+//        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+//        int w = getWidth();
+//        int h = getHeight();
+//        Color color1 = new Color(25, 28, 32);
+//        Color color2 = new Color(36, 41, 46);
+//        GradientPaint gp = new GradientPaint(0, 0, color1, 0, h, color2);
+//        g2d.setPaint(gp);
+//        g2d.fillRect(0, 0, w, h);
+//    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -95,7 +104,7 @@ public class Inscription extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 570, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 589, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -110,12 +119,22 @@ public class Inscription extends javax.swing.JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 
-                panneauFormInscription1.getPanneauNom().getChamp2().setText(jPanelAuthWithAPI1.getUserOAuth().getFirstName());
-                panneauFormInscription1.getPanneauPrenom().getChamp2().setText(jPanelAuthWithAPI1.getUserOAuth().getLastName());
-                panneauFormInscription1.getPanneauCourriel().getChamp2().setText(jPanelAuthWithAPI1.getUserOAuth().getEmail());
-                panneauFormInscription1.getPanneauDateNaissance().getChamp2().setText(jPanelAuthWithAPI1.getUserOAuth().getBirthday());
-                panneauFormInscription1.getPanneauIdentifiant().getChamp2().setText(jPanelAuthWithAPI1.getUserOAuth().getShortName().replace(" ", ""));
-            
+                panneauFormInscription1.getPanneauNom().getChamp2().setText(jPanelAuthWithAPI1.getUserOAuthFacebook().getFirstName());
+                panneauFormInscription1.getPanneauPrenom().getChamp2().setText(jPanelAuthWithAPI1.getUserOAuthFacebook().getLastName());
+                panneauFormInscription1.getPanneauCourriel().getChamp2().setText(jPanelAuthWithAPI1.getUserOAuthFacebook().getEmail());
+                
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm/dd/yyyy");
+
+                try {
+                    Date date = simpleDateFormat.parse(jPanelAuthWithAPI1.getUserOAuthFacebook().getBirthday());
+                    String dateString = new SimpleDateFormat("dd/MM/yyyy").format( date );
+                    panneauFormInscription1.getPanneauDateNaissance().getChamp2().setText(dateString);
+
+                } catch (ParseException ex) {
+                    Logger.getLogger(Inscription.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                panneauFormInscription1.getPanneauIdentifiant().getChamp2().setText(jPanelAuthWithAPI1.getUserOAuthFacebook().getShortName().replace(" ", ""));
             }
 
             @Override
@@ -131,6 +150,131 @@ public class Inscription extends javax.swing.JPanel {
             public void mouseExited(MouseEvent e) { }
         });
         
+        jPanelAuthWithAPI1.getjPanelGoogle1().getjButtonOAuth().addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+                panneauFormInscription1.getPanneauNom().getChamp2().setText(jPanelAuthWithAPI1.getUserOAuthGoogle().getFamily_name());
+                panneauFormInscription1.getPanneauPrenom().getChamp2().setText(jPanelAuthWithAPI1.getUserOAuthGoogle().getGiven_name());
+                panneauFormInscription1.getPanneauCourriel().getChamp2().setText(jPanelAuthWithAPI1.getUserOAuthGoogle().getEmail());
+                
+                // voir pour la date de naissance avec l'api google
+                // panneauFormInscription1.getPanneauDateNaissance().getChamp2().setText(jPanelAuthWithAPI1.getUserOAuthGoogle().getBirthday());
+                
+                panneauFormInscription1.getPanneauIdentifiant().getChamp2().setText(jPanelAuthWithAPI1.getUserOAuthGoogle().getName().replace(" ", ""));
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) { }
+
+            @Override
+            public void mouseReleased(MouseEvent e) { }
+
+            @Override
+            public void mouseEntered(MouseEvent e) { }
+
+            @Override
+            public void mouseExited(MouseEvent e) { }
+        });
+
+        panneauFormInscription1.getjButton1().addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) { 
+                if(!panneauFormInscription1.getIdentifiantOK()){
+                    JOptionPane.showMessageDialog(jScrollPane1, "Attention ! Cette identifiant est déjà utiliser.", "Identifiant invalide", JOptionPane.WARNING_MESSAGE);
+                } 
+                if(!panneauFormInscription1.getIdentifiantOK()){
+                    JOptionPane.showMessageDialog(jScrollPane1, "Attention ! Cette email est déjà utiliser.", "Email invalide", JOptionPane.WARNING_MESSAGE);
+                } 
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) { }
+
+            @Override
+            public void mouseReleased(MouseEvent e) { }
+
+            @Override
+            public void mouseEntered(MouseEvent e) { }
+
+            @Override
+            public void mouseExited(MouseEvent e) { }
+        });
+        
+        panneauFormInscription1.getPanneauIdentifiant().getChamp2().getDocument().addDocumentListener(new Helpers.SimpleDocumentListener() {
+            @Override
+            public void update(DocumentEvent e) {
+                checkIdentifiant();
+            }
+        });
+        
+        panneauFormInscription1.getPanneauIdentifiant().getChamp2().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) { }
+
+            @Override
+            public void keyPressed(KeyEvent e) { }
+
+            @Override
+            public void keyReleased(KeyEvent e) { checkIdentifiant(); }
+        });
+        
+        panneauFormInscription1.getPanneauCourriel().getChamp2().getDocument().addDocumentListener(new Helpers.SimpleDocumentListener() {
+            @Override
+            public void update(DocumentEvent e) {
+                checkEmail();
+            }
+        });
+        
+        panneauFormInscription1.getPanneauCourriel().getChamp2().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) { }
+
+            @Override
+            public void keyPressed(KeyEvent e) { }
+
+            @Override
+            public void keyReleased(KeyEvent e) { checkEmail(); }
+        });
+        
+    }
+    
+    private void checkIdentifiant(){
+        List<Map<String, Object>> user = null;
+                
+        try {
+            user = Helpers.getIntance().getUtilisateur(panneauFormInscription1.getPanneauIdentifiant().getChamp2().getText());
+        } catch (SQLException ex) {
+            Logger.getLogger(Inscription.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if(user == null || user.size() < 0){
+            panneauFormInscription1.getPanneauIdentifiant().getjLabelEtatChamp().setText("Identifiant disponible !");
+            panneauFormInscription1.getPanneauIdentifiant().getjLabelEtatChamp().setForeground(Helpers.COLOR_VALIDATED);
+            panneauFormInscription1.setIdentifiantOK(true);
+        }else{
+            panneauFormInscription1.getPanneauIdentifiant().getjLabelEtatChamp().setText("Utilisateur déjà existant !");
+            panneauFormInscription1.getPanneauIdentifiant().getjLabelEtatChamp().setForeground(Helpers.COLOR_NOT_VALIDATED);
+            panneauFormInscription1.setIdentifiantOK(false);
+        }
+    }
+    
+    private void checkEmail(){
+        List<Map<String, Object>> user = null;
+                
+        try {
+            user = Helpers.getIntance().getUtilisateur(panneauFormInscription1.getPanneauCourriel().getChamp2().getText());
+        } catch (SQLException ex) {
+            Logger.getLogger(Inscription.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if(user == null || user.size() < 0){
+            panneauFormInscription1.getPanneauCourriel().getjLabelEtatChamp().setText("Email disponible !");
+            panneauFormInscription1.getPanneauCourriel().getjLabelEtatChamp().setForeground(Helpers.COLOR_VALIDATED);
+            panneauFormInscription1.setCourrielOK(true);
+        }else{
+            panneauFormInscription1.getPanneauCourriel().getjLabelEtatChamp().setText("Email déjà existant !");
+            panneauFormInscription1.getPanneauCourriel().getjLabelEtatChamp().setForeground(Helpers.COLOR_NOT_VALIDATED);
+            panneauFormInscription1.setCourrielOK(false);
+        }
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

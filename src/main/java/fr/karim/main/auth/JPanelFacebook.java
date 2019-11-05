@@ -5,7 +5,7 @@
  */
 package fr.karim.main.auth;
 
-import fr.karim.main.auth.facebook.CustomUser;
+import fr.karim.main.auth.facebook.CustomUserFacebook;
 import javax.swing.JButton;
 
 /**
@@ -14,7 +14,7 @@ import javax.swing.JButton;
  */
 public class JPanelFacebook extends javax.swing.JPanel {
 
-    private CustomUser userOAuth;
+    private CustomUserFacebook userOAuth;
     private FacebookOAuth2 facebookOAuth;
     
     /**
@@ -65,7 +65,7 @@ public class JPanelFacebook extends javax.swing.JPanel {
         userOAuth = this.facebookOAuth.getUserOAuth();
     }//GEN-LAST:event_jButtonOAuthMouseClicked
 
-    public CustomUser getUserOAuth() {
+    public CustomUserFacebook getUserOAuth() {
         return userOAuth;
     }
 

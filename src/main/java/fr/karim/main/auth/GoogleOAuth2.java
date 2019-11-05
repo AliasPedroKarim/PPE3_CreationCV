@@ -28,6 +28,11 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.oauth2.Oauth2;
 import com.google.api.services.oauth2.model.Tokeninfo;
 import com.google.api.services.oauth2.model.Userinfoplus;
+import com.google.gson.Gson;
+import fr.karim.main.auth.google.CustomUserGoogle;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -75,6 +80,24 @@ public class GoogleOAuth2 {
 
 	private Userinfoplus user = null;
 
+	private CustomUserGoogle userOAuth = null;
+
+	public CustomUserGoogle getUserOAuth() {
+		return userOAuth;
+	}
+
+	public void setUserOAuth(CustomUserGoogle userOAuth) {
+		this.userOAuth = userOAuth;
+	}
+
+	public Userinfoplus getUser() {
+		return user;
+	}
+
+	public void setUser(Userinfoplus user) {
+		this.user = user;
+	}
+
 	public GoogleOAuth2() {
 		try {
 			httpTransport = GoogleNetHttpTransport.newTrustedTransport();
@@ -97,14 +120,6 @@ public class GoogleOAuth2 {
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
-	}
-
-	public Userinfoplus getUser() {
-		return user;
-	}
-
-	public void setUser(Userinfoplus user) {
-		this.user = user;
 	}
 
 	/** Authorizes the installed application to access user's protected data. */
@@ -141,16 +156,25 @@ public class GoogleOAuth2 {
 		}
 	}
 
-	private void userInfo() throws IOException {
+	private void userInfo() throws IOException, ParseException {
 		header("Obtaining User Profile Information");
 		Userinfoplus userinfo = oauth2.userinfo().get().execute();
+		CustomUserGoogle user = new Gson().fromJson(userinfo.toPrettyString(), CustomUserGoogle.class);
+
 		this.setUser(userinfo);
+		this.setUserOAuth(user);
+
 		System.out.println(userinfo.toPrettyString());
+
 	}
 
 	public void header(String name) {
 		System.out.println();
 		System.out.println("================== " + name + " ==================");
 		System.out.println();
+	}
+
+	public static void main(String[] args) {
+		new GoogleOAuth2();
 	}
 }

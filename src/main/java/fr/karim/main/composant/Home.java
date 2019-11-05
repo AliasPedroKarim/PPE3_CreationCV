@@ -71,8 +71,16 @@ public class Home extends javax.swing.JPanel {
             }
         };
         connexion = new fr.karim.main.composant.Connexion();
+        jButton1 = new javax.swing.JButton();
 
         setPreferredSize(new java.awt.Dimension(1041, 641));
+
+        jButton1.setText("[DEBUG]");
+        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton1MouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanelHomeLayout = new javax.swing.GroupLayout(jPanelHome);
         jPanelHome.setLayout(jPanelHomeLayout);
@@ -81,13 +89,17 @@ public class Home extends javax.swing.JPanel {
             .addGroup(jPanelHomeLayout.createSequentialGroup()
                 .addGap(30, 30, 30)
                 .addComponent(connexion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(742, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 643, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addContainerGap())
         );
         jPanelHomeLayout.setVerticalGroup(
             jPanelHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelHomeLayout.createSequentialGroup()
                 .addGap(30, 30, 30)
-                .addComponent(connexion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanelHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jButton1)
+                    .addComponent(connexion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(30, 30, 30))
         );
 
@@ -105,12 +117,18 @@ public class Home extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
+        connexion.getPanneauChamp1().getChamp2().setText("AliasPedro");
+        connexion.getPanelPassword1().getjPasswordField1().setText("000000");
+    }//GEN-LAST:event_jButton1MouseClicked
+
     public Connexion getConnexion() {
         return connexion;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private fr.karim.main.composant.Connexion connexion;
+    private javax.swing.JButton jButton1;
     private javax.swing.JPanel jPanelHome;
     // End of variables declaration//GEN-END:variables
 }

@@ -5,7 +5,8 @@
  */
 package fr.karim.main.auth;
 
-import fr.karim.main.auth.facebook.CustomUser;
+import fr.karim.main.auth.facebook.CustomUserFacebook;
+import fr.karim.main.auth.google.CustomUserGoogle;
 
 /**
  *
@@ -54,8 +55,12 @@ public class JPanelAuthWithAPI extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    public CustomUser getUserOAuth() {
+    public CustomUserFacebook getUserOAuthFacebook() {
         return jPanelFacebook1.getUserOAuth();
+    }
+    
+    public CustomUserGoogle getUserOAuthGoogle(){
+        return jPanelGoogle1.getUserOAuth();
     }
 
     public JPanelFacebook getjPanelFacebook1() {
@@ -64,6 +69,14 @@ public class JPanelAuthWithAPI extends javax.swing.JPanel {
 
     public void setjPanelFacebook1(JPanelFacebook jPanelFacebook1) {
         this.jPanelFacebook1 = jPanelFacebook1;
+    }
+
+    public JPanelGoogle getjPanelGoogle1() {
+        return jPanelGoogle1;
+    }
+
+    public void setjPanelGoogle1(JPanelGoogle jPanelGoogle1) {
+        this.jPanelGoogle1 = jPanelGoogle1;
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

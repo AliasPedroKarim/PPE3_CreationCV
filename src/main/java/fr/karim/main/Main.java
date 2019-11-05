@@ -14,17 +14,34 @@ import java.awt.event.MouseAdapter;
  */
 public class Main {
     
+    public static JFrameSoftware jFrameSoftware = null;
+    
+    public static JFrameConnexion jFrameConnexion = null;
+    
     public static void main(String[] args) {
         
-        JFrameConnexion jFrameConnexion = new JFrameConnexion();
-        jFrameConnexion.setTitle("Connexion - CV Creator");
+        jFrameConnexion = new JFrameConnexion();
+        jFrameConnexion.setTitle("Connexion - CV Creator Software");
         jFrameConnexion.setVisible(true);
         
         jFrameConnexion.getHome().getConnexion().getjButtonConnexion().addMouseListener(new MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                System.out.println(Utilisateur.getInstance().getEstConnecte());
+                if(Utilisateur.getInstance().getEstConnecte()){
+                    jFrameConnexion.setVisible(false);
+                    jFrameConnexion = null;
+                    OpenSoftware();
+                }
+                
             }
         });
+        
+    }
+    
+    public static void OpenSoftware(){
+        
+        jFrameSoftware = new JFrameSoftware();
+        jFrameSoftware.setTitle("PPE 3 Creation Curriculum Vitae - CV Creator Software");
+        jFrameSoftware.setVisible(true);
         
     }
 }

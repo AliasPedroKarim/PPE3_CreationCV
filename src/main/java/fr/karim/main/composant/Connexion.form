@@ -61,6 +61,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Connexion"/>
       </Properties>
+      <Events>
+        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jButtonConnexionMouseClicked"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="jButtonSinscrire">
       <Properties>

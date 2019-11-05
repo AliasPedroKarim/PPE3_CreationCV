@@ -5,6 +5,8 @@
  */
 package fr.karim.main.auth;
 
+import javax.swing.JPasswordField;
+
 /**
  *
  * @author karim
@@ -19,6 +21,10 @@ public class PanelPassword extends javax.swing.JPanel {
     public PanelPassword() {
         initComponents();
         panelKeyboradPassword1.setPasswordField(jPasswordField1);
+    }
+
+    public JPasswordField getjPasswordField1() {
+        return jPasswordField1;
     }
     
     /**
@@ -38,6 +44,7 @@ public class PanelPassword extends javax.swing.JPanel {
         jPasswordField1.setBackground(new java.awt.Color(255, 255, 255));
         jPasswordField1.setFont(new java.awt.Font("Fira Code", 1, 18)); // NOI18N
         jPasswordField1.setForeground(new java.awt.Color(0, 0, 0));
+        jPasswordField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jPasswordField1.setBorder(null);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);

@@ -145,3 +145,4 @@ nbdist/
 **/client_secrets.facebook.json
 **/DaoSIO.java
 **/Constants.java
+**/test_files
