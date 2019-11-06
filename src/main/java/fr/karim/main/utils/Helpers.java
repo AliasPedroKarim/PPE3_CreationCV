@@ -5,6 +5,10 @@
  */
 package fr.karim.main.utils;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import fr.karim.connexion.DaoSIO;
 import java.awt.Color;
 import java.sql.ResultSet;
@@ -248,5 +252,32 @@ public class Helpers {
             return res != null ? true : false;
         }
         return false;
+    }
+
+    // Prettify JSON Utility
+    public static String crunchifyPrettyJSONUtility(String simpleJSON) {
+        JsonParser crunhifyParser = new JsonParser();
+        JsonObject json = crunhifyParser.parse(simpleJSON).getAsJsonObject();
+
+        Gson prettyGson = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyGson.toJson(json);
+
+        return prettyJson;
+    }
+
+    // Function to convert ArrayList<String> to String[]
+    public static String[] GetStringArray(List<String> arr) {
+
+        // declaration and initialise String Array
+        String str[] = new String[arr.size()];
+
+        // ArrayList to Array Conversion
+        for (int j = 0; j < arr.size(); j++) {
+
+            // Assign each value to String array
+            str[j] = arr.get(j);
+        }
+
+        return str;
     }
 }

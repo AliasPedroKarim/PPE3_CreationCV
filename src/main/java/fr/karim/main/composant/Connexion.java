@@ -40,7 +40,7 @@ public class Connexion extends javax.swing.JPanel {
         panneauChamp1.getChamp2().setCaretColor(Color.BLACK);
         panneauChamp1.getChamp2().setForeground(new Color(25, 28, 32));
         
-        panneauChamp1.getjLabelNomChamp().setText("Indentifiant ou Email");
+        panneauChamp1.getjLabelNomChamp().setText("Identifiant ou Email");
         panneauChamp1.getjLabelNomChamp().setForeground(new Color(25, 28, 32));
         
         panneauChamp1.getjSeparator1().setBackground(new Color(25, 28, 32));

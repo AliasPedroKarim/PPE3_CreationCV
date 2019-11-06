@@ -108,6 +108,16 @@
             <artifactId>acrobat</artifactId>
             <version>1.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>1.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>1.7</version>
+        </dependency>
     </dependencies>
     <properties>
         <project.http.version>1.32.1</project.http.version>

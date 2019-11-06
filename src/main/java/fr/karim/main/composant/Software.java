@@ -138,7 +138,6 @@ public class Software extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanelAccueil = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jPanelListCV = new javax.swing.JPanel();
@@ -147,12 +146,15 @@ public class Software extends javax.swing.JPanel {
         jButtonSupprimer = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jLabel2 = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
         creationDuCV1 = new com.karimandco.cv.CreationDuCV();
         importExportFile1 = new fr.karim.main.composant.ImportExportFile();
 
         jPanelAccueil.setBackground(new java.awt.Color(78, 39, 123));
 
         jLabel1.setFont(new java.awt.Font("Century Gothic", 0, 24)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Accueil");
 
         javax.swing.GroupLayout jPanelAccueilLayout = new javax.swing.GroupLayout(jPanelAccueil);
@@ -196,23 +198,36 @@ public class Software extends javax.swing.JPanel {
         jTable1.setModel(new DefaultTableModel());
         jScrollPane2.setViewportView(jTable1);
 
+        jLabel2.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
+        jLabel2.setText("Liste des Curriculum Vitae");
+
         javax.swing.GroupLayout jPanelListCVLayout = new javax.swing.GroupLayout(jPanelListCV);
         jPanelListCV.setLayout(jPanelListCVLayout);
         jPanelListCVLayout.setHorizontalGroup(
             jPanelListCVLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelListCVLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButtonSupprimer)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButtonModifier)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButtonAjouter)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1121, Short.MAX_VALUE)
+            .addGroup(jPanelListCVLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanelListCVLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelListCVLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButtonSupprimer)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonModifier)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonAjouter))
+                    .addComponent(jSeparator1)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
-            .addComponent(jScrollPane2)
         );
         jPanelListCVLayout.setVerticalGroup(
             jPanelListCVLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelListCVLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelListCVLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 451, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
                 .addGroup(jPanelListCVLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -232,7 +247,7 @@ public class Software extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(importExportFile1, javax.swing.GroupLayout.PREFERRED_SIZE, 1119, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(2, 2, 2))
             .addComponent(jPanelListCV, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanelAccueil, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
@@ -240,16 +255,12 @@ public class Software extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanelAccueil, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(10, 10, 10)
+                .addGap(0, 0, 0)
                 .addComponent(jPanelListCV, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(10, 10, 10)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTabbedPane1)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(creationDuCV1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(10, 10, 10)
-                        .addComponent(importExportFile1, javax.swing.GroupLayout.PREFERRED_SIZE, 632, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 0, 0)
+                .addComponent(creationDuCV1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(importExportFile1, javax.swing.GroupLayout.PREFERRED_SIZE, 632, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -259,7 +270,7 @@ public class Software extends javax.swing.JPanel {
         
         if(selectedRows != null && selectedRows.length > 0){
             creationDuCV1.setIdCV((Integer) listeCV.getValueAt(selectedRows[0], 0));
-            jTabbedPane1.setSelectedIndex(1);
+            this.handlePanel("panel_create_cv");
         }else{
             JOptionPane.showMessageDialog(this, "Veuillez selectionné un Curriculum Vitae dans la liste pour pouvoir le modifié.", "Attention ! Selection", JOptionPane.WARNING_MESSAGE);
         }
@@ -299,7 +310,7 @@ public class Software extends javax.swing.JPanel {
 
     private void jButtonAjouterMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonAjouterMouseClicked
         creationDuCV1.setIdCV(0);
-        jTabbedPane1.setSelectedIndex(1);
+        this.handlePanel("panel_create_cv");
         loadListCV();
     }//GEN-LAST:event_jButtonAjouterMouseClicked
 
@@ -311,10 +322,11 @@ public class Software extends javax.swing.JPanel {
     private javax.swing.JButton jButtonModifier;
     private javax.swing.JButton jButtonSupprimer;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanelAccueil;
     private javax.swing.JPanel jPanelListCV;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 }
