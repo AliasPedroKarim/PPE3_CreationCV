@@ -14,10 +14,7 @@ import java.awt.Color;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -47,17 +44,20 @@ public class Helpers {
      * @throws SQLException
      */
     public List<Map<String, Object>> resultSetToList(ResultSet res) throws SQLException {
-        ResultSetMetaData md = res.getMetaData();
-        int columns = md.getColumnCount();
-        List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
-        while (res.next()) {
-            Map<String, Object> row = new HashMap<String, Object>(columns);
-            for (int i = 1; i <= columns; ++i) {
-                row.put(md.getColumnName(i), res.getObject(i));
+        if(res != null){
+            ResultSetMetaData md = res.getMetaData();
+            int columns = md.getColumnCount();
+            List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
+            while (res.next()) {
+                Map<String, Object> row = new LinkedHashMap<String, Object>(columns);
+                for (int i = 1; i <= columns; ++i) {
+                    row.put(md.getColumnName(i), res.getObject(i));
+                }
+                rows.add(row);
             }
-            rows.add(row);
+            return rows;
         }
-        return rows;
+        return null;
     }
     
     public List<Map<String, Object>> getCV(Integer id_utilisateur) throws SQLException{
@@ -120,14 +120,14 @@ public class Helpers {
         return null;
     }
 
-    public List<Map<String, Object>> get(String[] table, String[] selected, HashMap<String,Object> ...args) throws SQLException{
+    public List<Map<String, Object>> get(String[] table, String[] selected, Map<String,Object> ...args) throws SQLException{
 
         selected = selected == null ? new String[]{ "*" } : selected;
         StringBuilder r = new StringBuilder();
         
         if(args != null && args.length > 0){
-            for(HashMap<String,Object> element : args){
-            	if (element instanceof HashMap){
+            for(Map<String,Object> element : args){
+            	if (element instanceof Map){
                         r
                         .append(" ")
                         .append(element.get("name"))
@@ -157,8 +157,8 @@ public class Helpers {
         return null;
     }
 
-    public HashMap<String,Object> whereElement(String a, Object b, String c){
-        HashMap<String, Object> map = new HashMap<String,Object>();
+    public Map<String,Object> whereElement(String a, Object b, String c){
+        Map<String, Object> map = new LinkedHashMap<>();
         map.put("name", a);
         map.put("value", b);
         map.put("predicat", c);
@@ -279,5 +279,13 @@ public class Helpers {
         }
 
         return str;
+    }
+
+    public static Object[] appendValue(Object[] obj, Object newObj) {
+
+        ArrayList<Object> temp = new ArrayList<Object>(Arrays.asList(obj));
+        temp.add(newObj);
+        return temp.toArray();
+
     }
 }

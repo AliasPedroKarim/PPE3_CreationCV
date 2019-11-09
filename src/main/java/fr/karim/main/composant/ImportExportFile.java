@@ -5,15 +5,10 @@
  */
 package fr.karim.main.composant;
 
-import com.opencsv.CSVReader;
-import com.opencsv.CSVWriter;
-import com.opencsv.exceptions.CsvValidationException;
 import fr.karim.main.utils.Helpers;
 import fr.karim.main.utils.Utilisateur;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -23,7 +18,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import java.io.File;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.xml.parsers.DocumentBuilder;
@@ -36,34 +30,16 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import fr.karim.main.utils.handlefile.ExportToCSV;
+import fr.karim.main.utils.handlefile.ExportImportToCSV;
+import fr.karim.main.utils.handlefile.ExportImportToJSON;
 import fr.karim.references.Message;
 import fr.karim.references.Reference;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-
-import javax.json.Json;
-import javax.json.stream.JsonGenerator;
-
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import fr.karim.connexion.DaoSIO;
-import java.io.BufferedReader;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -120,39 +96,37 @@ public class ImportExportFile extends javax.swing.JPanel {
         }
     }
 
-    public void loadDataInTable(List<Map<String, Object>> data) {
+    public void loadDataInTable(List<Object> data) {
 
         if (data != null && data.size() > 0) {
-            for (Map<String, Object> item : data) {
+            for (Object item : data) {
 
-                data_table.add(item);
+                if (item instanceof HashMap) {
+                    HashMap<String, Object> item_list = (HashMap<String, Object>) item;
+                    data_table.add(item_list);
 
-                StringBuilder result_formation = new StringBuilder();
-                StringBuilder result_experience_pro = new StringBuilder();
+                    StringBuilder builder = new StringBuilder();
+                    Object[] o = new Object[]{};
 
-                List<String[]> formations = (List<String[]>) item.get("formations");
-                for (String[] formation : formations) {
-                    result_formation.append("[ ").append(String.join(", ", formation)).append(" ]").append("\n");
+                    o = Helpers.appendValue(o, item_list.get("id_utilisateur"));
+                    o = Helpers.appendValue(o, item_list.get("titre"));
+                    o = Helpers.appendValue(o, item_list.get("description"));
+                    o = Helpers.appendValue(o, item_list.get("signature"));
+                    o = Helpers.appendValue(o, item_list.get("nom_maitrise"));
+                    o = Helpers.appendValue(o, item_list.get("maitrise"));
+
+                    for (String element : new String[]{"formation", "experience_pro"}) {
+                        List<String[]> element_coms = (List<String[]>) item_list.get(element);
+                        for (String[] element_com : element_coms) {
+                            builder.append("[ ").append(String.join(", ", element_com)).append(" ]").append("\r\n");
+                        }
+                        o = Helpers.appendValue(o, !builder.toString().equals("") ? builder.toString() : "vide");
+                    }
+
+                    listeExport.addRow(o);
                 }
-
-                List<String[]> experience_pros = (List<String[]>) item.get("experience_pro");
-                for (String[] experience_pro : experience_pros) {
-                    result_experience_pro.append("[ ").append(String.join(", ", experience_pro)).append(" ]").append("\n");
-                }
-                listeExport.addRow(new Object[]{
-                    item.get("id"),
-                    item.get("titre"),
-                    item.get("description"),
-                    item.get("signature"),
-                    item.get("nom_maitrise"),
-                    item.get("maitrise"),
-                    !result_formation.toString().equals("") ? result_formation.toString() : "vide",
-                    !result_experience_pro.toString().equals("") ? result_experience_pro.toString() : "vide"
-                });
-
             }
         }
-
     }
 
     /**
@@ -351,7 +325,7 @@ public class ImportExportFile extends javax.swing.JPanel {
             } else if (type.equals("Fichier CSV")) {
                 importCSV(chooser.getSelectedFile());
             } else if (type.equals("Fichier JSON")) {
-
+				importJSON(chooser.getSelectedFile());
             }
 
             // System.out.println(chooser.getSelectedFile().getAbsolutePath());
@@ -425,72 +399,71 @@ public class ImportExportFile extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_jButtonAddImportMouseClicked
 
-    public void exportToCSV(String AbsolutePath, List<Map<String, Object>> cv) {
+    public List<Object> buildData(List<Map<String, Object>> cv){
+        List<Object> finalData = new ArrayList<Object>();
+        finalData.add(String.valueOf(Utilisateur.getInstance().getId()));
+        finalData.add(Utilisateur.getIdentifiant());
+        finalData.add(Utilisateur.getInstance().getNom());
+        finalData.add(Utilisateur.getInstance().getPrenom());
+        finalData.add(Utilisateur.getInstance().getGenre());
+        finalData.add(Utilisateur.getInstance().getNumeroTelephone());
+        finalData.add(Utilisateur.getInstance().getCourriel());
+        finalData.add(Utilisateur.getInstance().getDateNaissance());
 
-        try {
+        if (cv != null && cv.size() > 0) {
+            for (Map<String, Object> item : cv) {
 
-            List<Object> d = new ArrayList<Object>(); // simul element dans cv
-            d.add("efsefse");
-            d.add("tonsefsefseo");
+                List<Object> cvArray = new ArrayList<Object>();
+                cvArray.add(String.valueOf(item.get("id")));
+                cvArray.add((String) item.get("titre"));
+                cvArray.add((String) item.get("description"));
+                cvArray.add((String) item.get("signature"));
+                cvArray.add((String) item.get("nom_maitrise"));
+                cvArray.add(String.valueOf(item.get("maitrise")));
 
-            List<Object> c = new ArrayList<Object>(); // simul element dans cv
-            c.add(d);
-            c.add(d);
-
-            List<Object> finalData = new ArrayList<Object>();
-            finalData.add(String.valueOf(Utilisateur.getInstance().getId()));
-            finalData.add(Utilisateur.getInstance().getNom());
-            finalData.add(Utilisateur.getInstance().getPrenom());
-            finalData.add(Utilisateur.getInstance().getGenre());
-            finalData.add(Utilisateur.getInstance().getNumeroTelephone());
-            finalData.add(Utilisateur.getInstance().getCourriel());
-            finalData.add(Utilisateur.getInstance().getDateNaissance());
-
-            if (cv != null && cv.size() > 0) {
-                for (Map<String, Object> item : cv) {
-
-                    List<Object> cvArray = new ArrayList<Object>();
-                    cvArray.add(String.valueOf(item.get("id")));
-                    cvArray.add((String) item.get("titre"));
-                    cvArray.add((String) item.get("description"));
-                    cvArray.add((String) item.get("signature"));
-                    cvArray.add((String) item.get("nom_maitrise"));
-                    cvArray.add(String.valueOf(item.get("maitrise")));
-
-                    for (String element : new String[]{"formation", "experience_pro"}) {
-                        List<Object> subItemsArray = new ArrayList<Object>();
-                        List<Map<String, Object>> subItems = Helpers.getIntance().get(new String[]{element}, null,
+                for (String element : new String[]{"formation", "experience_pro"}) {
+                    List<Object> subItemsArray = new ArrayList<Object>();
+                    List<Map<String, Object>> subItems = null;
+                    try {
+                        subItems = Helpers.getIntance().get(new String[]{element}, null,
                                 Helpers.getIntance().whereElement("id_cv", item.get("id"), ""));
-
-                        if (subItems != null && subItems.size() > 0) {
-
-                            for (Map<String, Object> subItem : subItems) {
-                                List<Object> subItemsElement = new ArrayList<Object>();
-
-                                for (Map.Entry<String, Object> entry : subItem.entrySet()) {
-                                    String type = entry.getValue().getClass().getSimpleName();
-                                    subItemsElement.add(
-		                                    type.equals("Integer")  ? String.valueOf(entry.getValue())
-				                                    : type.equals("Date")  ? Reference.simpleDateSlashes.format((Date) entry.getValue())
-				                                    : (String) entry.getValue()
-                                    );
-                                }
-
-                                subItemsArray.add(subItemsElement);
-                            }
-
-                        }
-                        cvArray.add(subItemsArray);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
                     }
-                    finalData.add(cvArray);
-                }
-            }
 
-            new ExportToCSV()
+                    if (subItems != null && subItems.size() > 0) {
+
+                        for (Map<String, Object> subItem : subItems) {
+                            List<Object> subItemsElement = new ArrayList<Object>();
+
+                            for (Map.Entry<String, Object> entry : subItem.entrySet()) {
+                                String type = entry.getValue().getClass().getSimpleName();
+                                subItemsElement.add(
+                                        type.equals("Integer") ? String.valueOf(entry.getValue())
+                                                : type.equals("Date") ? Reference.simpleDateSlashes.format((Date) entry.getValue())
+                                                : (String) entry.getValue()
+                                );
+                            }
+                            subItemsArray.add(subItemsElement);
+                        }
+                    }
+                    cvArray.add(subItemsArray);
+                }
+                finalData.add(cvArray);
+            }
+        }
+        return finalData;
+    }
+
+    public void exportToCSV(String AbsolutePath, List<Map<String, Object>> cv) {
+        try {
+            List<Object> builderData = this.buildData(cv);
+
+            new ExportImportToCSV()
                     .setPathFinding(AbsolutePath)
                     .loadFile()
-                    .analyseData(new String[]{"id_utilisateur", "identifiant", "nom", "prenom", "genre", "numero_telephone", "courriel", "date_de_naissance",
-                "id_cv", "titre", "description", "signature", "nom_maitrise", "maitrise", "formations", "experience_pro"}, finalData);
+                    .analyseFile(new String[]{"id_utilisateur", "identifiant", "nom", "prenom", "genre", "numero_telephone", "courriel", "date_de_naissance",
+                "id_cv", "titre", "description", "signature", "nom_maitrise", "maitrise", "formation", "experience_pro"}, builderData);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -707,6 +680,180 @@ public class ImportExportFile extends javax.swing.JPanel {
 
     public void exportToJSON(String AbsolutePath, List<Map<String, Object>> cv) {
 
+        Map<String,Object> indexes = new LinkedHashMap<String,Object>();
+
+        indexes.put("utilisateur", new String[]{ "id_utilisateur", "identifiant", "nom", "prenom", "genre", "numero_telephone", "courriel", "date_de_naissance" });
+        indexes.put("cv", new String[]{ "id", "titre", "description", "signature", "nom_maitrise", "maitrise" });
+        indexes.put("formation", new String[]{ "id", "nom", "lieu", "description", "annee_debut", "annee_fin", "id_cv" });
+        indexes.put("experience_pro", new String[]{ "id", "entreprise", "adresse", "description", "annee_debut", "annee_fin", "id_cv" });
+
+        List<Object> builderData = this.buildData(cv);
+
+        try {
+            new ExportImportToJSON()
+                    .setPathFinding(AbsolutePath)
+                    .loadFile()
+                    .analyseFile(indexes, builderData);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void importCSV(File selectedFile) {
+        List<Object> l = null;
+        try {
+            l = new ExportImportToCSV()
+                    .setPathFinding(selectedFile.getAbsolutePath())
+                    .loadFile()
+                    .setIdexes(new String[]{"id_utilisateur", "identifiant", "nom", "prenom", "genre", "numero_telephone", "courriel", "date_de_naissance",
+                "id_cv", "titre", "description", "signature", "nom_maitrise", "maitrise", "formations", "experience_pro"})
+                    .importFile().getData();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (l != null && l.size() > 0) {
+            loadDataInTable(l);
+        }
+
+    }
+
+	public void importJSON(File selectedFile) {
+		try {
+			new ExportImportToJSON()
+					.setPathFinding(selectedFile.getAbsolutePath())
+					.loadFile()
+					.importFile();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButtonAddImport;
+    private javax.swing.JButton jButtonExport;
+    private javax.swing.JButton jButtonImport;
+    private javax.swing.JComboBox<String> jComboBoxFileExport;
+    private javax.swing.JComboBox<String> jComboBoxListCV;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JSeparator jSeparator3;
+    private javax.swing.JTable jTableListExport;
+    // End of variables declaration//GEN-END:variables
+
+}
+
+/*
+
+
+
+        // first create file object for file placed at location
+        // specified by filepath
+        File file = new File(String.format(Reference.NAME_FILE_EXPORT, AbsolutePath, "csv"));
+        try {
+            // create FileWriter object with file as parameter
+            FileWriter outputfile = new FileWriter(file);
+
+            // create CSVWriter object filewriter object as parameter
+            CSVWriter writer = new CSVWriter(outputfile);
+
+            // adding header to csv
+            String[] header = {"id_utilisateur", "identifiant", "nom", "prenom", "genre", "numero_telephone", "courriel", "date_de_naissance",
+                 "id_cv", "titre", "description", "signature", "nom_maitrise", "maitrise", "formations", "experience_pro"};
+            writer.writeNext(header);
+
+            // add data to csv
+            ArrayList<String> list = new ArrayList<>();
+
+            if (Utilisateur.getInstance().getEstConnecte()) {
+                list.add(String.valueOf(Utilisateur.getInstance().getId()));
+                list.add(Utilisateur.getIdentifiant());
+                list.add(Utilisateur.getInstance().getNom());
+                list.add(Utilisateur.getInstance().getPrenom());
+                list.add(Utilisateur.getInstance().getGenre());
+                list.add(Utilisateur.getInstance().getNumeroTelephone());
+                list.add(Utilisateur.getInstance().getCourriel());
+                list.add(Utilisateur.getInstance().getDateNaissance());
+
+                if (cv != null && cv.size() > 0) {
+                    for (Map<String, Object> item : cv) {
+
+                        list.add(String.valueOf(item.get("id")));
+                        list.add((String) item.get("titre"));
+                        list.add((String) item.get("description"));
+                        list.add((String) item.get("signature"));
+                        list.add((String) item.get("nom_maitrise"));
+                        list.add(String.valueOf(item.get("maitrise")));
+
+                        try {
+                            List<Map<String, Object>> formations = Helpers.getIntance().get(new String[]{"formation"}, null,
+                                    Helpers.getIntance().whereElement("id_cv", item.get("id"), ""));
+
+                            if (formations != null && formations.size() > 0) {
+                                StringBuilder fBuilder = new StringBuilder();
+                                for (Map<String, Object> formation : formations) {
+                                    fBuilder.append(" [ ");
+                                    fBuilder.append(String.join(" | ", new String[]{
+                                        String.valueOf(formation.get("id")),
+                                        (String) formation.get("nom"),
+                                        (String) formation.get("lieu"),
+                                        (String) formation.get("description"),
+                                        simpleDate.format((Date) formation.get("annee_debut")),
+                                        simpleDate.format((Date) formation.get("annee_fin"))
+                                    }));
+                                    fBuilder.append(" ] ");
+                                }
+                                list.add(fBuilder.toString());
+                            } else {
+                                list.add("");
+                            }
+
+                            List<Map<String, Object>> experiencePros = Helpers.getIntance().get(new String[]{"experience_pro"}, null,
+                                    Helpers.getIntance().whereElement("id_cv", item.get("id"), ""));
+
+                            if (experiencePros != null && experiencePros.size() > 0) {
+                                StringBuilder fBuilder = new StringBuilder();
+                                for (Map<String, Object> experiencePro : experiencePros) {
+                                    fBuilder.append(" [ ");
+                                    fBuilder.append(String.join(" | ", new String[]{
+                                        String.valueOf(experiencePro.get("id")),
+                                        (String) experiencePro.get("entreprise"),
+                                        (String) experiencePro.get("adresse"),
+                                        (String) experiencePro.get("description"),
+                                        simpleDate.format((Date) experiencePro.get("annee_debut")),
+                                        simpleDate.format((Date) experiencePro.get("annee_fin"))
+                                    }));
+                                    fBuilder.append(" ] ");
+                                }
+                                list.add(fBuilder.toString());
+                            } else {
+                                list.add("");
+                            }
+
+                        } catch (SQLException ex) {
+                            Logger.getLogger(ImportExportFile.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+
+                        writer.writeNext(Helpers.GetStringArray(list));
+
+                        JOptionPane.showMessageDialog(this, Message.SUCCESS_EXPORT, "Exportation complete", JOptionPane.INFORMATION_MESSAGE);
+
+                    }
+                }
+            }
+
+            // closing writer connection
+            writer.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
         FileWriter writer = null;
         JSONParser parser = new JSONParser();
         Object simpleObj = null;
@@ -838,180 +985,4 @@ public class ImportExportFile extends javax.swing.JPanel {
                 e.printStackTrace();
             }
         }
-
-    }
-
-    public void importCSV(File selectedFile) {
-
-        
-        
-        List<Map<String, Object>> l = new ArrayList<Map<String, Object>>();
-        try (CSVReader csvReader = new CSVReader(new FileReader(selectedFile));) {
-            String[] values = null;
-            int i = 0;
-            String[] indexes = null;
-
-            while ((values = csvReader.readNext()) != null) {
-                if (i == 0) {
-                    indexes = values;
-                } else {
-                    if (indexes != null) {
-                        Map<String, Object> m = new HashMap<String, Object>();
-                        int j = 0;
-                        for (String index : indexes) {
-                            // Pattern test = Pattern.compile("(\\[(.*)\\])", Pattern.DOTALL);
-                            List<String[]> l_matcher = new ArrayList<String[]>();
-                            Pattern pattern = Pattern.compile("\\[(.*?)\\]", Pattern.MULTILINE);
-                            Matcher matcher = pattern.matcher(values[j]);
-                            while (matcher.find()) {
-                                l_matcher.add(matcher.group(1).split("\\|"));
-                            }
-                            if (matcher.find(0)) {
-                                m.put(index, l_matcher);
-                            } else {
-                                m.put(index, values[j]);
-                            }
-                            j++;
-                        }
-                        l.add(m);
-                    }
-                }
-                i++;
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException | CsvValidationException e) {
-            e.printStackTrace();
-        }
-
-        if (l != null && l.size() > 0) {
-            loadDataInTable(l);
-        }
-
-    }
-
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButtonAddImport;
-    private javax.swing.JButton jButtonExport;
-    private javax.swing.JButton jButtonImport;
-    private javax.swing.JComboBox<String> jComboBoxFileExport;
-    private javax.swing.JComboBox<String> jComboBoxListCV;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JSeparator jSeparator2;
-    private javax.swing.JSeparator jSeparator3;
-    private javax.swing.JTable jTableListExport;
-    // End of variables declaration//GEN-END:variables
-
-}
-
-/*
-
-
-
-        // first create file object for file placed at location
-        // specified by filepath
-        File file = new File(String.format(Reference.NAME_FILE_EXPORT, AbsolutePath, "csv"));
-        try {
-            // create FileWriter object with file as parameter
-            FileWriter outputfile = new FileWriter(file);
-
-            // create CSVWriter object filewriter object as parameter
-            CSVWriter writer = new CSVWriter(outputfile);
-
-            // adding header to csv
-            String[] header = {"id_utilisateur", "identifiant", "nom", "prenom", "genre", "numero_telephone", "courriel", "date_de_naissance",
-                 "id_cv", "titre", "description", "signature", "nom_maitrise", "maitrise", "formations", "experience_pro"};
-            writer.writeNext(header);
-
-            // add data to csv
-            ArrayList<String> list = new ArrayList<>();
-
-            if (Utilisateur.getInstance().getEstConnecte()) {
-                list.add(String.valueOf(Utilisateur.getInstance().getId()));
-                list.add(Utilisateur.getIdentifiant());
-                list.add(Utilisateur.getInstance().getNom());
-                list.add(Utilisateur.getInstance().getPrenom());
-                list.add(Utilisateur.getInstance().getGenre());
-                list.add(Utilisateur.getInstance().getNumeroTelephone());
-                list.add(Utilisateur.getInstance().getCourriel());
-                list.add(Utilisateur.getInstance().getDateNaissance());
-
-                if (cv != null && cv.size() > 0) {
-                    for (Map<String, Object> item : cv) {
-
-                        list.add(String.valueOf(item.get("id")));
-                        list.add((String) item.get("titre"));
-                        list.add((String) item.get("description"));
-                        list.add((String) item.get("signature"));
-                        list.add((String) item.get("nom_maitrise"));
-                        list.add(String.valueOf(item.get("maitrise")));
-
-                        try {
-                            List<Map<String, Object>> formations = Helpers.getIntance().get(new String[]{"formation"}, null,
-                                    Helpers.getIntance().whereElement("id_cv", item.get("id"), ""));
-
-                            if (formations != null && formations.size() > 0) {
-                                StringBuilder fBuilder = new StringBuilder();
-                                for (Map<String, Object> formation : formations) {
-                                    fBuilder.append(" [ ");
-                                    fBuilder.append(String.join(" | ", new String[]{
-                                        String.valueOf(formation.get("id")),
-                                        (String) formation.get("nom"),
-                                        (String) formation.get("lieu"),
-                                        (String) formation.get("description"),
-                                        simpleDate.format((Date) formation.get("annee_debut")),
-                                        simpleDate.format((Date) formation.get("annee_fin"))
-                                    }));
-                                    fBuilder.append(" ] ");
-                                }
-                                list.add(fBuilder.toString());
-                            } else {
-                                list.add("");
-                            }
-
-                            List<Map<String, Object>> experiencePros = Helpers.getIntance().get(new String[]{"experience_pro"}, null,
-                                    Helpers.getIntance().whereElement("id_cv", item.get("id"), ""));
-
-                            if (experiencePros != null && experiencePros.size() > 0) {
-                                StringBuilder fBuilder = new StringBuilder();
-                                for (Map<String, Object> experiencePro : experiencePros) {
-                                    fBuilder.append(" [ ");
-                                    fBuilder.append(String.join(" | ", new String[]{
-                                        String.valueOf(experiencePro.get("id")),
-                                        (String) experiencePro.get("entreprise"),
-                                        (String) experiencePro.get("adresse"),
-                                        (String) experiencePro.get("description"),
-                                        simpleDate.format((Date) experiencePro.get("annee_debut")),
-                                        simpleDate.format((Date) experiencePro.get("annee_fin"))
-                                    }));
-                                    fBuilder.append(" ] ");
-                                }
-                                list.add(fBuilder.toString());
-                            } else {
-                                list.add("");
-                            }
-
-                        } catch (SQLException ex) {
-                            Logger.getLogger(ImportExportFile.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-
-                        writer.writeNext(Helpers.GetStringArray(list));
-
-                        JOptionPane.showMessageDialog(this, Message.SUCCESS_EXPORT, "Exportation complete", JOptionPane.INFORMATION_MESSAGE);
-
-                    }
-                }
-            }
-
-            // closing writer connection
-            writer.close();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-*/
+ */

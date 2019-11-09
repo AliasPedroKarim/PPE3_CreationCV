@@ -1,42 +1,54 @@
 package fr.karim.main.utils.handlefile;
 
-import com.opencsv.CSVWriter;
+import com.sun.org.apache.xerces.internal.xs.datatypes.ObjectList;
 import fr.karim.main.utils.Helpers;
 import fr.karim.references.Message;
 import fr.karim.references.Reference;
-import org.apache.commons.csv.QuoteMode;
+import org.apache.commons.csv.*;
 
 import javax.swing.*;
 import java.io.*;
+import java.net.URI;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class ExportToCSV implements Export {
+public class ExportImportToCSV extends ExportImport {
 
-    private String pathFinding = null;
-    private File file = null;
+    private Path file = null;
     private String[] idexes = null;
     private List<Object> values = null;
 
-    public ExportToCSV() {
+    public ExportImportToCSV() {
 
     }
 
-    public String getPathFinding() {
-        return pathFinding;
-    }
+	public List<Object> getDataFile() {
+		return dataFile;
+	}
 
-    public ExportToCSV setPathFinding(String pathFinding) {
-        this.pathFinding = String.format(Reference.NAME_FILE_EXPORT, pathFinding, "csv");
-        return this;
-    }
+	public ExportImportToCSV setDataFile(List<Object> dataFile) {
+		this.dataFile = dataFile;
+		return this;
+	}
 
-    public File getFile() {
+	public String getPathFinding() {
+		return pathFinding;
+	}
+
+	public ExportImportToCSV setPathFinding(String pathFinding) {
+		this.pathFinding = pathFinding;
+		return this;
+	}
+
+    public Path getFile() {
         return file;
     }
 
-    public ExportToCSV setFile(File file) {
+    public ExportImportToCSV setFile(Path file) {
         this.file = file;
         return this;
     }
@@ -45,7 +57,7 @@ public class ExportToCSV implements Export {
         return idexes;
     }
 
-    public ExportToCSV setIdexes(String[] idexes) {
+    public ExportImportToCSV setIdexes(String[] idexes) {
         this.idexes = idexes;
         return this;
     }
@@ -54,7 +66,7 @@ public class ExportToCSV implements Export {
         return values;
     }
 
-    public ExportToCSV setValues(List<Object> values) {
+    public ExportImportToCSV setValues(List<Object> values) {
         this.values = values;
         return this;
     }
@@ -65,78 +77,64 @@ public class ExportToCSV implements Export {
             for (Object value : values) {
             }
         }
-
         return list;
-
     }
 
-    public ExportToCSV loadFile() throws Exception {
+	@Override
+    public ExportImportToCSV loadFile() throws Exception {
         if (this.pathFinding != null) {
             return this.loadFile(this.pathFinding);
         }
         throw new Exception(Message.EXECEPTION_ERROR_PATH);
     }
 
-    @Override
-    public ExportToCSV loadFile(String pathFinding) {
-        this.file = new File(pathFinding.endsWith("csv") ? pathFinding : String.format(Reference.NAME_FILE_EXPORT, pathFinding, "csv"));
+    public ExportImportToCSV loadFile(URI uri) {
+        this.loadFile(uri.getPath());
         return this;
     }
 
-    /*
-	format array :
+    public ExportImportToCSV loadFile(File file) {
+        this.loadFile(file.getAbsolutePath());
+        return this;
+    }
 
-	<array> [
-		item,
-		item,
-		<array> [
-			item,
-			item,
-			<array> [
-				<array> [ ],
-				<array> [ ]
-			],
-			<array> [
-				<array> [ ],
-				<array> [ ],
-				<array> [ ],
-			]
-		],
-		<array> [
-			...
-		]
-	]
-     */
-    public ExportToCSV analyseData() throws Exception {
-        if (this.idexes != null && this.values != null) {
-            return this.analyseData(this.idexes, this.values);
+    public ExportImportToCSV loadFile(String pathFinding) {
+        this.file = Paths.get(pathFinding.endsWith("csv") ? pathFinding : String.format(Reference.NAME_FILE_EXPORT, pathFinding, "csv"));
+        return this;
+    }
+
+	@Override
+	public ExportImportToCSV analyseFile() throws Exception {
+        if (this.getIdexes() != null && this.getValues() != null) {
+            return this.analyseFile(this.getIdexes(), this.getValues());
         }
-        throw new Exception("Attention ! Soit les [indexes] ou les [values] n'ont pas été définit.");
+        throw new Exception("Attention ! On dirait que les [indexes] ou les [values] n'ont pas été définit.");
     }
 
-    public ExportToCSV analyseData(String[] idexes) throws Exception {
+    public ExportImportToCSV analyseFile(String[] idexes) throws Exception {
         this.setIdexes(idexes);
-        return this.analyseData();
+        return this.analyseFile();
     }
 
-    public ExportToCSV analyseData(List<Object> values) throws Exception {
+    public ExportImportToCSV analyseFile(List<Object> values) throws Exception {
         this.setValues(values);
-        return this.analyseData();
+        return this.analyseFile();
     }
 
-    @Override
-    public ExportToCSV analyseData(String[] indexes, List<Object> values) {
+    public ExportImportToCSV analyseFile(String[] indexes, List<Object> values) {
         this.setIdexes(indexes);
         this.setValues(values);
 
-        if (this.file != null) {
+        if (this.getFile() != null) {
             try {
-                if (this.idexes != null) {
+                if (this.getIdexes() != null) {
 
-                    BufferedWriter writer = Files.newBufferedWriter(Paths.get(this.getPathFinding()));
+                    BufferedWriter writer = Files.newBufferedWriter(this.getFile());
 
-                    org.apache.commons.csv.CSVPrinter csvPrinter = new org.apache.commons.csv.CSVPrinter(writer, org.apache.commons.csv.CSVFormat.RFC4180
-                            .withHeader(this.idexes).withQuoteMode(QuoteMode.ALL));
+                    CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.RFC4180
+                            .withHeader(this.getIdexes())
+                            .withQuoteMode(QuoteMode.ALL)
+                    );
 
                     List<String> first_list = new ArrayList<String>();
                     List<Object> items_list = new ArrayList<Object>();
@@ -152,8 +150,7 @@ public class ExportToCSV implements Export {
 
                     if (items_list != null && items_list.size() > 0) {
                         for (Object i : items_list) {
-                            List<String> list = new ArrayList<String>();
-                            list.retainAll(first_list);
+							List<String> list = new ArrayList<String>(first_list);
 
                             List<Object> items = (ArrayList<Object>) i;
 
@@ -207,13 +204,57 @@ public class ExportToCSV implements Export {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            this.analyseData(indexes, values);
+            this.analyseFile(indexes, values);
         }
         return this;
     }
 
     @Override
-    public ExportToCSV getData() {
+    public ExportImportToCSV importFile() {
+        this.importFile(this.getIdexes());
         return this;
+    }
+
+    public List<Object> importFile(String[] indexes){
+        if (this.getFile() != null && indexes != null){
+            List<Object> l = new ArrayList<Object>();
+            try (
+                    Reader reader = Files.newBufferedReader(this.getFile());
+                    CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT
+                            .withFirstRecordAsHeader()
+                            .withHeader(this.getIdexes())
+                            .withIgnoreHeaderCase()
+                            .withTrim());
+            ) {
+                for (CSVRecord csvRecord : csvParser) {
+                    Map<String,Object> ocurrences = new HashMap<String, Object>();
+                    for (String element : this.getIdexes()) {
+                        List<String[]> l_matcher = new ArrayList<String[]>();
+                        Pattern pattern = Pattern.compile("\\[(.*?)\\]", Pattern.MULTILINE);
+                        Matcher matcher = pattern.matcher(csvRecord.get(element));
+                        while (matcher.find()) {
+                            l_matcher.add(matcher.group(1).split("\\|"));
+                        }
+                        if (matcher.find(0)){
+                            ocurrences.put(element, l_matcher);
+                        }else{
+                            ocurrences.put(element, csvRecord.get(element));
+                        }
+                    }
+                    l.add(ocurrences);
+                    this.setDataFile(l);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return l;
+        }
+        return null;
+    }
+
+    @Override
+    public List<Object> getData() {
+        return this.getDataFile();
     }
 }

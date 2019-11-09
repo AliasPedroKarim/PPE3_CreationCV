@@ -11,6 +11,8 @@ import fr.karim.connexion.DaoSIO;
 import fr.karim.main.auth.PanelPassword;
 import fr.karim.main.utils.Helpers;
 import fr.karim.main.utils.Utilisateur;
+import fr.karim.references.Message;
+import fr.karim.references.Reference;
 import java.awt.Color;
 import java.sql.SQLException;
 import java.util.List;
@@ -137,12 +139,16 @@ public class Connexion extends javax.swing.JPanel {
                 try {
                     res = Helpers.getIntance().resultSetToList(DaoSIO.getInstance().requeteSelection("SELECT * FROM utilisateurs WHERE ( identifiant = '" + identifiable + "' OR courriel = '" + identifiable + "' ) AND mot_de_passe='" + pass + "'"));
                     
-                    if(res.size() > 0){
+                    if(Reference.ETAT_DB){
+                        if(res != null && res.size() > 0){
                         
-                        Utilisateur.getInstance().setEstConnecte(Utilisateur.getInstance().loadDataUser(res.get(0)));
-                        
+                            Utilisateur.getInstance().setEstConnecte(Utilisateur.getInstance().loadDataUser(res.get(0)));
+
+                        }else{
+                            JOptionPane.showMessageDialog(this, "Identifiant/Email ou Mot de passe incorrect.", "Echec de la connexion", JOptionPane.WARNING_MESSAGE);
+                        }
                     }else{
-                        JOptionPane.showMessageDialog(this, "Identifiant/Email ou Mot de passe incorrect.", "Echec de la connexion", JOptionPane.WARNING_MESSAGE);
+                        JOptionPane.showMessageDialog(this, Message.ERROR_ETAT_DB_AUTH, Message.TITLE_ERROR_ETAT_DB_AUTH, JOptionPane.ERROR_MESSAGE);
                     }
                 
                 } catch (SQLException ex) {
