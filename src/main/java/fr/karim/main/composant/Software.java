@@ -6,7 +6,7 @@
 package fr.karim.main.composant;
 
 import fr.karim.main.utils.Helpers;
-import fr.karim.main.utils.Utilisateur;
+import fr.karim.main.utils.user.Utilisateur;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.sql.SQLException;

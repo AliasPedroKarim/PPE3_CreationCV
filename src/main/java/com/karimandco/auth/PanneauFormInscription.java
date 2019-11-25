@@ -6,14 +6,27 @@
 package com.karimandco.auth;
 
 import com.karimandco.auth.bdd.DaoSIO;
+import fr.karim.main.composant.JPanelComplementaire;
 import fr.karim.main.utils.Helpers;
+import fr.karim.main.utils.user.Adresse;
+import fr.karim.references.Reference;
 import java.awt.Color;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.event.DocumentEvent;
+import fr.karim.main.utils.user.Utilisateur;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  *
@@ -33,13 +46,30 @@ public class PanneauFormInscription extends javax.swing.JPanel {
     private Boolean mdpConfOK = false;
 
     private Boolean inscriptionOK = false;
+    
+    private Boolean inscrit = false;
+    
+    private Adresse adresse = new Adresse();
+    private Boolean n_rueOK = true;
+    
+    private Boolean createNewUser = false;
 
     /**
      * Ce constructeur permet d'initialiser le nom des labels et de générer les
      * KeyListener pour capturer les actions.
      */
+    
     public PanneauFormInscription() {
+        this(false);
+    }
+    
+    public PanneauFormInscription(Boolean createNewUser) {
         initComponents();
+        
+        this.setCreateNewUser(createNewUser);
+        
+        // Custom 
+        jComboBoxGenre.setModel(new javax.swing.DefaultComboBoxModel<>(Reference.GENRE_USER));
 
         panneauNom.setjLabelNomChamp("Nom");
         panneauPrenom.setjLabelNomChamp("Prénom");
@@ -61,11 +91,34 @@ public class PanneauFormInscription extends javax.swing.JPanel {
         KeyListener(panneauMdp);
         KeyListener(panneauMdpConfirmation);
         
-        jPanel1.setBackground(new Color(25, 28, 32));
+        jPanel1.setBackground(Reference.MAIN_DARK);
         
-        jPanel2.setBackground(new Color(25, 28, 32));
+        jPanel2.setBackground(Reference.MAIN_DARK);
+        
+        init();
     }
 
+    public void init(){
+        
+        if(Utilisateur.getInstance().getEstConnecte() && !this.getCreateNewUser()){
+            jButtonInscription.setText("Mettre à jour");
+
+            panneauNom.getChamp2().setText(Utilisateur.getInstance().getNom());
+            panneauPrenom.getChamp2().setText(Utilisateur.getInstance().getPrenom());
+            panneauIdentifiant.getChamp2().setText(Utilisateur.getIdentifiant());
+            panneauCourriel.getChamp2().setText(Utilisateur.getInstance().getCourriel());
+            panneauNumeroTelephone.getChamp2().setText(Utilisateur.getInstance().getNumeroTelephone());
+            panneauDateNaissance.getChamp2().setText(Utilisateur.getInstance().getDateNaissance());
+            
+            jComboBoxGenre.setSelectedIndex(
+                    Utilisateur.getInstance().getGenre().equals("Femme") ? 0 : 
+                    Utilisateur.getInstance().getGenre().equals("Homme") ? 1 : 2);
+            
+            choisirImage1.getShowImage1().readPicture(Utilisateur.getInstance().getId());
+        }
+        
+    }
+    
     public void setPanneauCourriel(PanneauChamp panneauCourriel) {
         this.panneauCourriel = panneauCourriel;
     }
@@ -174,8 +227,8 @@ public class PanneauFormInscription extends javax.swing.JPanel {
         return mdpConfOK;
     }
 
-    public JButton getjButton1() {
-        return jButton1;
+    public JButton getjButtonInscription() {
+        return jButtonInscription;
     }
 
     public void setFenParentInscription(javax.swing.JDialog i) {
@@ -188,6 +241,14 @@ public class PanneauFormInscription extends javax.swing.JPanel {
 
     public void setInscriptionOK(Boolean inscriptionOK) {
         this.inscriptionOK = inscriptionOK;
+    }
+
+    public Boolean getN_rueOK() {
+        return n_rueOK;
+    }
+
+    public void setN_rueOK(Boolean n_rueOK) {
+        this.n_rueOK = n_rueOK;
     }
 
     public PanneauChamp getPanneauCourriel() {
@@ -206,6 +267,22 @@ public class PanneauFormInscription extends javax.swing.JPanel {
         return panneauPrenom;
     }
 
+    public JComboBox<String> getjComboBoxGenre() {
+        return jComboBoxGenre;
+    }
+
+    public void setjComboBoxGenre(JComboBox<String> jComboBoxGenre) {
+        this.jComboBoxGenre = jComboBoxGenre;
+    }
+
+    public Boolean getCreateNewUser() {
+        return createNewUser;
+    }
+
+    public void setCreateNewUser(Boolean createNewUser) {
+        this.createNewUser = createNewUser;
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -215,32 +292,58 @@ public class PanneauFormInscription extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButton1 = new javax.swing.JButton();
+        jButtonInscription = new javax.swing.JButton();
         jLabelEtatInscription = new javax.swing.JLabel();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         panneauIdentifiant = new com.karimandco.auth.PanneauChamp();
         panneauCourriel = new com.karimandco.auth.PanneauChamp();
         panneauNumeroTelephone = new com.karimandco.auth.PanneauChamp();
         panneauDateNaissance = new com.karimandco.auth.PanneauChamp();
-        jLabel1 = new javax.swing.JLabel();
         panneauNom = new com.karimandco.auth.PanneauChamp();
         panneauPrenom = new com.karimandco.auth.PanneauChamp();
+        jComboBoxGenre = new javax.swing.JComboBox<>();
+        jLabel1 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         panneauMdp = new com.karimandco.auth.PanneauChampSecret();
         panneauMdpConfirmation = new com.karimandco.auth.PanneauChampSecret();
         panelKeyboradPassword1 = new fr.karim.main.utils.PanelKeyboradPassword();
+        choisirImage1 = new com.karimandco.image.ChoisirImage();
+        complementaire1 = new fr.karim.main.composant.JPanelComplementaire();
+        jPanel3 = new javax.swing.JPanel();
+        jTextFieldNumRue = new javax.swing.JTextField();
+        jPanel4 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabelNumRue = new javax.swing.JLabel();
+        jTextFieldNomRue = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jTextFieldVille = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        jTextFieldPays = new javax.swing.JTextField();
+        jTextFieldCP = new javax.swing.JTextField();
+        jSeparator1 = new javax.swing.JSeparator();
+        jSeparator2 = new javax.swing.JSeparator();
+        jSeparator3 = new javax.swing.JSeparator();
+        jSeparator4 = new javax.swing.JSeparator();
+        jSeparator5 = new javax.swing.JSeparator();
 
-        jButton1.setText("S'inscrire");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jButtonInscription.setText("S'inscrire");
+        jButtonInscription.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                jButtonInscriptionActionPerformed(evt);
             }
         });
 
         jLabelEtatInscription.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
+        jComboBoxGenre.setModel(new javax.swing.DefaultComboBoxModel<>());
+
+        jLabel1.setFont(new java.awt.Font("Century Gothic", 1, 13)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Inscription");
+        jLabel1.setText("Genre");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -249,130 +352,436 @@ public class PanneauFormInscription extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.CENTER, jPanel1Layout.createSequentialGroup()
-                        .addComponent(panneauNom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
-                        .addComponent(panneauPrenom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.CENTER, jPanel1Layout.createSequentialGroup()
-                        .addComponent(panneauNumeroTelephone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(panneauDateNaissance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.CENTER, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                                .addComponent(panneauCourriel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(panneauIdentifiant, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 458, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                    .addComponent(panneauNom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(panneauCourriel, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(panneauIdentifiant, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(panneauNumeroTelephone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(50, 50, 50)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(panneauPrenom, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jComboBoxGenre, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(panneauDateNaissance, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
-                .addGap(10, 10, 10)
                 .addComponent(panneauIdentifiant, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(panneauNom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(panneauPrenom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(panneauCourriel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panneauNumeroTelephone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(panneauDateNaissance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                    .addComponent(panneauCourriel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jComboBoxGenre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(panneauDateNaissance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(panneauNumeroTelephone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
+
+        jTabbedPane1.addTab("Général", jPanel1);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(29, 29, 29)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(panelKeyboradPassword1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(panneauMdp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(panneauMdpConfirmation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(panelKeyboradPassword1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                        .addComponent(panneauMdpConfirmation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(32, 32, 32))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(16, 16, 16)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(panneauMdpConfirmation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(panneauMdp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(22, 22, 22)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(panelKeyboradPassword1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(117, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Mot de passe", jPanel2);
+        jTabbedPane1.addTab("Image/Avatar", choisirImage1);
+        jTabbedPane1.addTab("Conplémentaires", complementaire1);
+
+        jPanel3.setBackground(Reference.MAIN_DARK);
+
+        jTextFieldNumRue.setBackground(Reference.MAIN_DARK);
+        jTextFieldNumRue.setForeground(new java.awt.Color(255, 255, 255));
+        jTextFieldNumRue.setBorder(null);
+        jTextFieldNumRue.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                jTextFieldNumRueFocusLost(evt);
+            }
+        });
+        jTextFieldNumRue.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTextFieldNumRueKeyReleased(evt);
+            }
+        });
+
+        jPanel4.setBackground(new java.awt.Color(78, 39, 123));
+
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel2.setText("Votre adresse");
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2)
+                .addContainerGap(383, Short.MAX_VALUE))
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        jLabelNumRue.setForeground(new java.awt.Color(255, 255, 255));
+        jLabelNumRue.setText("N° Rue");
+
+        jTextFieldNomRue.setBackground(Reference.MAIN_DARK);
+        jTextFieldNomRue.setForeground(new java.awt.Color(255, 255, 255));
+        jTextFieldNomRue.setBorder(null);
+
+        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel4.setText("Nom Rue");
+
+        jLabel5.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel5.setText("Code Postale");
+
+        jLabel6.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel6.setText("Ville");
+
+        jTextFieldVille.setBackground(Reference.MAIN_DARK);
+        jTextFieldVille.setForeground(new java.awt.Color(255, 255, 255));
+        jTextFieldVille.setBorder(null);
+
+        jLabel7.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel7.setText("Pays");
+
+        jTextFieldPays.setBackground(Reference.MAIN_DARK);
+        jTextFieldPays.setForeground(new java.awt.Color(255, 255, 255));
+        jTextFieldPays.setBorder(null);
+        jTextFieldPays.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                jTextFieldPaysFocusLost(evt);
+            }
+        });
+
+        jTextFieldCP.setBackground(Reference.MAIN_DARK);
+        jTextFieldCP.setForeground(new java.awt.Color(255, 255, 255));
+        jTextFieldCP.setBorder(null);
+        jTextFieldCP.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                jTextFieldCPFocusLost(evt);
+            }
+        });
+
+        jSeparator1.setForeground(new java.awt.Color(255, 255, 255));
+
+        jSeparator2.setForeground(new java.awt.Color(255, 255, 255));
+
+        jSeparator3.setForeground(new java.awt.Color(255, 255, 255));
+
+        jSeparator4.setForeground(new java.awt.Color(255, 255, 255));
+
+        jSeparator5.setForeground(new java.awt.Color(255, 255, 255));
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabelNumRue)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jSeparator3, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jTextFieldCP, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jTextFieldNumRue)))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jTextFieldNomRue)
+                    .addComponent(jSeparator2)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jSeparator4, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel7)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(jTextFieldPays, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jTextFieldVille, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
+                            .addComponent(jLabel6)
+                            .addComponent(jSeparator5))))
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelNumRue)
+                    .addComponent(jLabel4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTextFieldNumRue, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextFieldNomRue, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, 0)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextFieldCP, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel7)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextFieldPays, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel6)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextFieldVille, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, 0)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jSeparator4, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jSeparator5, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(373, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Adresse", jPanel3);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabelEtatInscription, javax.swing.GroupLayout.PREFERRED_SIZE, 696, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                        .addComponent(jLabelEtatInscription, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonInscription, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 483, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, 0))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(10, 10, 10)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonInscription, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabelEtatInscription, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (nomOK && prenomOK && identifiantOK && courrielOK && numeroTelephoneOK && dateNaissanceOK && mdpOK && mdpConfOK) {
+    private void jButtonInscriptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInscriptionActionPerformed
+        if (nomOK && prenomOK && identifiantOK && courrielOK && numeroTelephoneOK && dateNaissanceOK && mdpOK && mdpConfOK && n_rueOK) {
             String[] date_split = this.panneauDateNaissance.getChamp2().getText().split("/");
             String date_newFormat = date_split[2] + "-" + date_split[1] + "-" + date_split[0];
 
             String mdp_sha256 = Cryptage.sha256(Cryptage.sha256(String.valueOf(this.panneauMdp.getChampSecret1().getPassword())));
 
-            if (DaoSIO.getInstance().requeteAction("INSERT INTO utilisateurs (nom, prenom, identifiant, courriel, num_telephone, date_de_naissance, mot_de_passe, photo) VALUES ('" + this.panneauNom.getChamp2().getText() + "', '" + this.panneauPrenom.getChamp2().getText() + "', '" + this.panneauIdentifiant.getChamp2().getText() + "', '" + this.panneauCourriel.getChamp2().getText() + "', '" + this.panneauNumeroTelephone.getChamp2().getText() + "', '" + date_newFormat + "', '" + mdp_sha256 + "', '')") > 0) {
-                jLabelEtatInscription.setForeground(Color.blue);
-                jLabelEtatInscription.setText("Inscription réussi");
-                this.setInscriptionOK(true);
+            Integer request = null;
+            
+            if(Utilisateur.getInstance().getEstConnecte() && !this.getCreateNewUser()){
+                request = DaoSIO.getInstance().requeteAction("UPDATE utilisateurs "
+                    + "SET "
+                        + "nom = '" + this.panneauNom.getChamp2().getText() + "', "
+                        + "prenom = '" + this.panneauPrenom.getChamp2().getText() + "', "
+                        + "genre = '" + (String) this.getjComboBoxGenre().getSelectedItem() + "', "
+                        + "identifiant = '" + this.panneauIdentifiant.getChamp2().getText() + "', "
+                        + "courriel = '" + this.panneauCourriel.getChamp2().getText() + "', "
+                        + "num_telephone = '" + this.panneauNumeroTelephone.getChamp2().getText() + "', "
+                        + "date_de_naissance = '" + date_newFormat + "', "
+                        + "mot_de_passe = '" + mdp_sha256 + "', "
+                        + "modified_at = '" + Reference.simpleDateDashes3.format(new Date()) + "' "
+                    + "WHERE "
+                        + "id = " + Utilisateur.getInstance().getId());
+            }else{
+                request = DaoSIO.getInstance().requeteAction("INSERT "
+                    + "INTO utilisateurs (nom, prenom, genre, identifiant, courriel, num_telephone, date_de_naissance, mot_de_passe, created_at, modified_at) "
+                    + "VALUES ('" + this.panneauNom.getChamp2().getText() + "', '" 
+                    + this.panneauPrenom.getChamp2().getText() + "', '" 
+                    + (String) this.getjComboBoxGenre().getSelectedItem() + "', '" 
+                    + this.panneauIdentifiant.getChamp2().getText() + "', '" 
+                    + this.panneauCourriel.getChamp2().getText() + "', '" 
+                    + this.panneauNumeroTelephone.getChamp2().getText() + "', '" 
+                    + date_newFormat + "', '" 
+                    + mdp_sha256 + "', '" 
+                    + Reference.simpleDateDashes3.format(new Date()) + "', '" 
+                    + Reference.simpleDateDashes3.format(new Date()) + "' )");
+            }
+            
+            if (request > 0) {
+                
+                try {
+                    Integer idUtilisateur = null;
+                    
+                    if(Utilisateur.getInstance().getEstConnecte() && !this.getCreateNewUser()){
+                        idUtilisateur = Utilisateur.getInstance().getId();
+                    }else{
+                        idUtilisateur = fr.karim.connexion.DaoSIO.getInstance().getLastID("utilisateurs", "id");
+                    }
+                    
+                    if(idUtilisateur != null){
+                        Integer i = null;
+                        
+                        if(Utilisateur.getInstance().getEstConnecte() && Utilisateur.getInstance().getMedia() != null && !this.getCreateNewUser()){
+                            i = choisirImage1.sendImage(idUtilisateur, Utilisateur.getInstance().getMedia().getId());
+                        }else{
+                            i = choisirImage1.sendImage(idUtilisateur);
+                            
+                            if(!jTextFieldNumRue.getText().isEmpty() 
+                                || !jTextFieldNomRue.getText().isEmpty() 
+                                || !jTextFieldCP.getText().isEmpty() 
+                                || !jTextFieldVille.getText().isEmpty() 
+                                || !jTextFieldPays.getText().isEmpty()){
+                                
+                                adresse
+                                    .setN_rue(!jTextFieldNumRue.getText().isEmpty() ? Integer.parseInt(jTextFieldNumRue.getText()) : null)
+                                    .setNom_rue(jTextFieldNomRue.getText())
+                                    .setCode_postale(jTextFieldCP.getText())
+                                    .setVille(jTextFieldVille.getText())
+                                    .setPays(jTextFieldPays.getText())
+                                    .setId_utilisateur(idUtilisateur);
+                            
+                                adresse.sync();
+                            }
+                            
+                            this.getComplementaire1().sync(idUtilisateur);
+                            
+                        }
+                        this.setInscrit(i != null && i == 1);
+                        
+                        jLabelEtatInscription.setForeground(Color.blue);
+                        jLabelEtatInscription.setText(Utilisateur.getInstance().getEstConnecte() && !this.getCreateNewUser() ? "Modification réussi" : "Inscription réussi");
+                        this.setInscriptionOK(true);
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(PanneauFormInscription.class.getName()).log(Level.SEVERE, null, ex);
+                }
             } else {
-                jLabelEtatInscription.setForeground(Helpers.COLOR_NOT_VALIDATED);
-                jLabelEtatInscription.setText("Echec de l'inscription");
+                jLabelEtatInscription.setForeground(Reference.COLOR_NOT_VALIDATED);
+                jLabelEtatInscription.setText(Utilisateur.getInstance().getEstConnecte() ? "Echec de la modification" : "Echec de l'inscription");
                 this.setInscriptionOK(false);
             }
         } else {
-            jLabelEtatInscription.setForeground(Helpers.COLOR_NOT_VALIDATED);
-            jLabelEtatInscription.setText("Champ(s) manquant(s)");
+            jLabelEtatInscription.setForeground(Reference.COLOR_NOT_VALIDATED);
+            jLabelEtatInscription.setText("Champ(s) manquant(s) ou n° de rue invalide");
             this.setInscriptionOK(false);
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_jButtonInscriptionActionPerformed
 
+    private void jTextFieldCPFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldCPFocusLost
+        handleAutoComplete();
+    }//GEN-LAST:event_jTextFieldCPFocusLost
+
+    private void jTextFieldPaysFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldPaysFocusLost
+        handleAutoComplete();
+    }//GEN-LAST:event_jTextFieldPaysFocusLost
+
+    private void jTextFieldNumRueKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldNumRueKeyReleased
+        
+        if(jTextFieldNumRue.getText().matches("^[0-9]+")){
+            jLabelNumRue.setForeground(Reference.COLOR_VALIDATED);
+            this.setN_rueOK(true);
+        }else{
+            jLabelNumRue.setForeground(Reference.COLOR_NOT_VALIDATED);
+            this.setN_rueOK(false);
+        }
+        
+        if(jTextFieldNumRue.getText().isEmpty()){
+            jLabelNumRue.setForeground(Color.WHITE);
+            this.setN_rueOK(true);
+        }
+    }//GEN-LAST:event_jTextFieldNumRueKeyReleased
+
+    private void jTextFieldNumRueFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldNumRueFocusLost
+        this.setN_rueOK(jTextFieldNumRue.getText().isEmpty() ? true : this.getN_rueOK());
+    }//GEN-LAST:event_jTextFieldNumRueFocusLost
+
+    public Boolean getInscrit() {
+        return inscrit;
+    }
+
+    public void setInscrit(Boolean inscrit) {
+        this.inscrit = inscrit;
+    }
+
+    public JPanelComplementaire getComplementaire1() {
+        return complementaire1;
+    }
+ 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private com.karimandco.image.ChoisirImage choisirImage1;
+    private fr.karim.main.composant.JPanelComplementaire complementaire1;
+    private javax.swing.JButton jButtonInscription;
+    private javax.swing.JComboBox<String> jComboBoxGenre;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabelEtatInscription;
+    private javax.swing.JLabel jLabelNumRue;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JSeparator jSeparator3;
+    private javax.swing.JSeparator jSeparator4;
+    private javax.swing.JSeparator jSeparator5;
+    private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTextField jTextFieldCP;
+    private javax.swing.JTextField jTextFieldNomRue;
+    private javax.swing.JTextField jTextFieldNumRue;
+    private javax.swing.JTextField jTextFieldPays;
+    private javax.swing.JTextField jTextFieldVille;
     private fr.karim.main.utils.PanelKeyboradPassword panelKeyboradPassword1;
     private com.karimandco.auth.PanneauChamp panneauCourriel;
     private com.karimandco.auth.PanneauChamp panneauDateNaissance;
@@ -480,10 +889,10 @@ public class PanneauFormInscription extends javax.swing.JPanel {
             }
 
             if (resultat == true) {
-                champ.setjLabelEtatChamp(Helpers.COLOR_VALIDATED);
+                champ.setjLabelEtatChamp(Reference.COLOR_VALIDATED);
                 champ.setjLabelEtatChamp("Format ok");
             } else {
-                champ.setjLabelEtatChamp(Helpers.COLOR_NOT_VALIDATED);
+                champ.setjLabelEtatChamp(Reference.COLOR_NOT_VALIDATED);
                 champ.setjLabelEtatChamp("Format non ok");
             }
         } else {
@@ -515,23 +924,23 @@ public class PanneauFormInscription extends javax.swing.JPanel {
                 if (String.valueOf(panneauMdp.getChampSecret1().getPassword()).equals(String.valueOf(panneauMdpConfirmation.getChampSecret1().getPassword()))) {
                     setMdpOK(true);
                     setMdpConfOK(true);
-                    panneauMdpConfirmation.setjLabelEtatChampSecret(Helpers.COLOR_VALIDATED);
-                    panneauMdp.setjLabelEtatChampSecret(Helpers.COLOR_VALIDATED);
+                    panneauMdpConfirmation.setjLabelEtatChampSecret(Reference.COLOR_VALIDATED);
+                    panneauMdp.setjLabelEtatChampSecret(Reference.COLOR_VALIDATED);
                     panneauMdpConfirmation.setjLabelEtatChampSecret("Correspondance ok");
                     panneauMdp.setjLabelEtatChampSecret("Correspondance ok");
                 } else {
                     setMdpOK(false);
                     setMdpConfOK(false);
-                    panneauMdpConfirmation.setjLabelEtatChampSecret(Helpers.COLOR_NOT_VALIDATED);
-                    panneauMdp.setjLabelEtatChampSecret(Helpers.COLOR_NOT_VALIDATED);
+                    panneauMdpConfirmation.setjLabelEtatChampSecret(Reference.COLOR_NOT_VALIDATED);
+                    panneauMdp.setjLabelEtatChampSecret(Reference.COLOR_NOT_VALIDATED);
                     panneauMdpConfirmation.setjLabelEtatChampSecret("Correspondance non ok");
                     panneauMdp.setjLabelEtatChampSecret("Correspondance non ok");
                 }
             } else {
                 setMdpOK(false);
                 setMdpConfOK(false);
-                panneauMdpConfirmation.setjLabelEtatChampSecret(Helpers.COLOR_NOT_VALIDATED);
-                panneauMdp.setjLabelEtatChampSecret(Helpers.COLOR_NOT_VALIDATED);
+                panneauMdpConfirmation.setjLabelEtatChampSecret(Reference.COLOR_NOT_VALIDATED);
+                panneauMdp.setjLabelEtatChampSecret(Reference.COLOR_NOT_VALIDATED);
                 panneauMdpConfirmation.setjLabelEtatChampSecret("Format non ok");
                 panneauMdp.setjLabelEtatChampSecret("Format non ok");
             }
@@ -544,5 +953,57 @@ public class PanneauFormInscription extends javax.swing.JPanel {
             panneauMdpConfirmation.setjLabelEtatChampSecret("");
         }
     }
+    
+    public void handleAutoComplete(){
+        try {
+            if(!jTextFieldPays.getText().equals("")){
 
+                String dataAPI = Helpers.getDataAPI("https://restcountries.eu/rest/v2/name/" + jTextFieldPays.getText().toString().toLowerCase());
+
+                if(dataAPI != null){
+                    JSONParser jsonParser = new JSONParser();
+
+                    Object obj = jsonParser.parse(dataAPI);
+
+                    if (obj != null && obj instanceof JSONArray) {
+                        JSONArray jsonObj = (JSONArray) obj;
+
+                        if(jsonObj.size() == 1){
+
+                            JSONObject o = (JSONObject) jsonObj.get(0);
+
+                            if(o != null && o.get("alpha3Code") != null){
+
+                                if(!jTextFieldCP.getText().equals("")){
+                                    dataAPI = Helpers.getDataAPI("http://api.zippopotam.us/"+ o.get("alpha2Code").toString().toLowerCase() + "/" + jTextFieldCP.getText());
+                                    if(dataAPI != null){
+                                        obj = jsonParser.parse(dataAPI);
+                                        if (obj != null && obj instanceof JSONObject) {
+                                            JSONObject p = (JSONObject) obj;
+
+                                            if(p != null && p.get("places") != null && p.get("places") instanceof JSONArray){
+                                                if(((JSONArray) p.get("places")).size() > 0){
+
+                                                    jTextFieldVille.setText((String) ((JSONObject) ((JSONArray) p.get("places")).get(0)).get("place name"));
+
+                                                }
+
+                                            }
+                                        }
+                                    }
+                                }
+
+                            }
+
+                        }
+
+                    }
+                }
+
+            }
+
+        } catch (ParseException ex) {
+            Logger.getLogger(PanneauFormInscription.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }

@@ -5,7 +5,8 @@
  */
 package fr.karim.main.utils;
 
-import fr.karim.main.auth.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Random;
@@ -84,16 +85,16 @@ public class PanelKeyboradPassword extends javax.swing.JPanel {
         jButtonEffacer = new javax.swing.JButton();
 
         jButtonCorriger.setText("Corriger");
-        jButtonCorriger.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButtonCorrigerMouseClicked(evt);
+        jButtonCorriger.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonCorrigerActionPerformed(evt);
             }
         });
 
         jButtonEffacer.setText("Effacer");
-        jButtonEffacer.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButtonEffacerMouseClicked(evt);
+        jButtonEffacer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonEffacerActionPerformed(evt);
             }
         });
 
@@ -206,20 +207,20 @@ public class PanelKeyboradPassword extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButtonEffacerMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonEffacerMouseClicked
+    private void jButtonEffacerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEffacerActionPerformed
         if(passwordField != null){
             passwordField.setText("");
         }
-    }//GEN-LAST:event_jButtonEffacerMouseClicked
+    }//GEN-LAST:event_jButtonEffacerActionPerformed
 
-    private void jButtonCorrigerMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonCorrigerMouseClicked
+    private void jButtonCorrigerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCorrigerActionPerformed
         if(passwordField != null){
             String oldContaint = String.valueOf(passwordField.getPassword());
             if(!oldContaint.equals("")){
                 passwordField.setText(oldContaint.substring(0, oldContaint.length() - 1));
             }
         }
-    }//GEN-LAST:event_jButtonCorrigerMouseClicked
+    }//GEN-LAST:event_jButtonCorrigerActionPerformed
 
     public void initFields(){
         if(passwordField != null){
@@ -239,6 +240,7 @@ public class PanelKeyboradPassword extends javax.swing.JPanel {
             for(int i = 0; i < arrayListNumber.length; i++){
                 JButton button = (javax.swing.JButton) arrayListButton[i];
                 button.setText(String.valueOf(arrayListNumber[i]));
+                
                 button.addMouseListener(new MouseListener() {
                     @Override
                     public void mouseClicked(MouseEvent e) { 
@@ -260,6 +262,17 @@ public class PanelKeyboradPassword extends javax.swing.JPanel {
                     @Override
                     public void mouseExited(MouseEvent e) { }
                 });
+                
+//                button.addActionListener(new ActionListener() {
+//                    @Override
+//                    public void actionPerformed(ActionEvent e) {
+//                        System.out.println("-> click");
+//                        String oldContaint = String.valueOf(passwordField.getPassword());
+//                        if(oldContaint.length() < 6){
+//                            passwordField.setText(oldContaint + button.getText() );
+//                        }
+//                    }
+//                });
             }
         }
     }

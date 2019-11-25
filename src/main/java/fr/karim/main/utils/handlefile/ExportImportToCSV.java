@@ -1,6 +1,5 @@
 package fr.karim.main.utils.handlefile;
 
-import com.sun.org.apache.xerces.internal.xs.datatypes.ObjectList;
 import fr.karim.main.utils.Helpers;
 import fr.karim.references.Message;
 import fr.karim.references.Reference;
@@ -19,10 +18,11 @@ import java.util.regex.Pattern;
 public class ExportImportToCSV extends ExportImport {
 
     private Path file = null;
-    private String[] idexes = null;
+    private String[] indexes = null;
     private List<Object> values = null;
+	protected List<Object> dataFile = null;
 
-    public ExportImportToCSV() {
+	public ExportImportToCSV() {
 
     }
 
@@ -53,12 +53,12 @@ public class ExportImportToCSV extends ExportImport {
         return this;
     }
 
-    public String[] getIdexes() {
-        return idexes;
+    public String[] getIndexes() {
+        return indexes;
     }
 
-    public ExportImportToCSV setIdexes(String[] idexes) {
-        this.idexes = idexes;
+    public ExportImportToCSV setIndexes(String[] indexes) {
+        this.indexes = indexes;
         return this;
     }
 
@@ -105,14 +105,14 @@ public class ExportImportToCSV extends ExportImport {
 
 	@Override
 	public ExportImportToCSV analyseFile() throws Exception {
-        if (this.getIdexes() != null && this.getValues() != null) {
-            return this.analyseFile(this.getIdexes(), this.getValues());
+        if (this.getIndexes() != null && this.getValues() != null) {
+            return this.analyseFile(this.getIndexes(), this.getValues());
         }
         throw new Exception("Attention ! On dirait que les [indexes] ou les [values] n'ont pas été définit.");
     }
 
     public ExportImportToCSV analyseFile(String[] idexes) throws Exception {
-        this.setIdexes(idexes);
+        this.setIndexes(idexes);
         return this.analyseFile();
     }
 
@@ -122,17 +122,15 @@ public class ExportImportToCSV extends ExportImport {
     }
 
     public ExportImportToCSV analyseFile(String[] indexes, List<Object> values) {
-        this.setIdexes(indexes);
+        this.setIndexes(indexes);
         this.setValues(values);
-
-        if (this.getFile() != null) {
+	    if (this.getFile() != null) {
             try {
-                if (this.getIdexes() != null) {
-
+                if (this.getIndexes() != null && this.getValues() != null) {
                     BufferedWriter writer = Files.newBufferedWriter(this.getFile());
 
                     CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.RFC4180
-                            .withHeader(this.getIdexes())
+                            .withHeader(this.getIndexes())
                             .withQuoteMode(QuoteMode.ALL)
                     );
 
@@ -211,7 +209,7 @@ public class ExportImportToCSV extends ExportImport {
 
     @Override
     public ExportImportToCSV importFile() {
-        this.importFile(this.getIdexes());
+        this.importFile(this.getIndexes());
         return this;
     }
 
@@ -222,13 +220,13 @@ public class ExportImportToCSV extends ExportImport {
                     Reader reader = Files.newBufferedReader(this.getFile());
                     CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT
                             .withFirstRecordAsHeader()
-                            .withHeader(this.getIdexes())
+                            .withHeader(this.getIndexes())
                             .withIgnoreHeaderCase()
                             .withTrim());
             ) {
                 for (CSVRecord csvRecord : csvParser) {
                     Map<String,Object> ocurrences = new HashMap<String, Object>();
-                    for (String element : this.getIdexes()) {
+                    for (String element : this.getIndexes()) {
                         List<String[]> l_matcher = new ArrayList<String[]>();
                         Pattern pattern = Pattern.compile("\\[(.*?)\\]", Pattern.MULTILINE);
                         Matcher matcher = pattern.matcher(csvRecord.get(element));

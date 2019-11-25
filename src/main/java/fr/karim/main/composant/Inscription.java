@@ -5,7 +5,10 @@
  */
 package fr.karim.main.composant;
 
+import com.karimandco.auth.PanneauFormInscription;
 import fr.karim.main.utils.Helpers;
+import fr.karim.main.utils.user.Utilisateur;
+import fr.karim.references.Reference;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -34,8 +37,8 @@ public class Inscription extends javax.swing.JPanel {
     public Inscription() {
         initComponents();
         panneauFormInscription1.setOpaque(true);
-        panneauFormInscription1.setBackground(new Color(25, 28, 32));
-        this.setBackground(new Color(25, 28, 32));
+        panneauFormInscription1.setBackground(Reference.MAIN_DARK);
+        this.setBackground(Reference.MAIN_DARK);
         
         jScrollPane1.setOpaque(true);
         jScrollPane1.setBackground(new Color(0,0,0,0));
@@ -49,7 +52,7 @@ public class Inscription extends javax.swing.JPanel {
 //        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 //        int w = getWidth();
 //        int h = getHeight();
-//        Color color1 = new Color(25, 28, 32);
+//        Color color1 = Reference.MAIN_DARK;
 //        Color color2 = new Color(36, 41, 46);
 //        GradientPaint gp = new GradientPaint(0, 0, color1, 0, h, color2);
 //        g2d.setPaint(gp);
@@ -65,55 +68,77 @@ public class Inscription extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        jLabelTitle = new javax.swing.JLabel();
+        jLabelTitleAPI = new javax.swing.JLabel();
         jPanelAuthWithAPI1 = new fr.karim.main.auth.JPanelAuthWithAPI();
         jScrollPane1 = new javax.swing.JScrollPane();
         panneauFormInscription1 = new com.karimandco.auth.PanneauFormInscription();
+        jSeparator1 = new javax.swing.JSeparator();
+        jSeparator2 = new javax.swing.JSeparator();
 
-        jLabel1.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("S'inscrire");
+        jLabelTitle.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
+        jLabelTitle.setForeground(new java.awt.Color(255, 255, 255));
+        jLabelTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabelTitle.setText("S'inscrire");
 
-        jLabel2.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("S'inscrire Facebook ou Google");
+        jLabelTitleAPI.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
+        jLabelTitleAPI.setForeground(new java.awt.Color(255, 255, 255));
+        jLabelTitleAPI.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabelTitleAPI.setText("S'inscrire Facebook ou Google");
 
         jScrollPane1.setBorder(null);
         jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane1.setViewportView(panneauFormInscription1);
 
+        jSeparator1.setForeground(new java.awt.Color(255, 255, 255));
+
+        jSeparator2.setForeground(new java.awt.Color(255, 255, 255));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jSeparator2, javax.swing.GroupLayout.Alignment.CENTER)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanelAuthWithAPI1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGap(6, 6, 6)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jSeparator1)
+                    .addComponent(jLabelTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabelTitleAPI, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(6, 6, 6))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanelAuthWithAPI1, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jLabelTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 589, Short.MAX_VALUE)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(jLabelTitleAPI)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanelAuthWithAPI1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanelAuthWithAPI1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0))
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     public void initialize(){
+        
+        jLabelTitle.setText(Utilisateur.getInstance().getEstConnecte() ? "Modification du compte" : "Inscription");
+        if(Utilisateur.getInstance().getEstConnecte()){
+            jLabelTitleAPI.setVisible(false);
+            jPanelAuthWithAPI1.setVisible(false);
+        }
         
         jPanelAuthWithAPI1.getjPanelFacebook1().getjButtonOAuth().addMouseListener(new MouseListener() {
             @Override
@@ -177,7 +202,7 @@ public class Inscription extends javax.swing.JPanel {
             public void mouseExited(MouseEvent e) { }
         });
 
-        panneauFormInscription1.getjButton1().addMouseListener(new MouseListener() {
+        panneauFormInscription1.getjButtonInscription().addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) { 
                 if(!panneauFormInscription1.getIdentifiantOK()){
@@ -249,11 +274,11 @@ public class Inscription extends javax.swing.JPanel {
         }
         if(user == null || user.size() < 0){
             panneauFormInscription1.getPanneauIdentifiant().getjLabelEtatChamp().setText("Identifiant disponible !");
-            panneauFormInscription1.getPanneauIdentifiant().getjLabelEtatChamp().setForeground(Helpers.COLOR_VALIDATED);
+            panneauFormInscription1.getPanneauIdentifiant().getjLabelEtatChamp().setForeground(Reference.COLOR_VALIDATED);
             panneauFormInscription1.setIdentifiantOK(true);
         }else{
             panneauFormInscription1.getPanneauIdentifiant().getjLabelEtatChamp().setText("Utilisateur déjà existant !");
-            panneauFormInscription1.getPanneauIdentifiant().getjLabelEtatChamp().setForeground(Helpers.COLOR_NOT_VALIDATED);
+            panneauFormInscription1.getPanneauIdentifiant().getjLabelEtatChamp().setForeground(Reference.COLOR_NOT_VALIDATED);
             panneauFormInscription1.setIdentifiantOK(false);
         }
     }
@@ -268,20 +293,26 @@ public class Inscription extends javax.swing.JPanel {
         }
         if(user == null || user.size() < 0){
             panneauFormInscription1.getPanneauCourriel().getjLabelEtatChamp().setText("Email disponible !");
-            panneauFormInscription1.getPanneauCourriel().getjLabelEtatChamp().setForeground(Helpers.COLOR_VALIDATED);
+            panneauFormInscription1.getPanneauCourriel().getjLabelEtatChamp().setForeground(Reference.COLOR_VALIDATED);
             panneauFormInscription1.setCourrielOK(true);
         }else{
             panneauFormInscription1.getPanneauCourriel().getjLabelEtatChamp().setText("Email déjà existant !");
-            panneauFormInscription1.getPanneauCourriel().getjLabelEtatChamp().setForeground(Helpers.COLOR_NOT_VALIDATED);
+            panneauFormInscription1.getPanneauCourriel().getjLabelEtatChamp().setForeground(Reference.COLOR_NOT_VALIDATED);
             panneauFormInscription1.setCourrielOK(false);
         }
     }
+
+    public PanneauFormInscription getPanneauFormInscription1() {
+        return panneauFormInscription1;
+    }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabelTitle;
+    private javax.swing.JLabel jLabelTitleAPI;
     private fr.karim.main.auth.JPanelAuthWithAPI jPanelAuthWithAPI1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
     private com.karimandco.auth.PanneauFormInscription panneauFormInscription1;
     // End of variables declaration//GEN-END:variables
 }

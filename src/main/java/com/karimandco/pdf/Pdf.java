@@ -17,7 +17,6 @@ import com.itextpdf.text.pdf.FontSelector;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.mysql.jdbc.Connection;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -34,7 +33,6 @@ import java.util.logging.Logger;
  */
 public class Pdf {
 
-    
     String nom;
     String prenom;
     String numero;
@@ -42,8 +40,6 @@ public class Pdf {
     Integer code = new Random().nextInt(100000000);
     Integer idUtilisateur;
     String test = code.toString();
-    private Connection connexion;
-
 
     public Pdf(String nom, String prenom, String numero, String lienPDF) {
         this.nom = nom;

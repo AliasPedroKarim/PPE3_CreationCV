@@ -46,6 +46,10 @@ public class Champ extends JTextField implements KeyListener {
             }
         });
     }
+    
+    public Champ(Integer size){
+        super(size);
+    }
 
     @Override
     public void keyTyped(KeyEvent ke) {

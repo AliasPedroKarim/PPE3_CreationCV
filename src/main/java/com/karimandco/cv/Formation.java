@@ -82,6 +82,7 @@ public class Formation extends javax.swing.JPanel {
         jLabel6.setText("Fin");
 
         jTextAreaDescriptionFormation.setColumns(20);
+        jTextAreaDescriptionFormation.setLineWrap(true);
         jTextAreaDescriptionFormation.setRows(5);
         jScrollPane2.setViewportView(jTextAreaDescriptionFormation);
 

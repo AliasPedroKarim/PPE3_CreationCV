@@ -6,7 +6,7 @@
 package fr.karim.main.composant;
 
 import fr.karim.main.utils.Helpers;
-import fr.karim.main.utils.Utilisateur;
+import fr.karim.main.utils.user.Utilisateur;
 
 import java.io.File;
 import java.sql.SQLException;
@@ -20,27 +20,17 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import fr.karim.main.utils.handlefile.ExportImportToCSV;
 import fr.karim.main.utils.handlefile.ExportImportToJSON;
-import fr.karim.references.Message;
 import fr.karim.references.Reference;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import org.json.simple.JSONObject;
 
 import fr.karim.connexion.DaoSIO;
+import fr.karim.main.utils.handlefile.ExportImportToXML;
 
 import javax.swing.table.DefaultTableModel;
+import org.json.simple.JSONArray;
 
 /**
  *
@@ -116,11 +106,19 @@ public class ImportExportFile extends javax.swing.JPanel {
                     o = Helpers.appendValue(o, item_list.get("maitrise"));
 
                     for (String element : new String[]{"formation", "experience_pro"}) {
-                        List<String[]> element_coms = (List<String[]>) item_list.get(element);
-                        for (String[] element_com : element_coms) {
-                            builder.append("[ ").append(String.join(", ", element_com)).append(" ]").append("\r\n");
+                        
+                        if(item_list.get(element) instanceof String[]){
+                            builder.append("[ ").append(String.join(", ", (String[]) item_list.get(element))).append(" ]").append("\r\n");
+                        }else if(item_list.get(element) instanceof List) {
+                            List<String[]> element_coms = (List<String[]>) item_list.get(element);
+                            if(element_coms != null){
+                                for (String[] element_com : element_coms) {
+                                    builder.append("[ ").append(String.join(", ", element_com)).append(" ]").append("\r\n");
+                                }
+                            }
                         }
                         o = Helpers.appendValue(o, !builder.toString().equals("") ? builder.toString() : "vide");
+
                     }
 
                     listeExport.addRow(o);
@@ -154,16 +152,16 @@ public class ImportExportFile extends javax.swing.JPanel {
         jLabel3 = new javax.swing.JLabel();
 
         jButtonExport.setText("Exporter");
-        jButtonExport.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButtonExportMouseClicked(evt);
+        jButtonExport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonExportActionPerformed(evt);
             }
         });
 
         jButtonImport.setText("Importer");
-        jButtonImport.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButtonImportMouseClicked(evt);
+        jButtonImport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonImportActionPerformed(evt);
             }
         });
 
@@ -173,9 +171,9 @@ public class ImportExportFile extends javax.swing.JPanel {
         jScrollPane1.setViewportView(jTableListExport);
 
         jButtonAddImport.setText("Ajouter");
-        jButtonAddImport.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButtonAddImportMouseClicked(evt);
+        jButtonAddImport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonAddImportActionPerformed(evt);
             }
         });
 
@@ -263,7 +261,7 @@ public class ImportExportFile extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButtonExportMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonExportMouseClicked
+    private void jButtonExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExportActionPerformed
         JFileChooser chooser = new JFileChooser();
         chooser.setCurrentDirectory(new File("."));
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -295,9 +293,9 @@ public class ImportExportFile extends javax.swing.JPanel {
                 }
             }
         }
-    }//GEN-LAST:event_jButtonExportMouseClicked
+    }//GEN-LAST:event_jButtonExportActionPerformed
 
-    private void jButtonImportMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonImportMouseClicked
+    private void jButtonImportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonImportActionPerformed
         JFileChooser chooser = new JFileChooser();
         chooser.setCurrentDirectory(new File("."));
 
@@ -321,19 +319,18 @@ public class ImportExportFile extends javax.swing.JPanel {
             String type = chooser.getTypeDescription(chooser.getSelectedFile());
 
             if (type.equals("Document XML")) {
-                System.out.println(chooser.getSelectedFile().getAbsolutePath());
+                importXML(chooser.getSelectedFile());
             } else if (type.equals("Fichier CSV")) {
                 importCSV(chooser.getSelectedFile());
             } else if (type.equals("Fichier JSON")) {
-				importJSON(chooser.getSelectedFile());
+                importJSON(chooser.getSelectedFile());
             }
 
             // System.out.println(chooser.getSelectedFile().getAbsolutePath());
         }
-    }//GEN-LAST:event_jButtonImportMouseClicked
+    }//GEN-LAST:event_jButtonImportActionPerformed
 
-    private void jButtonAddImportMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonAddImportMouseClicked
-
+    private void jButtonAddImportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddImportActionPerformed
         if (data_table != null && data_table.size() > 0) {
 
             for (Map<String, Object> i : data_table) {
@@ -349,7 +346,7 @@ public class ImportExportFile extends javax.swing.JPanel {
 
                     Integer idCV = DaoSIO.getInstance().getLastID("cv", "id");
 
-                    List<String[]> formations = (List<String[]>) i.get("formations");
+                    List<String[]> formations = (List<String[]>) i.get("formation");
                     for (String[] formation : formations) {
                         try {
                             DaoSIO
@@ -397,9 +394,9 @@ public class ImportExportFile extends javax.swing.JPanel {
         } else {
             JOptionPane.showMessageDialog(this, "Aucun donnée n'a été import.", "", JOptionPane.WARNING_MESSAGE);
         }
-    }//GEN-LAST:event_jButtonAddImportMouseClicked
+    }//GEN-LAST:event_jButtonAddImportActionPerformed
 
-    public List<Object> buildData(List<Map<String, Object>> cv){
+    public List<Object> buildData(List<Map<String, Object>> cv) {
         List<Object> finalData = new ArrayList<Object>();
         finalData.add(String.valueOf(Utilisateur.getInstance().getId()));
         finalData.add(Utilisateur.getIdentifiant());
@@ -440,8 +437,8 @@ public class ImportExportFile extends javax.swing.JPanel {
                                 String type = entry.getValue().getClass().getSimpleName();
                                 subItemsElement.add(
                                         type.equals("Integer") ? String.valueOf(entry.getValue())
-                                                : type.equals("Date") ? Reference.simpleDateSlashes.format((Date) entry.getValue())
-                                                : (String) entry.getValue()
+                                        : type.equals("Date") ? Reference.simpleDateSlashes.format((Date) entry.getValue())
+                                        : (String) entry.getValue()
                                 );
                             }
                             subItemsArray.add(subItemsElement);
@@ -472,220 +469,34 @@ public class ImportExportFile extends javax.swing.JPanel {
 
     public void exportToXML(String AbsolutePath, List<Map<String, Object>> cv) {
 
+        Map<String, Object> indexes = new LinkedHashMap<String, Object>();
+
+        indexes.put("utilisateur", new String[]{"id_utilisateur", "identifiant", "nom", "prenom", "genre", "numero_telephone", "courriel", "date_de_naissance"});
+        indexes.put("cv", new String[]{"id", "titre", "description", "signature", "nom_maitrise", "maitrise"});
+        indexes.put("formation", new String[]{"id", "nom", "lieu", "description", "annee_debut", "annee_fin", "id_cv"});
+        indexes.put("experience_pro", new String[]{"id", "entreprise", "adresse", "description", "annee_debut", "annee_fin", "id_cv"});
+
+        List<Object> builderData = this.buildData(cv);
+
         try {
-
-            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-
-            // root elements
-            Document doc = docBuilder.newDocument();
-            Element rootElement = doc.createElement("PPECreatorCV");
-            doc.appendChild(rootElement);
-
-            // User elements
-            Element user = doc.createElement("User");
-            rootElement.appendChild(user);
-
-            Element id_utilisateur = doc.createElement("idUtilisateur");
-            id_utilisateur.appendChild(doc.createTextNode(String.valueOf(Utilisateur.getInstance().getId())));
-            user.appendChild(id_utilisateur);
-
-            Element identifiant = doc.createElement("identifiant");
-            identifiant.appendChild(doc.createTextNode(Utilisateur.getIdentifiant() != null ? Utilisateur.getIdentifiant() : "null"));
-            user.appendChild(identifiant);
-
-            Element nom = doc.createElement("nom");
-            nom.appendChild(doc.createTextNode(Utilisateur.getInstance().getNom() != null ? Utilisateur.getInstance().getNom() : "null"));
-            user.appendChild(nom);
-
-            Element prenom = doc.createElement("prenom");
-            prenom.appendChild(doc.createTextNode(Utilisateur.getInstance().getPrenom() != null ? Utilisateur.getInstance().getPrenom() : "null"));
-            user.appendChild(prenom);
-
-            Element genre = doc.createElement("genre");
-            genre.appendChild(doc.createTextNode(Utilisateur.getInstance().getGenre() != null ? Utilisateur.getInstance().getGenre() : "null"));
-            user.appendChild(genre);
-
-            Element numero_telephone = doc.createElement("numeroTelephone");
-            numero_telephone.appendChild(doc.createTextNode(Utilisateur.getInstance().getNumeroTelephone() != null ? Utilisateur.getInstance().getNumeroTelephone() : "null"));
-            user.appendChild(numero_telephone);
-
-            Element courriel = doc.createElement("courriel");
-            courriel.appendChild(doc.createTextNode(Utilisateur.getInstance().getCourriel() != null ? Utilisateur.getInstance().getCourriel() : "null"));
-            user.appendChild(courriel);
-
-            Element date_de_naissance = doc.createElement("date_de_naissance");
-            date_de_naissance.appendChild(doc.createTextNode(Utilisateur.getInstance().getDateNaissance() != null ? Utilisateur.getInstance().getDateNaissance() : "null"));
-            user.appendChild(date_de_naissance);
-
-            // CV elements
-            Element cvs = doc.createElement("CVs");
-            rootElement.appendChild(cvs);
-
-            if (cv != null && cv.size() > 0) {
-                for (Map<String, Object> item : cv) {
-                    Element cvElement = doc.createElement("CV");
-                    cvs.appendChild(cvElement);
-
-                    Attr attr = doc.createAttribute("id");
-                    attr.setValue(String.valueOf(item.get("id")));
-                    cvElement.setAttributeNode(attr);
-
-                    Element id_cv = doc.createElement("id_cv");
-                    id_cv.appendChild(doc.createTextNode(String.valueOf(item.get("id_cv"))));
-                    cvElement.appendChild(id_cv);
-
-                    Element titre = doc.createElement("titre");
-                    titre.appendChild(doc.createTextNode(item.get("titre") != null ? (String) item.get("titre") : "null"));
-                    cvElement.appendChild(titre);
-
-                    Element description = doc.createElement("description");
-                    description.appendChild(doc.createTextNode(item.get("description") != null ? (String) item.get("description") : "null"));
-                    cvElement.appendChild(description);
-
-                    Element signature = doc.createElement("signature");
-                    signature.appendChild(doc.createTextNode(item.get("signature") != null ? (String) item.get("signature") : "null"));
-                    cvElement.appendChild(signature);
-
-                    Element nom_maitrise = doc.createElement("nom_maitrise");
-                    nom_maitrise.appendChild(doc.createTextNode(item.get("nom_maitrise") != null ? (String) item.get("nom_maitrise") : "null"));
-                    cvElement.appendChild(nom_maitrise);
-
-                    Element maitrise = doc.createElement("maitrise");
-                    maitrise.appendChild(doc.createTextNode(item.get("maitrise") != null ? (String) item.get("maitrise") : "null"));
-                    cvElement.appendChild(maitrise);
-
-                    // Formations
-                    Element formationsElement = doc.createElement("Formations");
-                    cvElement.appendChild(formationsElement);
-
-                    try {
-                        List<Map<String, Object>> formations = Helpers.getIntance().get(new String[]{"formation"}, null,
-                                Helpers.getIntance().whereElement("id_cv", item.get("id"), ""));
-
-                        if (formations != null && formations.size() > 0) {
-
-                            for (Map<String, Object> formation : formations) {
-                                Element formationElement = doc.createElement("Formation");
-                                formationsElement.appendChild(formationElement);
-
-                                Attr attrFormation = doc.createAttribute("id");
-                                attrFormation.setValue(String.valueOf(formation.get("id")));
-                                formationElement.setAttributeNode(attrFormation);
-
-                                Element idFormation = doc.createElement("id");
-                                idFormation.appendChild(doc.createTextNode(String.valueOf(formation.get("id"))));
-                                formationElement.appendChild(idFormation);
-
-                                Element nomFormation = doc.createElement("nom");
-                                nomFormation.appendChild(doc.createTextNode(formation.get("nom") != null ? (String) formation.get("nom") : "null"));
-                                formationElement.appendChild(nomFormation);
-
-                                Element lieuFormation = doc.createElement("lieu");
-                                lieuFormation.appendChild(doc.createTextNode(formation.get("lieu") != null ? (String) formation.get("lieu") : "null"));
-                                formationElement.appendChild(lieuFormation);
-
-                                Element descriptionFormation = doc.createElement("description");
-                                descriptionFormation.appendChild(doc.createTextNode(formation.get("description") != null ? (String) formation.get("description") : "null"));
-                                formationElement.appendChild(descriptionFormation);
-
-                                Element annee_debutFormation = doc.createElement("annee_debut");
-                                annee_debutFormation.appendChild(doc.createTextNode(formation.get("annee_debut") != null ? simpleDate.format((Date) formation.get("annee_debut")) : "null"));
-                                formationElement.appendChild(annee_debutFormation);
-
-                                Element annee_finFormation = doc.createElement("annee_fin");
-                                annee_finFormation.appendChild(doc.createTextNode(formation.get("annee_fin") != null ? simpleDate.format((Date) formation.get("annee_fin")) : "null"));
-                                formationElement.appendChild(annee_finFormation);
-
-                            }
-
-                        }
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-
-                    // Experience Pro
-                    Element experienceProsElement = doc.createElement("ExperiencePros");
-                    cvElement.appendChild(experienceProsElement);
-
-                    try {
-                        List<Map<String, Object>> experiencePros = Helpers.getIntance().get(new String[]{"experience_pro"}, null,
-                                Helpers.getIntance().whereElement("id_cv", item.get("id"), ""));
-
-                        if (experiencePros != null && experiencePros.size() > 0) {
-
-                            for (Map<String, Object> experiencePro : experiencePros) {
-                                Element experienceProElement = doc.createElement("ExperiencePro");
-                                experienceProsElement.appendChild(experienceProElement);
-
-                                Attr attrExperiencePro = doc.createAttribute("id");
-                                attrExperiencePro.setValue(String.valueOf(experiencePro.get("id")));
-                                experienceProElement.setAttributeNode(attrExperiencePro);
-
-                                Element idExperiencePro = doc.createElement("id");
-                                idExperiencePro.appendChild(doc.createTextNode(String.valueOf(experiencePro.get("id"))));
-                                experienceProElement.appendChild(idExperiencePro);
-
-                                Element entrepriseExperiencePro = doc.createElement("entreprise");
-                                entrepriseExperiencePro.appendChild(doc.createTextNode(experiencePro.get("entreprise") != null ? (String) experiencePro.get("entreprise") : "null"));
-                                experienceProElement.appendChild(entrepriseExperiencePro);
-
-                                Element adresseExperiencePro = doc.createElement("adresse");
-                                adresseExperiencePro.appendChild(doc.createTextNode(experiencePro.get("adresse") != null ? (String) experiencePro.get("adresse") : "null"));
-                                experienceProElement.appendChild(adresseExperiencePro);
-
-                                Element descriptionExperiencePro = doc.createElement("description");
-                                descriptionExperiencePro.appendChild(doc.createTextNode(experiencePro.get("description") != null ? (String) experiencePro.get("description") : "null"));
-                                experienceProElement.appendChild(descriptionExperiencePro);
-
-                                Element annee_debutExperiencePro = doc.createElement("annee_debut");
-                                annee_debutExperiencePro.appendChild(doc.createTextNode(experiencePro.get("annee_debut") != null ? simpleDate.format((Date) experiencePro.get("annee_debut")) : "null"));
-                                experienceProElement.appendChild(annee_debutExperiencePro);
-
-                                Element annee_finExperiencePro = doc.createElement("annee_fin");
-                                annee_finExperiencePro.appendChild(doc.createTextNode(experiencePro.get("annee_debut") != null ? simpleDate.format((Date) experiencePro.get("annee_fin")) : "null"));
-                                experienceProElement.appendChild(annee_finExperiencePro);
-
-                            }
-
-                        }
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-            }
-
-            // write the content into xml file
-            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            Transformer transformer = transformerFactory.newTransformer();
-            DOMSource source = new DOMSource(doc);
-            StreamResult result = new StreamResult(String.format(Reference.NAME_FILE_EXPORT, AbsolutePath, "xml"));
-
-            // Output to console for testing
-            // StreamResult result = new StreamResult(System.out);
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-            transformer.transform(source, result);
-
-            JOptionPane.showMessageDialog(this, Message.SUCCESS_EXPORT, "Exportation complete", JOptionPane.INFORMATION_MESSAGE);
-
-        } catch (ParserConfigurationException pce) {
-            pce.printStackTrace();
-        } catch (TransformerException tfe) {
-            tfe.printStackTrace();
+            new ExportImportToXML()
+                .setPathFinding(AbsolutePath)
+                .loadFile()
+                .analyseFile(indexes, builderData);
+        } catch (Exception ex) {
+            Logger.getLogger(ImportExportFile.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
 
     public void exportToJSON(String AbsolutePath, List<Map<String, Object>> cv) {
 
-        Map<String,Object> indexes = new LinkedHashMap<String,Object>();
+        Map<String, Object> indexes = new LinkedHashMap<String, Object>();
 
-        indexes.put("utilisateur", new String[]{ "id_utilisateur", "identifiant", "nom", "prenom", "genre", "numero_telephone", "courriel", "date_de_naissance" });
-        indexes.put("cv", new String[]{ "id", "titre", "description", "signature", "nom_maitrise", "maitrise" });
-        indexes.put("formation", new String[]{ "id", "nom", "lieu", "description", "annee_debut", "annee_fin", "id_cv" });
-        indexes.put("experience_pro", new String[]{ "id", "entreprise", "adresse", "description", "annee_debut", "annee_fin", "id_cv" });
+        indexes.put("utilisateur", new String[]{"id_utilisateur", "identifiant", "nom", "prenom", "genre", "numero_telephone", "courriel", "date_de_naissance"});
+        indexes.put("cv", new String[]{"id", "titre", "description", "signature", "nom_maitrise", "maitrise"});
+        indexes.put("formation", new String[]{"id", "nom", "lieu", "description", "annee_debut", "annee_fin", "id_cv"});
+        indexes.put("experience_pro", new String[]{"id", "entreprise", "adresse", "description", "annee_debut", "annee_fin", "id_cv"});
 
         List<Object> builderData = this.buildData(cv);
 
@@ -705,8 +516,8 @@ public class ImportExportFile extends javax.swing.JPanel {
             l = new ExportImportToCSV()
                     .setPathFinding(selectedFile.getAbsolutePath())
                     .loadFile()
-                    .setIdexes(new String[]{"id_utilisateur", "identifiant", "nom", "prenom", "genre", "numero_telephone", "courriel", "date_de_naissance",
-                "id_cv", "titre", "description", "signature", "nom_maitrise", "maitrise", "formations", "experience_pro"})
+                    .setIndexes(new String[]{"id_utilisateur", "identifiant", "nom", "prenom", "genre", "numero_telephone", "courriel", "date_de_naissance",
+                "id_cv", "titre", "description", "signature", "nom_maitrise", "maitrise", "formation", "experience_pro"})
                     .importFile().getData();
         } catch (Exception e) {
             e.printStackTrace();
@@ -718,16 +529,138 @@ public class ImportExportFile extends javax.swing.JPanel {
 
     }
 
-	public void importJSON(File selectedFile) {
-		try {
-			new ExportImportToJSON()
-					.setPathFinding(selectedFile.getAbsolutePath())
-					.loadFile()
-					.importFile();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    public void importJSON(File selectedFile) {
+        JSONObject result = null;
+        List<Object> l = new ArrayList<Object>();
+        try {
+            result = new ExportImportToJSON()
+                    .setPathFinding(selectedFile.getAbsolutePath())
+                    .loadFile()
+                    .importFile()
+                    .getDataFile();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        l = formatXMLJSON(result);
+
+        if (l != null && l.size() > 0) {
+            loadDataInTable(l);
+        }
+    }
+
+    public void importXML(File selectedFile){
+        JSONObject result = null;
+        List<Object> l = new ArrayList<Object>();
+        try {
+            result = new ExportImportToXML()
+                .setPathFinding(selectedFile.getAbsolutePath())
+                .loadFile()
+                .importFile()
+                .getDataFile();
+        } catch (Exception ex) {
+            Logger.getLogger(ImportExportFile.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        l = formatXMLJSON(result);
+
+        if (l != null && l.size() > 0) {
+            loadDataInTable(l);
+        }
+    }
+
+    private List<Object> formatXMLJSON(JSONObject result){
+        List<Object> l = new ArrayList<Object>();
+        if (result != null && result.size() > 0) {
+            Object utilisateur = result.get("utilisateur");
+            if (utilisateur != null && utilisateur instanceof JSONObject) {
+                utilisateur = (JSONObject) utilisateur;
+            }
+
+            Object cvs = choiceJSONArray(result.get("cv"));
+
+            if (cvs != null && cvs instanceof JSONArray) {
+                JSONArray cvsArray = (JSONArray) cvs;
+
+                JSONObject u = (JSONObject) utilisateur;
+
+                cvsArray.forEach(emp -> {
+                    Map<String, Object> ocurrences = new HashMap<String, Object>();
+
+                    if(u != null){
+                        u.keySet().forEach(keyStr0 -> {
+                            Object keyvalue0 = u.get(keyStr0);
+                            ocurrences.put((String) keyStr0, keyvalue0);
+                        });
+                    }
+
+                    if (emp instanceof JSONObject) {
+                        JSONObject cvsElement = (JSONObject) emp;
+
+                        cvsElement.keySet().forEach(keyStr -> {
+                            Object keyvalue = choiceJSONArray(cvsElement.get(keyStr));
+                            if (keyvalue instanceof JSONArray) {
+                                JSONArray cvsElementArray = (JSONArray) keyvalue;
+                                List<String[]> l_matcher = new ArrayList<String[]>();
+                                
+                                cvsElementArray.forEach(subemp -> {
+                                    if (subemp instanceof JSONObject) {
+                                        l_matcher.add(Helpers.GetStringArray((JSONObject) subemp));
+                                    }
+                                });
+                                
+                                if(cvsElementArray != null && cvsElementArray.size() > 0){
+                                    if(cvsElementArray.get(0) instanceof JSONObject){
+                                        ocurrences.put((String) keyStr, cvsElementArray.get(0));
+                                    }
+                                }
+                                ocurrences.put((String) keyStr, l_matcher);
+                            } else if (keyvalue instanceof Long) {
+                                ocurrences.put((String) keyStr, Long.toString((long) keyvalue));
+                            }else {
+                                ocurrences.put((String) keyStr, String.valueOf(keyvalue));
+                            }
+
+                            System.out.println("key: " + keyStr + " value: " + keyvalue);
+                        });
+                    }
+
+                    l.add(ocurrences);
+                });
+
+            }
+
+        }
+        return l;
+    }
+
+    private Object choiceJSONArray(Object a){
+        Object cvs = null;
+        if(a instanceof JSONArray){
+            cvs = a;
+        }else if(a instanceof JSONObject){
+            Object inter = a;
+
+            if(inter != null && inter instanceof JSONObject){
+                JSONObject inter1 = (JSONObject) inter;
+                
+                String i = null;
+                for (Object key : inter1.keySet()) {
+                    i = (String) key;
+                }
+                if(inter1.get(i) instanceof JSONObject){
+                    JSONArray Obj = new JSONArray();
+                    Obj.add(inter1.get(i));
+                    cvs = i != null ? Obj : cvs;
+                }else{
+                    cvs = i != null ? inter1.get(i) : cvs;
+                }
+            }
+        }else{
+            cvs = a;
+        }
+        return cvs;
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
@@ -747,242 +680,3 @@ public class ImportExportFile extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
 }
-
-/*
-
-
-
-        // first create file object for file placed at location
-        // specified by filepath
-        File file = new File(String.format(Reference.NAME_FILE_EXPORT, AbsolutePath, "csv"));
-        try {
-            // create FileWriter object with file as parameter
-            FileWriter outputfile = new FileWriter(file);
-
-            // create CSVWriter object filewriter object as parameter
-            CSVWriter writer = new CSVWriter(outputfile);
-
-            // adding header to csv
-            String[] header = {"id_utilisateur", "identifiant", "nom", "prenom", "genre", "numero_telephone", "courriel", "date_de_naissance",
-                 "id_cv", "titre", "description", "signature", "nom_maitrise", "maitrise", "formations", "experience_pro"};
-            writer.writeNext(header);
-
-            // add data to csv
-            ArrayList<String> list = new ArrayList<>();
-
-            if (Utilisateur.getInstance().getEstConnecte()) {
-                list.add(String.valueOf(Utilisateur.getInstance().getId()));
-                list.add(Utilisateur.getIdentifiant());
-                list.add(Utilisateur.getInstance().getNom());
-                list.add(Utilisateur.getInstance().getPrenom());
-                list.add(Utilisateur.getInstance().getGenre());
-                list.add(Utilisateur.getInstance().getNumeroTelephone());
-                list.add(Utilisateur.getInstance().getCourriel());
-                list.add(Utilisateur.getInstance().getDateNaissance());
-
-                if (cv != null && cv.size() > 0) {
-                    for (Map<String, Object> item : cv) {
-
-                        list.add(String.valueOf(item.get("id")));
-                        list.add((String) item.get("titre"));
-                        list.add((String) item.get("description"));
-                        list.add((String) item.get("signature"));
-                        list.add((String) item.get("nom_maitrise"));
-                        list.add(String.valueOf(item.get("maitrise")));
-
-                        try {
-                            List<Map<String, Object>> formations = Helpers.getIntance().get(new String[]{"formation"}, null,
-                                    Helpers.getIntance().whereElement("id_cv", item.get("id"), ""));
-
-                            if (formations != null && formations.size() > 0) {
-                                StringBuilder fBuilder = new StringBuilder();
-                                for (Map<String, Object> formation : formations) {
-                                    fBuilder.append(" [ ");
-                                    fBuilder.append(String.join(" | ", new String[]{
-                                        String.valueOf(formation.get("id")),
-                                        (String) formation.get("nom"),
-                                        (String) formation.get("lieu"),
-                                        (String) formation.get("description"),
-                                        simpleDate.format((Date) formation.get("annee_debut")),
-                                        simpleDate.format((Date) formation.get("annee_fin"))
-                                    }));
-                                    fBuilder.append(" ] ");
-                                }
-                                list.add(fBuilder.toString());
-                            } else {
-                                list.add("");
-                            }
-
-                            List<Map<String, Object>> experiencePros = Helpers.getIntance().get(new String[]{"experience_pro"}, null,
-                                    Helpers.getIntance().whereElement("id_cv", item.get("id"), ""));
-
-                            if (experiencePros != null && experiencePros.size() > 0) {
-                                StringBuilder fBuilder = new StringBuilder();
-                                for (Map<String, Object> experiencePro : experiencePros) {
-                                    fBuilder.append(" [ ");
-                                    fBuilder.append(String.join(" | ", new String[]{
-                                        String.valueOf(experiencePro.get("id")),
-                                        (String) experiencePro.get("entreprise"),
-                                        (String) experiencePro.get("adresse"),
-                                        (String) experiencePro.get("description"),
-                                        simpleDate.format((Date) experiencePro.get("annee_debut")),
-                                        simpleDate.format((Date) experiencePro.get("annee_fin"))
-                                    }));
-                                    fBuilder.append(" ] ");
-                                }
-                                list.add(fBuilder.toString());
-                            } else {
-                                list.add("");
-                            }
-
-                        } catch (SQLException ex) {
-                            Logger.getLogger(ImportExportFile.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-
-                        writer.writeNext(Helpers.GetStringArray(list));
-
-                        JOptionPane.showMessageDialog(this, Message.SUCCESS_EXPORT, "Exportation complete", JOptionPane.INFORMATION_MESSAGE);
-
-                    }
-                }
-            }
-
-            // closing writer connection
-            writer.close();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        FileWriter writer = null;
-        JSONParser parser = new JSONParser();
-        Object simpleObj = null;
-
-        String f = String.format(Reference.NAME_FILE_EXPORT, AbsolutePath, "json");
-
-        System.out.println(f);
-
-        try {
-            writer = new FileWriter(String.format(Reference.NAME_FILE_EXPORT, AbsolutePath, "json")); // Modify path as per your need
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // JsonGenerator to create JSONObject and store it to file location mentioned above
-        JsonGenerator generator = Json.createGenerator(writer);
-
-        generator
-                .writeStartObject();
-
-        generator
-                .writeStartObject("User")
-                .write("id_utilisateur", Utilisateur.getInstance().getId())
-                .write("identifiant", Utilisateur.getIdentifiant())
-                .write("nom", Utilisateur.getInstance().getNom() != null ? Utilisateur.getInstance().getNom() : "null")
-                .write("prenom", Utilisateur.getInstance().getPrenom() != null ? Utilisateur.getInstance().getPrenom() : "null")
-                .write("genre", Utilisateur.getInstance().getGenre() != null ? Utilisateur.getInstance().getGenre() : "null")
-                .write("numero_telephone", Utilisateur.getInstance().getNumeroTelephone() != null ? Utilisateur.getInstance().getNumeroTelephone() : "null")
-                .write("courriel", Utilisateur.getInstance().getCourriel() != null ? Utilisateur.getInstance().getCourriel() : "null")
-                .write("date_de_naissance", Utilisateur.getInstance().getDateNaissance() != null ? Utilisateur.getInstance().getDateNaissance() : "null")
-                .writeEnd();
-
-        generator
-                .writeStartArray("CV");
-        if (cv != null && cv.size() > 0) {
-
-            for (Map<String, Object> item : cv) {
-                generator
-                        .writeStartObject();
-                generator
-                        .write("id", (int) item.get("id"))
-                        .write("titre", item.get("titre") != null ? (String) item.get("titre") : "null")
-                        .write("description", item.get("description") != null ? (String) item.get("description") : "null")
-                        .write("signature", item.get("signature") != null ? (String) item.get("signature") : "null")
-                        .write("nom_maitrise", item.get("nom_maitrise") != null ? (String) item.get("nom_maitrise") : "null")
-                        .write("maitrise", item.get("maitrise") != null ? (String) item.get("maitrise") : "null");
-
-                try {
-                    List<Map<String, Object>> formations = Helpers.getIntance().get(new String[]{"formation"}, null,
-                            Helpers.getIntance().whereElement("id_cv", item.get("id"), ""));
-
-                    generator
-                            .writeStartArray("formation");
-
-                    if (formations != null && formations.size() > 0) {
-
-                        for (Map<String, Object> formation : formations) {
-                            generator
-                                    .writeStartObject()
-                                    .write("id", (int) formation.get("id"))
-                                    .write("nom", (String) formation.get("nom"))
-                                    .write("lieu", (String) formation.get("lieu"))
-                                    .write("description", (String) formation.get("description"))
-                                    .write("annee_debut", simpleDate.format((Date) formation.get("annee_debut")))
-                                    .write("annee_fin", simpleDate.format((Date) formation.get("annee_fin")))
-                                    .writeEnd();
-                        }
-                    }
-
-                    generator
-                            .writeEnd();
-
-                    // --------------------------
-                    List<Map<String, Object>> experiencePros = Helpers.getIntance().get(new String[]{"experience_pro"}, null,
-                            Helpers.getIntance().whereElement("id_cv", item.get("id"), ""));
-
-                    generator
-                            .writeStartArray("experience_pro");
-
-                    if (experiencePros != null && experiencePros.size() > 0) {
-
-                        for (Map<String, Object> experiencePro : experiencePros) {
-                            generator
-                                    .writeStartObject()
-                                    .write("id", (int) experiencePro.get("id"))
-                                    .write("entreprise", (String) experiencePro.get("entreprise"))
-                                    .write("adresse", (String) experiencePro.get("adresse"))
-                                    .write("description", (String) experiencePro.get("description"))
-                                    .write("annee_debut", simpleDate.format((Date) experiencePro.get("annee_debut")))
-                                    .write("annee_fin", simpleDate.format((Date) experiencePro.get("annee_fin")))
-                                    .writeEnd();
-                        }
-                    }
-
-                    generator
-                            .writeEnd();
-
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-                generator
-                        .writeEnd();
-            }
-        }
-        generator
-                .writeEnd();
-        generator
-                .writeEnd();
-
-        generator.close();
-
-        try {
-            simpleObj = parser.parse(new FileReader(String.format(Reference.NAME_FILE_EXPORT, AbsolutePath, "json")));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        if (simpleObj != null) {
-            String prettyJson = Helpers.crunchifyPrettyJSONUtility(simpleObj.toString());
-
-            try (FileWriter file = new FileWriter(String.format(Reference.NAME_FILE_EXPORT, AbsolutePath, "json"))) {
-                file.write(prettyJson);
-                JOptionPane.showMessageDialog(this, Message.SUCCESS_EXPORT, "Exportation complete", JOptionPane.INFORMATION_MESSAGE);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
- */

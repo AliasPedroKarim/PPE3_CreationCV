@@ -5,19 +5,81 @@
  */
 package fr.karim.main;
 
+import com.alee.utils.swing.extensions.WindowCloseAdapter;
+import fr.karim.main.utils.user.Utilisateur;
+import fr.karim.references.Message;
+import fr.karim.references.Reference;
+
+import java.awt.event.ComponentEvent;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author karim
  */
 public class JFrameSoftware extends javax.swing.JFrame {
-
+    
+    javax.swing.JMenu jMenuAdmin = new javax.swing.JMenu();
+    javax.swing.JMenuItem jMenuItemGestionUser = new javax.swing.JMenuItem();
+    
+    JDialogAdministration administrationDialog = null;
+    JDialogAccount accountDialog = null;
+    
     /**
      * Creates new form JFrameSoftware
      */
     public JFrameSoftware() {
         initComponents();
+        
+        init();
+    }
+    
+    private void init(){
+        if(Utilisateur.getInstance().getEstConnecte()){
+            if(Utilisateur.getInstance().getStatut() != null && Utilisateur.getInstance().isAdmin()){
+                
+                jMenuAdmin.setText("Administration");
+
+                // Code of sub-components and layout - not shown here
+
+                jMenuItemGestionUser.setText("Gestions utilisateurs");
+
+                jMenuItemGestionUser.addActionListener(new java.awt.event.ActionListener() {
+                    public void actionPerformed(java.awt.event.ActionEvent evt) {
+                        openAdmin();
+                    }
+                });
+                jMenuAdmin.add(jMenuItemGestionUser);
+                jMenuBarSoftware.add(jMenuAdmin);
+            }
+        }
+        
     }
 
+    public JMenuItem getjMenuItemGestionUser() {
+        return jMenuItemGestionUser;
+    }
+    
+    private void openAdmin(){
+        
+        administrationDialog = new JDialogAdministration(this, rootPaneCheckingEnabled);
+        administrationDialog.setTitle(String.format(Reference.TITLE_NAME_SOFTWARE, "Administration"));
+        administrationDialog.setModal(true);
+        administrationDialog.setVisible(true);
+        
+        administrationDialog.addWindowListener(new WindowCloseAdapter() {
+            @Override
+            public void closed(ComponentEvent ce) {
+                administrationDialog.setModal(false);
+                administrationDialog.setVisible(false);
+                administrationDialog = null;
+
+            }
+        });
+        
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -28,7 +90,7 @@ public class JFrameSoftware extends javax.swing.JFrame {
     private void initComponents() {
 
         software1 = new fr.karim.main.composant.Software();
-        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenuBarSoftware = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItemFile_Accueil = new javax.swing.JMenuItem();
         jMenuItemExit = new javax.swing.JMenuItem();
@@ -38,7 +100,7 @@ public class JFrameSoftware extends javax.swing.JFrame {
         jMenuItemCV_Create = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
         jMenuItemImportExport = new javax.swing.JMenuItem();
-        jMenuItem5 = new javax.swing.JMenuItem();
+        jMenuItemAccount = new javax.swing.JMenuItem();
         jMenuItem6 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -61,10 +123,10 @@ public class JFrameSoftware extends javax.swing.JFrame {
         });
         jMenu1.add(jMenuItemExit);
 
-        jMenuBar1.add(jMenu1);
+        jMenuBarSoftware.add(jMenu1);
 
         jMenu2.setText("Edit");
-        jMenuBar1.add(jMenu2);
+        jMenuBarSoftware.add(jMenu2);
 
         jMenu3.setText("Curriculum Vitae");
 
@@ -85,7 +147,7 @@ public class JFrameSoftware extends javax.swing.JFrame {
         });
         jMenu3.add(jMenuItemCV_Create);
 
-        jMenuBar1.add(jMenu3);
+        jMenuBarSoftware.add(jMenu3);
 
         jMenu4.setText("Utilisateur");
 
@@ -97,15 +159,20 @@ public class JFrameSoftware extends javax.swing.JFrame {
         });
         jMenu4.add(jMenuItemImportExport);
 
-        jMenuItem5.setText("Mon Compte");
-        jMenu4.add(jMenuItem5);
+        jMenuItemAccount.setText("Mon Compte");
+        jMenuItemAccount.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemAccountActionPerformed(evt);
+            }
+        });
+        jMenu4.add(jMenuItemAccount);
 
         jMenuItem6.setText("Deconnexion");
         jMenu4.add(jMenuItem6);
 
-        jMenuBar1.add(jMenu4);
+        jMenuBarSoftware.add(jMenu4);
 
-        setJMenuBar(jMenuBar1);
+        setJMenuBar(jMenuBarSoftware);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -113,7 +180,7 @@ public class JFrameSoftware extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(software1, javax.swing.GroupLayout.PREFERRED_SIZE, 1172, Short.MAX_VALUE)
+                .addComponent(software1, javax.swing.GroupLayout.DEFAULT_SIZE, 1172, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -145,6 +212,26 @@ public class JFrameSoftware extends javax.swing.JFrame {
     private void jMenuItemImportExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemImportExportActionPerformed
         software1.handlePanel("panel_import_export");
     }//GEN-LAST:event_jMenuItemImportExportActionPerformed
+
+    private void jMenuItemAccountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAccountActionPerformed
+        if(Utilisateur.getInstance().getEstConnecte()){
+            accountDialog = new JDialogAccount(this, rootPaneCheckingEnabled);
+            accountDialog.setTitle(String.format(Reference.TITLE_NAME_SOFTWARE, "Mon compte"));
+            accountDialog.setModal(true);
+            accountDialog.setVisible(true);
+
+            accountDialog.addWindowListener(new WindowCloseAdapter() {
+                @Override
+                public void closed(ComponentEvent ce) {
+                    accountDialog.setModal(false);
+                    accountDialog.setVisible(false);
+                    accountDialog = null;
+                }
+            });
+        }else{
+            JOptionPane.showMessageDialog(this, Message.MESSAGE_NOT_CONNECT, Message.TITLE_MESSAGE_NOT_CONNECT, JOptionPane.WARNING_MESSAGE);
+        }
+    }//GEN-LAST:event_jMenuItemAccountActionPerformed
 
     /**
      * @param args the command line arguments
@@ -186,9 +273,9 @@ public class JFrameSoftware extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
-    private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem5;
+    private javax.swing.JMenuBar jMenuBarSoftware;
     private javax.swing.JMenuItem jMenuItem6;
+    private javax.swing.JMenuItem jMenuItemAccount;
     private javax.swing.JMenuItem jMenuItemCV_Create;
     private javax.swing.JMenuItem jMenuItemCV_List;
     private javax.swing.JMenuItem jMenuItemExit;

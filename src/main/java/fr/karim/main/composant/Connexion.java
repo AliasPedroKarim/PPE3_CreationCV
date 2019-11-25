@@ -5,15 +5,20 @@
  */
 package fr.karim.main.composant;
 
+import com.alee.utils.swing.extensions.WindowCloseAdapter;
+import fr.karim.main.JDialogInscription;
 import com.karimandco.auth.Cryptage;
 import com.karimandco.auth.PanneauChamp;
 import fr.karim.connexion.DaoSIO;
 import fr.karim.main.auth.PanelPassword;
 import fr.karim.main.utils.Helpers;
-import fr.karim.main.utils.Utilisateur;
+import fr.karim.main.utils.user.Utilisateur;
 import fr.karim.references.Message;
 import fr.karim.references.Reference;
 import java.awt.Color;
+import java.awt.event.ComponentEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -40,12 +45,12 @@ public class Connexion extends javax.swing.JPanel {
         
         panneauChamp1.getChamp2().setBackground(Color.WHITE);
         panneauChamp1.getChamp2().setCaretColor(Color.BLACK);
-        panneauChamp1.getChamp2().setForeground(new Color(25, 28, 32));
+        panneauChamp1.getChamp2().setForeground(Reference.MAIN_DARK);
         
         panneauChamp1.getjLabelNomChamp().setText("Identifiant ou Email");
-        panneauChamp1.getjLabelNomChamp().setForeground(new Color(25, 28, 32));
+        panneauChamp1.getjLabelNomChamp().setForeground(Reference.MAIN_DARK);
         
-        panneauChamp1.getjSeparator1().setBackground(new Color(25, 28, 32));
+        panneauChamp1.getjSeparator1().setBackground(Reference.MAIN_DARK);
     }
 
     /**
@@ -73,9 +78,9 @@ public class Connexion extends javax.swing.JPanel {
         });
 
         jButtonSinscrire.setText("S'inscrire");
-        jButtonSinscrire.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButtonSinscrireMouseClicked(evt);
+        jButtonSinscrire.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonSinscrireActionPerformed(evt);
             }
         });
 
@@ -115,15 +120,67 @@ public class Connexion extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButtonSinscrireMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonSinscrireMouseClicked
-        inscriptionDialog = new JDialogInscription();
-        inscriptionDialog.setModal(true);
-        inscriptionDialog.setVisible(true);
-    }//GEN-LAST:event_jButtonSinscrireMouseClicked
-
     private void jButtonConnexionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonConnexionMouseClicked
         connexion();
     }//GEN-LAST:event_jButtonConnexionMouseClicked
+
+    private void jButtonSinscrireActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSinscrireActionPerformed
+        inscriptionDialog = new JDialogInscription();
+        
+        inscriptionDialog.getInscription2().getPanneauFormInscription1().getjButtonInscription().addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(inscriptionDialog.getInscription2().getPanneauFormInscription1().getInscrit()){
+                    String[] buttons = { "Oui", "Non" };
+
+                    int rc = JOptionPane.showOptionDialog(null, "Votre compte à été creé avec succéss, voulez-vous vous connecter maintenant ?", "Confirmation",
+                        JOptionPane.INFORMATION_MESSAGE, 0, null, buttons, buttons[buttons.length - 1]);
+
+                    if(rc == 0){
+
+                        inscriptionDialog.setModal(false);
+                        inscriptionDialog.setVisible(false);
+                        inscriptionDialog = null;
+
+                    }else if(rc == 1 || rc == -1){
+                        inscriptionDialog.setModal(false);
+                        inscriptionDialog.setVisible(false);
+                        inscriptionDialog = null;
+                        inscriptionDialog = new JDialogInscription();
+                        inscriptionDialog.setTitle(String.format(Reference.TITLE_NAME_SOFTWARE, "Inscription"));
+                        inscriptionDialog.setModal(true);
+                        inscriptionDialog.setVisible(true);
+                    }
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) { }
+
+            @Override
+            public void mouseReleased(MouseEvent e) { }
+
+            @Override
+            public void mouseEntered(MouseEvent e) { }
+
+            @Override
+            public void mouseExited(MouseEvent e) { }
+        } );
+        
+        inscriptionDialog.addWindowListener(new WindowCloseAdapter() {
+            @Override
+            public void closed(ComponentEvent ce) {
+                inscriptionDialog.setModal(false);
+                inscriptionDialog.setVisible(false);
+                inscriptionDialog = null;
+
+            }
+        });
+        
+        inscriptionDialog.setTitle(String.format(Reference.TITLE_NAME_SOFTWARE, "Inscription"));
+        inscriptionDialog.setModal(true);
+        inscriptionDialog.setVisible(true);
+    }//GEN-LAST:event_jButtonSinscrireActionPerformed
 
     private void connexion(){
         
@@ -181,4 +238,29 @@ public class Connexion extends javax.swing.JPanel {
     private fr.karim.main.auth.PanelPassword panelPassword1;
     private com.karimandco.auth.PanneauChamp panneauChamp1;
     // End of variables declaration//GEN-END:variables
+
+    private static class MouseListenerImpl implements MouseListener {
+
+        public MouseListenerImpl() {
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {}
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {}
+
+        @Override
+        public void mouseExited(MouseEvent e) {}
+    }
 }

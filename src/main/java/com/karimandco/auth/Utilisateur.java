@@ -159,7 +159,7 @@ public class Utilisateur {
                     this.courriel = lesResultats.getString("courriel");
                     String[] date_split = lesResultats.getString("date_de_naissance").split("-");
                     this.dateNaissance = date_split[2] + "/" + date_split[1] + "/" + date_split[0];
-                    this.photo = lesResultats.getBlob("photo");
+                    // this.photo = lesResultats.getBlob("photo");
 
                     this.estConnecte = true;
                 }
@@ -181,7 +181,8 @@ public class Utilisateur {
             String[] date_split = this.getDateNaissance().split("/");
             String data_split_ok = date_split[2] + "-" + date_split[1] + "-" + date_split[0];
 
-            Integer compteur = DaoSIO.getInstance().requeteAction("UPDATE utilisateurs SET nom='" + this.getNom() + "', prenom='" + this.getPrenom() + "', num_telephone='" + this.getNumeroTelephone() + "', courriel='" + this.getCourriel() + "', date_de_naissance='" + data_split_ok + "', photo='" + this.getPhoto() + "' WHERE identifiant='" + Utilisateur.getIdentifiant() + "'");
+            // Integer compteur = DaoSIO.getInstance().requeteAction("UPDATE utilisateurs SET nom='" + this.getNom() + "', prenom='" + this.getPrenom() + "', num_telephone='" + this.getNumeroTelephone() + "', courriel='" + this.getCourriel() + "', date_de_naissance='" + data_split_ok + "', photo='" + this.getPhoto() + "' WHERE identifiant='" + Utilisateur.getIdentifiant() + "'");
+            Integer compteur = DaoSIO.getInstance().requeteAction("UPDATE utilisateurs SET nom='" + this.getNom() + "', prenom='" + this.getPrenom() + "', num_telephone='" + this.getNumeroTelephone() + "', courriel='" + this.getCourriel() + "', date_de_naissance='" + data_split_ok + "' WHERE identifiant='" + Utilisateur.getIdentifiant() + "'");
 
             if (compteur > 0) {
                 resultat = true;

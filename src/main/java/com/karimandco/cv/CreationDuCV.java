@@ -135,6 +135,7 @@ public class CreationDuCV extends javax.swing.JPanel {
         jLabelDescription.setText("Description CV");
 
         jTextAreaDescription.setColumns(20);
+        jTextAreaDescription.setLineWrap(true);
         jTextAreaDescription.setRows(5);
         jScrollPane1.setViewportView(jTextAreaDescription);
 

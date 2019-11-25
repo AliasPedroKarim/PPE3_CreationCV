@@ -11,12 +11,26 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import fr.karim.connexion.DaoSIO;
 import java.awt.Color;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.JTextComponent;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 /**
  *
@@ -26,9 +40,6 @@ public class Helpers {
     
     private static Helpers instances;
     
-    public static Color COLOR_VALIDATED = new Color(119, 221, 119);
-    public static Color COLOR_NOT_VALIDATED = new Color(236, 25, 25);
-
     private Helpers() { }
     
     public static Helpers getIntance(){
@@ -277,15 +288,130 @@ public class Helpers {
             // Assign each value to String array
             str[j] = arr.get(j);
         }
-
         return str;
+    }
+    
+    public static String[] GetStringArray(JSONObject obj){
+        if(obj != null && obj instanceof JSONObject){
+            List<String> s = new ArrayList<String>();
+            obj.keySet().forEach(keyStr -> {
+                if(obj.get(keyStr) instanceof String){
+                    s.add((String) obj.get(keyStr));
+                }else if (obj.get(keyStr) instanceof JSONArray){
+                    JSONArray i = (JSONArray) obj.get(keyStr);
+                    s.add(
+                        i.get(0) instanceof Long ? Long.toString((long) i.get(0)) 
+                        : i.get(0) instanceof Number ? String.valueOf(i.get(0))
+                        : (String) i.get(0)
+                    );
+                }else if (obj.get(keyStr) instanceof Long){
+                    s.add(Long.toString((long) obj.get(keyStr)));
+                }else if (obj.get(keyStr) instanceof Number){
+                    s.add(String.valueOf(obj.get(keyStr)));
+                }
+            });
+            
+            return Helpers.GetStringArray(s);
+        }
+        return null;
     }
 
     public static Object[] appendValue(Object[] obj, Object newObj) {
-
         ArrayList<Object> temp = new ArrayList<Object>(Arrays.asList(obj));
         temp.add(newObj);
         return temp.toArray();
+    }
 
+    public static List<String> getIndexesMap(Map<String,Object> indexes){
+        List<String> indexesResult = new ArrayList<String>();
+        for (Map.Entry<String, Object> entry : indexes.entrySet()) {
+            indexesResult.add(entry.getKey());
+        }
+        return indexesResult;
+    }
+
+    public static String getFileNameWithoutExtension(File file) {
+        String fileName = "";
+
+        try {
+            if (file != null && file.exists()) {
+                String name = file.getName();
+                fileName = name.replaceFirst("[.][^.]+$", "");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            fileName = "";
+        }
+
+        return fileName;
+
+    }
+    
+    public static void setPlaceholder(JTextComponent field, String holder){
+        if(field != null && holder != null){
+            if (field.getText().isEmpty()) {
+                field.setForeground(Color.GRAY);
+                field.setText(holder);
+            }
+
+            field.addFocusListener(new FocusListener() {
+                @Override
+                public void focusGained(FocusEvent e) {
+                    if (field.getText().equals(holder)) {
+                        field.setText("");
+                        field.setForeground(Color.BLACK);
+                    }
+                }
+                @Override
+                public void focusLost(FocusEvent e) {
+                    if (field.getText().isEmpty()) {
+                        field.setForeground(Color.GRAY);
+                        field.setText(holder);
+                    }
+                }
+            });
+        }
+    }
+    
+    public static String getDataAPI(URL url){
+        return Helpers.getDataAPI(url.toString(), "GET");
+    }
+    
+    public static String getDataAPI(String url){
+        return Helpers.getDataAPI(url.toString(), "GET");
+    }
+    
+    public static String getDataAPI(String url, String method){
+        
+        if(!Arrays.asList(new String[]{"GET", "POST"}).contains(method)){
+            return null;
+        }
+        
+        try {
+            URL urlForGetRequest = new URL(url);
+            String readLine = null;
+            HttpURLConnection conection = (HttpURLConnection) urlForGetRequest.openConnection();
+            conection.setRequestMethod(method);
+            
+            if (conection != null && conection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                BufferedReader in = new BufferedReader(
+                        new InputStreamReader(conection.getInputStream()));
+                StringBuffer response = new StringBuffer();
+                while ((readLine = in .readLine()) != null) {
+                    response.append(readLine);
+                } in .close();
+                
+                return response.toString();
+            } else {
+                return null;
+            }
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(Helpers.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Helpers.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null;
+        
     }
 }

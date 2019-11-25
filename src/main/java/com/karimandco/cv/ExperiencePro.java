@@ -81,6 +81,7 @@ public class ExperiencePro extends javax.swing.JPanel {
         jLabel6.setText("Descirption de l'expérience");
 
         jTextAreaDescriptionExpPro.setColumns(20);
+        jTextAreaDescriptionExpPro.setLineWrap(true);
         jTextAreaDescriptionExpPro.setRows(5);
         jScrollPane1.setViewportView(jTextAreaDescriptionExpPro);
 

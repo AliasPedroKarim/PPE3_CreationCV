@@ -5,6 +5,7 @@
  */
 package com.karimandco.auth;
 
+import fr.karim.references.Reference;
 import java.awt.Color;
 import javax.swing.JLabel;
 
@@ -20,7 +21,7 @@ public class PanneauChampSecret extends javax.swing.JPanel {
     public PanneauChampSecret() {
         initComponents();
         
-        this.setBackground(new Color(25, 28, 32));
+        this.setBackground(Reference.MAIN_DARK);
         jLabelNomChampSecret.setForeground(Color.WHITE);
         // champ2.setBackground(new Color(0,0,0,0));
         // note colore : 214,217,223
@@ -28,7 +29,7 @@ public class PanneauChampSecret extends javax.swing.JPanel {
         champSecret1.setForeground(Color.WHITE);
         champSecret1.setCaretColor(Color.WHITE);
         
-        jLabelEtatChampSecret.setBackground(new Color(25, 28, 32));
+        jLabelEtatChampSecret.setBackground(Reference.MAIN_DARK);
         
         jSeparator1.setBackground(Color.WHITE);
         jSeparator1.setForeground(Color.WHITE);

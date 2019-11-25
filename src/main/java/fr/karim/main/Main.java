@@ -5,7 +5,8 @@
  */
 package fr.karim.main;
 
-import fr.karim.main.utils.Utilisateur;
+import fr.karim.main.utils.user.Utilisateur;
+import fr.karim.references.Reference;
 import java.awt.event.MouseAdapter;
 
 /**
@@ -21,7 +22,7 @@ public class Main {
     public static void main(String[] args) {
         
         jFrameConnexion = new JFrameConnexion();
-        jFrameConnexion.setTitle("Connexion - CV Creator Software");
+        jFrameConnexion.setTitle(String.format(Reference.TITLE_NAME_SOFTWARE, "Connexion"));
         jFrameConnexion.setVisible(true);
         
         jFrameConnexion.getHome().getConnexion().getjButtonConnexion().addMouseListener(new MouseAdapter() {
@@ -39,8 +40,10 @@ public class Main {
     
     public static void OpenSoftware(){
         
+        Utilisateur u = Utilisateur.getInstance();
+        
         jFrameSoftware = new JFrameSoftware();
-        jFrameSoftware.setTitle("PPE 3 Creation Curriculum Vitae - CV Creator Software");
+        jFrameSoftware.setTitle(String.format(Reference.TITLE_NAME_SOFTWARE, "PPE 3 Creation Curriculum Vitae"));
         jFrameSoftware.setVisible(true);
         
     }

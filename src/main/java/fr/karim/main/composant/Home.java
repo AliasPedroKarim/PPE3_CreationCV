@@ -5,6 +5,7 @@
  */
 package fr.karim.main.composant;
 
+import fr.karim.references.Reference;
 import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
@@ -14,6 +15,7 @@ import java.awt.RenderingHints;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -35,7 +37,7 @@ public class Home extends javax.swing.JPanel {
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         int w = getWidth();
         int h = getHeight();
-        Color color1 = new Color(25, 28, 32);
+        Color color1 = Reference.MAIN_DARK;
         Color color2 = new Color(36, 41, 46);
         GradientPaint gp = new GradientPaint(0, 0, color1, 0, h, color2);
         g2d.setPaint(gp);
@@ -76,9 +78,9 @@ public class Home extends javax.swing.JPanel {
         setPreferredSize(new java.awt.Dimension(1041, 641));
 
         jButton1.setText("[DEBUG]");
-        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton1MouseClicked(evt);
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
             }
         });
 
@@ -117,10 +119,10 @@ public class Home extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         connexion.getPanneauChamp1().getChamp2().setText("AliasPedro");
         connexion.getPanelPassword1().getjPasswordField1().setText("000000");
-    }//GEN-LAST:event_jButton1MouseClicked
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     public Connexion getConnexion() {
         return connexion;

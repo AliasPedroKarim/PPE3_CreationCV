@@ -1,7 +1,6 @@
 package fr.karim.main.utils.handlefile;
 
 import fr.karim.main.utils.Helpers;
-import fr.karim.main.utils.Utilisateur;
 import fr.karim.references.Message;
 import fr.karim.references.Reference;
 import org.json.simple.JSONArray;
@@ -14,7 +13,6 @@ import javax.json.stream.JsonGenerator;
 import javax.swing.*;
 import java.io.*;
 import java.net.URI;
-import java.sql.SQLException;
 import java.util.*;
 
 public class ExportImportToJSON extends ExportImport {
@@ -22,11 +20,21 @@ public class ExportImportToJSON extends ExportImport {
     private String file = null;
     private Map<String, Object> indexes = null;
     private List<Object> values = null;
+	private JSONObject dataFile = null;
 
-    public ExportImportToJSON() {
+	public ExportImportToJSON() {
     }
 
-    public String getPathFinding() {
+	public JSONObject getDataFile() {
+		return dataFile;
+	}
+
+	public ExportImportToJSON setDataFile(JSONObject dataFile) {
+		this.dataFile = dataFile;
+		return this;
+	}
+
+	public String getPathFinding() {
         return pathFinding;
     }
 
@@ -164,7 +172,7 @@ public class ExportImportToJSON extends ExportImport {
 
                     List<Object> subItems = (ArrayList<Object>) item;
                     if (subItems != null && subItems.size() > 0) {
-                        
+
                         int j = 0; // verifier si fromation ou expérience pro
                         for (Object subItem : subItems) {
 
@@ -173,30 +181,28 @@ public class ExportImportToJSON extends ExportImport {
                                 List<Object> subSubItem = (ArrayList<Object>) subItem;
 
                                 generator
-                                    .writeStartArray(indexes_string.get(j == 0 ? 2 : 3));
+                                        .writeStartArray(indexes_string.get(j == 0 ? 2 : 3));
 
                                 for (Object s : subSubItem) {
-                                    String[] indexesField1 = (String[]) indexes.get(indexes_string.get(j == 0 ? 2 : 3));
+                                    if(s instanceof List){
+                                        String[] indexesField1 = (String[]) indexes.get(indexes_string.get(j == 0 ? 2 : 3));
 
-                                    generator
-                                            .writeStartObject();
-                                    int k = 0;
-                                    for (String l : (ArrayList<String>) s) {
+                                        generator
+                                                .writeStartObject();
+                                        int k = 0;
+                                        for (String l : (ArrayList<String>) s) {
 
-                                        generator.write(indexesField1[k], l);
-                                        k++;
+                                            generator.write(indexesField1[k], l);
+                                            k++;
 
+                                        }
+                                        generator
+                                                .writeEnd();
                                     }
-                                    generator
-                                            .writeEnd();
-                                    j++;
-
                                 }
-
+                                j++;
                                 generator
-                                    .writeEnd();
-
-                                
+                                        .writeEnd();
                             } else {
                                 generator
                                         .write((indexesField[i] != null ? indexesField[i] : "element_" + i), subItem != null ? (String) subItem : "null");
@@ -244,50 +250,28 @@ public class ExportImportToJSON extends ExportImport {
 
     @Override
     public ExportImportToJSON importFile() {
-		//JSON parser object to parse read file
-		JSONParser jsonParser = new JSONParser();
+        if (this.getFile() != null) {
+            //JSON parser object to parse read file
+            JSONParser jsonParser = new JSONParser();
 
-		try (FileReader reader = new FileReader("employees.json"))
-		{
-			//Read JSON file
-			Object obj = jsonParser.parse(reader);
+            try (FileReader reader = new FileReader(this.getFile())) {
+                //Read JSON file
+                Object obj = jsonParser.parse(reader);
 
-			JSONArray employeeList = (JSONArray) obj;
-			System.out.println(employeeList);
-
-			//Iterate over employee array
-			employeeList.forEach( emp -> parseEmployeeObject( (JSONObject) emp ) );
-
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-
-		return this;
+                if (obj instanceof JSONObject) {
+                    JSONObject jsonObj = (JSONObject) obj;
+                    this.setDataFile(jsonObj);
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return this;
     }
-
-	private static void parseEmployeeObject(JSONObject employee)
-	{
-		//Get employee object within list
-		JSONObject employeeObject = (JSONObject) employee.get("employee");
-
-		//Get employee first name
-		String firstName = (String) employeeObject.get("firstName");
-		System.out.println(firstName);
-
-		//Get employee last name
-		String lastName = (String) employeeObject.get("lastName");
-		System.out.println(lastName);
-
-		//Get employee website name
-		String website = (String) employeeObject.get("website");
-		System.out.println(website);
-	}
-
-
 
     @Override
     public ExportImportToJSON getData() {
