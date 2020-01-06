@@ -40,10 +40,17 @@ public class Utilisateur extends com.karimandco.auth.Utilisateur {
     public static Utilisateur getInstance() {
         if (Utilisateur.monUtilisateur == null) {
             Utilisateur.monUtilisateur = new Utilisateur();
+            return (Utilisateur) Utilisateur.monUtilisateur;
         }
         return (Utilisateur) Utilisateur.monUtilisateur;
     }
 
+    public static Boolean logout(){
+        Utilisateur.getInstance().monUtilisateur = null;
+        Utilisateur.setIdentifiant(null);
+        return Utilisateur.getInstance().getEstConnecte();
+    }
+    
     public Boolean loadDataUser(Map<String, Object> data){
         if(data!= null && data.size() > 0){
             Utilisateur.setIdentifiant((String) data.get("identifiant"));

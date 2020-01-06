@@ -101,7 +101,7 @@ public class JFrameSoftware extends javax.swing.JFrame {
         jMenu4 = new javax.swing.JMenu();
         jMenuItemImportExport = new javax.swing.JMenuItem();
         jMenuItemAccount = new javax.swing.JMenuItem();
-        jMenuItem6 = new javax.swing.JMenuItem();
+        jMenuItemLogout = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -167,8 +167,8 @@ public class JFrameSoftware extends javax.swing.JFrame {
         });
         jMenu4.add(jMenuItemAccount);
 
-        jMenuItem6.setText("Deconnexion");
-        jMenu4.add(jMenuItem6);
+        jMenuItemLogout.setText("Deconnexion");
+        jMenu4.add(jMenuItemLogout);
 
         jMenuBarSoftware.add(jMenu4);
 
@@ -268,19 +268,27 @@ public class JFrameSoftware extends javax.swing.JFrame {
         });
     }
 
+    public JMenuItem getjMenuItemLogout() {
+        return jMenuItemLogout;
+    }
+
+    public void setjMenuItemLogout(JMenuItem jMenuItemLogout) {
+        this.jMenuItemLogout = jMenuItemLogout;
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBarSoftware;
-    private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItemAccount;
     private javax.swing.JMenuItem jMenuItemCV_Create;
     private javax.swing.JMenuItem jMenuItemCV_List;
     private javax.swing.JMenuItem jMenuItemExit;
     private javax.swing.JMenuItem jMenuItemFile_Accueil;
     private javax.swing.JMenuItem jMenuItemImportExport;
+    private javax.swing.JMenuItem jMenuItemLogout;
     private fr.karim.main.composant.Software software1;
     // End of variables declaration//GEN-END:variables
 }

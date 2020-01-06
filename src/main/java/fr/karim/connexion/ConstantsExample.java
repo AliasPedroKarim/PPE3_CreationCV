@@ -5,7 +5,11 @@ public class ConstantsExample {
    public static final Integer PORT = 8080;
 
    public static final String REDIRECT_URI = "http://localhost:" + PORT + "/Callback";
-   
+
+   public static final Boolean DEBUG = false;
+   public static final String USER_DEBUG = "< USER >";
+   public static final String PASS_DEBUG = "< PASSWORD >";
+
    public static final String MY_ACCESS_TOKEN = "< USER ACCESS TOKEN >";
 
    // Facebook App

@@ -5,6 +5,10 @@ public class Constants {
 
 	public static final String REDIRECT_URI = "http://localhost:" + PORT + "/Callback";
 
+	public static final Boolean DEBUG = true;
+	public static final String USER_DEBUG = "admin";
+	public static final String PASS_DEBUG = "000000";
+
 	public static final String MY_ACCESS_TOKEN = "< USER ACCESS TOKEN >";
 
 	// Facebook App

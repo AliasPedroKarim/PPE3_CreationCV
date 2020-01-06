@@ -5,6 +5,7 @@
  */
 package fr.karim.main.composant;
 
+import fr.karim.connexion.Constants;
 import fr.karim.references.Reference;
 import java.awt.Color;
 import java.awt.GradientPaint;
@@ -28,6 +29,9 @@ public class Home extends javax.swing.JPanel {
      */
     public Home() {        
         initComponents();
+        
+        jButtonDebug.setVisible(Constants.DEBUG != null && Constants.DEBUG ? true : false);
+        
     }
     
     @Override
@@ -73,14 +77,14 @@ public class Home extends javax.swing.JPanel {
             }
         };
         connexion = new fr.karim.main.composant.Connexion();
-        jButton1 = new javax.swing.JButton();
+        jButtonDebug = new javax.swing.JButton();
 
         setPreferredSize(new java.awt.Dimension(1041, 641));
 
-        jButton1.setText("[DEBUG]");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jButtonDebug.setText("[DEBUG]");
+        jButtonDebug.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                jButtonDebugActionPerformed(evt);
             }
         });
 
@@ -92,7 +96,7 @@ public class Home extends javax.swing.JPanel {
                 .addGap(30, 30, 30)
                 .addComponent(connexion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 643, Short.MAX_VALUE)
-                .addComponent(jButton1)
+                .addComponent(jButtonDebug)
                 .addContainerGap())
         );
         jPanelHomeLayout.setVerticalGroup(
@@ -100,7 +104,7 @@ public class Home extends javax.swing.JPanel {
             .addGroup(jPanelHomeLayout.createSequentialGroup()
                 .addGap(30, 30, 30)
                 .addGroup(jPanelHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton1)
+                    .addComponent(jButtonDebug)
                     .addComponent(connexion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(30, 30, 30))
         );
@@ -119,10 +123,10 @@ public class Home extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        connexion.getPanneauChamp1().getChamp2().setText("AliasPedro");
-        connexion.getPanelPassword1().getjPasswordField1().setText("000000");
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void jButtonDebugActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDebugActionPerformed
+        connexion.getPanneauChamp1().getChamp2().setText(Constants.USER_DEBUG);
+        connexion.getPanelPassword1().getjPasswordField1().setText(Constants.PASS_DEBUG);
+    }//GEN-LAST:event_jButtonDebugActionPerformed
 
     public Connexion getConnexion() {
         return connexion;
@@ -130,7 +134,7 @@ public class Home extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private fr.karim.main.composant.Connexion connexion;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButtonDebug;
     private javax.swing.JPanel jPanelHome;
     // End of variables declaration//GEN-END:variables
 }

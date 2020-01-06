@@ -203,12 +203,27 @@ public class PanneauAdministration extends javax.swing.JPanel {
                         if (option == JOptionPane.OK_OPTION) {
                             //Supp est vrai
                             Supp = true;
+                            
                             //Si la fonction pour tout supprimer est appelée et que Supp est vrai alors création message de confirmation, appelle de la fonction, suppression du contenu de la table
+
+                            try {
+                                List<Map<String, Object>> u = fr.karim.main.utils.Helpers.getIntance().get(new String[]{ "utilisateurs" }, null, fr.karim.main.utils.Helpers.getIntance().whereElement("statut", "0", ""));
+                            
+                                if(u != null){
+                                    for(Map<String, Object> user : u){
+                                        Supp = helpers.supprimeToutCV((Integer) user.get("id"));
+                                    }
+                                }
+                            } catch (SQLException ex) {
+                                Logger.getLogger(PanneauAdministration.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            
                             if (DaoSIO.getInstance().requeteAction("DELETE FROM utilisateurs WHERE statut = 0") == 1 && Supp == true) {
                                 jLabelEtatVider.setForeground(Color.blue);
                                 jLabelEtatVider.setText("Les utilisateurs ont été supprimés sauf les administrateurs.");
                                 updateJTableInfo();
                             }
+                            
 //                            else {
 //                            //Sinon, message d'erreur
 //                            jLabelEtatVider.setForeground(Color.blue);

@@ -149,7 +149,7 @@ public final class Helpers {
     public Boolean supprimeToutCV(Integer idUtilisateur) throws SQLException {
         Boolean ok = true;
         if (DaoSIO.getInstance().connexionActive() != null) {
-            List<Map<String, Object>> cv = getCV(idUtilisateur);
+            List<Map<String, Object>> cv = fr.karim.main.utils.Helpers.getIntance().get(new String[]{ "cv" }, null, fr.karim.main.utils.Helpers.getIntance().whereElement("id_utilisateur", idUtilisateur, ""));
             if(cv != null){
                 for (int i = 0; i < cv.size(); i++) {
                     List<Map<String, Object>> experiencePro = this.getExperiencePro((Integer) cv.get(i).get("id"));
@@ -166,16 +166,7 @@ public final class Helpers {
                         }
                     }
                     
-                    String[] t = new String[]{ "adresse", "centre_interet", "informatique", "langue", "media" };
                     
-                    for (int z = 0; z < t.length; z++) {
-                        List<Map<String, Object>> table = this.getTableWithUser(idUtilisateur, t[z]);
-                        if(formation != null){
-                            for (int k = 0; k < table.size(); k++) {
-                                ok = this.supprimerTable((Integer) table.get(k).get("id"), t[z]);
-                            }
-                        }
-                    }
                     
                     
                     if (cv != null && ok) {
@@ -183,6 +174,18 @@ public final class Helpers {
                     }
                 }
             }
+            
+            String[] t = new String[]{ "media", "adresse", "centre_interet", "informatique", "langue" };
+                    
+            for (int z = 0; z < t.length; z++) {
+                List<Map<String, Object>> table = this.getTableWithUser(idUtilisateur, t[z]);
+                if(table != null){
+                    for (int k = 0; k < table.size(); k++) {
+                        ok = this.supprimerTable((Integer) table.get(k).get("id"), t[z]);
+                    }
+                }
+            }
+            
             return ok;
         }
         return false;
