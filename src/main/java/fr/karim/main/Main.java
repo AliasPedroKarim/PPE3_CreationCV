@@ -40,8 +40,6 @@ public class Main {
     
     public static void OpenSoftware(){
         
-        Utilisateur u = Utilisateur.getInstance();
-        
         jFrameSoftware = new JFrameSoftware();
         jFrameSoftware.setTitle(String.format(Reference.TITLE_NAME_SOFTWARE, "PPE 3 Creation Curriculum Vitae"));
         jFrameSoftware.setVisible(true);

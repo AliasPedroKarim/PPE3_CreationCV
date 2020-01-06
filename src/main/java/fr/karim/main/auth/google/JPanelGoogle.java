@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package fr.karim.main.auth;
+package fr.karim.main.auth.google;
 
+import fr.karim.main.auth.google.GoogleOAuth2;
 import fr.karim.main.auth.google.CustomUserGoogle;
 import javax.swing.JButton;
 

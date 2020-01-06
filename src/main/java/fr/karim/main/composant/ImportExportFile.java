@@ -5,6 +5,8 @@
  */
 package fr.karim.main.composant;
 
+import com.itextpdf.text.BadElementException;
+import com.karimandco.pdf.GeneratorCVPDF;
 import fr.karim.main.utils.Helpers;
 import fr.karim.main.utils.user.Utilisateur;
 
@@ -28,6 +30,8 @@ import org.json.simple.JSONObject;
 
 import fr.karim.connexion.DaoSIO;
 import fr.karim.main.utils.handlefile.ExportImportToXML;
+import fr.karim.references.Message;
+import java.io.IOException;
 
 import javax.swing.table.DefaultTableModel;
 import org.json.simple.JSONArray;
@@ -184,6 +188,11 @@ public class ImportExportFile extends javax.swing.JPanel {
         jLabel2.setText("Générer (PDF)");
 
         jButton1.setText("Générer");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jComboBoxListCV.setModel(new javax.swing.DefaultComboBoxModel<>());
 
@@ -395,6 +404,51 @@ public class ImportExportFile extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, "Aucun donnée n'a été import.", "", JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_jButtonAddImportActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        
+        JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new File("."));
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int r = chooser.showSaveDialog(null);
+
+        if (chooser.getSelectedFile() != null && r == JFileChooser.APPROVE_OPTION) {
+
+            String cvIDSelected = jComboBoxListCV.getSelectedItem().toString();
+            
+            if(cvIDSelected.matches("^[0-9]+")){
+                if (!cvIDSelected.equals("")) {
+
+                    if (Utilisateur.getInstance().getEstConnecte()) {
+
+                        GeneratorCVPDF g = new GeneratorCVPDF()
+                                .setPath(chooser.getSelectedFile().toPath().toString())
+                                .setCvID(Integer.parseInt(cvIDSelected));
+                        
+                        try {
+                            if(g.genererPDF()){
+                                
+                                int reply = JOptionPane.showConfirmDialog(this, Message.MESSAGE_GENERATION_PDF_SUCCESS, Message.TITLE_MESSAGE_GENERATION_PDF_SUCCESS, HEIGHT);
+                                
+                                if(reply == JOptionPane.YES_OPTION){
+                                    Helpers.showPDF(this, g.getPath());
+                                }
+                                
+                            }else{
+                                JOptionPane.showMessageDialog(this, Message.MESSAGE_GENERATION_PDF_SUCCESS, Message.TITLE_MESSAGE_GENERATION_PDF_SUCCESS, HEIGHT);
+
+                            }
+                            
+                        } catch (BadElementException ex) {
+                            Logger.getLogger(ImportExportFile.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (IOException ex) {
+                            Logger.getLogger(ImportExportFile.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     public List<Object> buildData(List<Map<String, Object>> cv) {
         List<Object> finalData = new ArrayList<Object>();

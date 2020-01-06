@@ -6,12 +6,16 @@
 package com.karimandco.auth;
 
 import com.karimandco.auth.bdd.DaoSIO;
+import fr.karim.main.utils.Helpers;
 import java.awt.Color;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.sql.ResultSet;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.event.DocumentEvent;
 
 /**
  *
@@ -107,6 +111,23 @@ public class PanneauFormConnexion extends javax.swing.JPanel {
                 updateJLabelEtatChampSecret();
             }
         });
+        
+        panneauMdp.getChampSecret1().getDocument().addDocumentListener(new Helpers.SimpleDocumentListener() {
+            @Override
+            public void update(DocumentEvent e) {
+                updateJLabelEtatChampSecret();
+            }
+        });
+        
+        panneauMdp.getChampSecret1().addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) { 
+                panelKeyboradPassword1.setPasswordField(panneauMdp.getChampSecret1());
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) { }
+        });
     }
 
     /**
@@ -123,6 +144,7 @@ public class PanneauFormConnexion extends javax.swing.JPanel {
         jLabelEtatConnexion = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         panneauMdp = new com.karimandco.auth.PanneauChampSecret();
+        panelKeyboradPassword1 = new fr.karim.main.utils.PanelKeyboradPassword();
 
         jButtonConnexion.setText("Se connecter");
         jButtonConnexion.addActionListener(new java.awt.event.ActionListener() {
@@ -151,6 +173,10 @@ public class PanneauFormConnexion extends javax.swing.JPanel {
                     .addComponent(jButtonConnexion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabelEtatConnexion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(panelKeyboradPassword1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(81, 81, 81))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -165,6 +191,8 @@ public class PanneauFormConnexion extends javax.swing.JPanel {
                 .addComponent(jButtonConnexion)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabelEtatConnexion, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(panelKeyboradPassword1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -242,6 +270,7 @@ public class PanneauFormConnexion extends javax.swing.JPanel {
     private javax.swing.JButton jButtonConnexion;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabelEtatConnexion;
+    private fr.karim.main.utils.PanelKeyboradPassword panelKeyboradPassword1;
     private com.karimandco.auth.PanneauChamp panneauIdentifiant;
     private com.karimandco.auth.PanneauChampSecret panneauMdp;
     // End of variables declaration//GEN-END:variables

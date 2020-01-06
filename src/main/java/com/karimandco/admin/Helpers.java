@@ -60,6 +60,17 @@ public final class Helpers {
         }
         return null;
     }
+    
+    public List<Map<String, Object>> getTableWithUser(Integer id, String table) throws SQLException {
+        if (DaoSIO.getInstance().connexionActive()) {
+            ResultSet res = DaoSIO.getInstance().requeteSelection("SELECT * FROM " + table + " WHERE id_utilisateur = '" + id + "'");
+            if (res.isBeforeFirst()) {
+                return resultSetToList(res);
+            }
+            return null;
+        }
+        return null;
+    }
 
     /**
      * Permet de récuperer toute les informations d'une formation de puis la
@@ -116,6 +127,15 @@ public final class Helpers {
         }
         return false;
     }
+    
+    public boolean supprimerTable(Integer idExperiencePro, String table) throws SQLException {
+        Integer res;
+        if (idExperiencePro != null) {
+            res = DaoSIO.getInstance().requeteAction("DELETE FROM `" + table + "` WHERE id = " + idExperiencePro);
+            return res != null ? true : false;
+        }
+        return false;
+    }
 
     public boolean supprimerCV(Integer idCV) throws SQLException {
         Integer res;
@@ -145,6 +165,19 @@ public final class Helpers {
                             ok = this.supprimerFormation((Integer) formation.get(k).get("id"));
                         }
                     }
+                    
+                    String[] t = new String[]{ "adresse", "centre_interet", "informatique", "langue", "media" };
+                    
+                    for (int z = 0; z < t.length; z++) {
+                        List<Map<String, Object>> table = this.getTableWithUser(idUtilisateur, t[z]);
+                        if(formation != null){
+                            for (int k = 0; k < table.size(); k++) {
+                                ok = this.supprimerTable((Integer) table.get(k).get("id"), t[z]);
+                            }
+                        }
+                    }
+                    
+                    
                     if (cv != null && ok) {
                         ok = this.supprimerCV((Integer) cv.get(i).get("id"));
                     }

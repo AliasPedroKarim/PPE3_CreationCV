@@ -1,4 +1,4 @@
-package fr.karim.main.auth;
+package fr.karim.main.auth.facebook;
 
 import com.google.api.client.extensions.java6.auth.oauth2.VerificationCodeReceiver;
 import com.google.api.client.util.Throwables;

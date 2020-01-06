@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package fr.karim.main.auth;
+package fr.karim.main.auth.facebook;
 
+import fr.karim.connexion.Constants;
+import fr.karim.main.auth.google.GoogleOAuth2;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
@@ -12,8 +14,6 @@ import com.restfb.DefaultFacebookClient;
 import com.restfb.FacebookClient;
 import com.restfb.Parameter;
 import com.restfb.Version;
-import fr.karim.main.auth.facebook.Constants;
-import fr.karim.main.auth.facebook.CustomUserFacebook;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 
@@ -33,6 +33,7 @@ public class FacebookOAuth2 {
     private String redirectUri = null;
     private Map userResponseData;
     private LocalServerReceiveFB localServerReceiveFB;
+    GoogleClientSecrets clientSecrets;
 
     private CustomUserFacebook userOAuth = null;
 
@@ -49,10 +50,10 @@ public class FacebookOAuth2 {
     public FacebookOAuth2() {
 
 	    try {
-		    GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY,
+	        clientSecrets = GoogleClientSecrets.load(JSON_FACTORY,
 				    new InputStreamReader(GoogleOAuth2.class.getResourceAsStream("/client_secrets.facebook.json")));
-		    // System.out.println(clientSecrets.getInstalled().getClientId());
-		    // System.out.println(clientSecrets.getInstalled().getClientSecret());
+		    System.out.println(clientSecrets.getInstalled().getClientId());
+		    System.out.println(clientSecrets.getInstalled().getClientSecret());
 	    } catch (IOException e) {
 		    e.printStackTrace();
 	    }
@@ -72,7 +73,7 @@ public class FacebookOAuth2 {
 
                 try {
                     if (this.StuffData()){
-                        FacebookClient facebookClient = new DefaultFacebookClient((String) this.userResponseData.get("access_token"), Constants.MY_APP_SECRET, Version.VERSION_4_0);
+                        FacebookClient facebookClient = new DefaultFacebookClient((String) this.userResponseData.get("access_token"), clientSecrets.getInstalled().getClientSecret(), Version.VERSION_4_0);
 
                         CustomUserFacebook user = facebookClient.fetchObject("me", CustomUserFacebook.class,
                                 Parameter.with("fields", "id, name, email, first_name, last_name, birthday, gender, short_name"));
@@ -94,7 +95,7 @@ public class FacebookOAuth2 {
                 .setScheme("https")
                 .setHost("www.facebook.com")
                 .setPath("/v4.0/dialog/oauth")
-                .setParameter("client_id", Constants.MY_APP_ID)
+                .setParameter("client_id", clientSecrets.getInstalled().getClientId())
                 .setParameter("display", "popup")
                 .setParameter("response_type", "token")
                 .setParameter("redirect_uri", Constants.REDIRECT_URI)

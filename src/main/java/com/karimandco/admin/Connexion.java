@@ -37,7 +37,7 @@ public class Connexion extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        panneauFormConnexion1 = new PanneauFormConnexion();
+        panneauFormConnexion1 = new com.karimandco.auth.PanneauFormConnexion();
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -109,7 +109,7 @@ public class Connexion extends javax.swing.JDialog {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private PanneauFormConnexion panneauFormConnexion1;
+    private com.karimandco.auth.PanneauFormConnexion panneauFormConnexion1;
     // End of variables declaration//GEN-END:variables
 
 }

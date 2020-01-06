@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package fr.karim.main.auth;
+package fr.karim.main.auth.facebook;
 
+import fr.karim.main.auth.facebook.FacebookOAuth2;
 import fr.karim.main.auth.facebook.CustomUserFacebook;
 import javax.swing.JButton;
 

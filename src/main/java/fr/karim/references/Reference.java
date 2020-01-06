@@ -34,4 +34,6 @@ public final class Reference {
     public static Color MAIN_DARK = new Color(25, 28, 32);
     public static Color COLOR_VALIDATED = new Color(119, 221, 119);
     public static Color COLOR_NOT_VALIDATED = new Color(236, 25, 25);
+    
+    public static String URL_ICON_SOFTWARE = "https://i.imgur.com/0miAQ1w.png";
 }

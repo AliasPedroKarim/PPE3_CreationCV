@@ -5,6 +5,8 @@
  */
 package fr.karim.main.auth;
 
+import fr.karim.main.auth.facebook.JPanelFacebook;
+import fr.karim.main.auth.google.JPanelGoogle;
 import fr.karim.main.auth.facebook.CustomUserFacebook;
 import fr.karim.main.auth.google.CustomUserGoogle;
 
@@ -30,8 +32,8 @@ public class JPanelAuthWithAPI extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanelFacebook1 = new fr.karim.main.auth.JPanelFacebook();
-        jPanelGoogle1 = new fr.karim.main.auth.JPanelGoogle();
+        jPanelFacebook1 = new fr.karim.main.auth.facebook.JPanelFacebook();
+        jPanelGoogle1 = new fr.karim.main.auth.google.JPanelGoogle();
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -80,7 +82,7 @@ public class JPanelAuthWithAPI extends javax.swing.JPanel {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private fr.karim.main.auth.JPanelFacebook jPanelFacebook1;
-    private fr.karim.main.auth.JPanelGoogle jPanelGoogle1;
+    private fr.karim.main.auth.facebook.JPanelFacebook jPanelFacebook1;
+    private fr.karim.main.auth.google.JPanelGoogle jPanelGoogle1;
     // End of variables declaration//GEN-END:variables
 }

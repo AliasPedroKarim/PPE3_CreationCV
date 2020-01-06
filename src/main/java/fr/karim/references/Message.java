@@ -16,6 +16,11 @@ public class Message {
         MESSAGE_CI_INFO_DELETE = "Si vous voulez supprimé des éléments de [%s], veuillez les selectionnés !",
         TITRE_MESSAGE_CI_INFO_DELETE = "Liste des éléments à supprimer vide",
         QUESTION_SUPPRESION = "Etes-vous sûr de vouloir supprimer %s.",
-        TITLE_QUESTION_SUPPRESION = "Comfimez la suppression";
+        TITLE_QUESTION_SUPPRESION = "Comfimez la suppression",
+        MESSAGE_GENERATION_PDF_SUCCESS = "Votre PDF a bien été généré !",
+        TITLE_MESSAGE_GENERATION_PDF_SUCCESS = "Génération PDF succès",
+        MESSAGE_GENERATION_PDF_FAILED = "Un problème s'est produit lors de la génération du PDF.",
+        TITLE_MESSAGE_GENERATION_PDF_FAILED = "Génération PDF échec"
+        ;
     
 }

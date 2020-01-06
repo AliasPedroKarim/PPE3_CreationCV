@@ -204,6 +204,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="G&#xe9;n&#xe9;rer"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JComboBox" name="jComboBoxListCV">
       <Properties>

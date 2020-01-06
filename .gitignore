@@ -143,6 +143,6 @@ nbdist/
 # Custom
 **/client_secrets.google.json
 **/client_secrets.facebook.json
-**/DaoSIO.java
-**/Constants.java
+src/**/fr/karim/connexion/DaoSIO.java
+## **/Constants.java
 **/test_files

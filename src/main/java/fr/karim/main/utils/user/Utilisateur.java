@@ -216,6 +216,30 @@ public class Utilisateur extends com.karimandco.auth.Utilisateur {
         }
     }
 
+    public void reloadCV(){
+        cv = new ArrayList<CV>();
+        loadCVUser(this.getId());
+    }
+
+    public CV returnSingleCV(Integer cvID){
+        if (cv != null && cv.size() > 0){
+            for (CV i : cv){
+                if (i.getId() != null && i.getId().equals(cvID)){
+                    return i;
+                }
+            }
+        }
+        return null;
+    }
+
+    public Adresse getAdresse() {
+        return adresse;
+    }
+
+    public void setAdresse(Adresse adresse) {
+        this.adresse = adresse;
+    }
+
     public ArrayList<CV> getCv() {
         return cv;
     }

@@ -5,16 +5,19 @@
  */
 package fr.karim.main.utils;
 
+import com.adobe.acrobat.Viewer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import fr.karim.connexion.DaoSIO;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -26,6 +29,8 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
@@ -413,5 +418,35 @@ public class Helpers {
         
         return null;
         
+    }
+    
+    public static void showPDF(JPanel self, String pathFinding){
+        if(pathFinding != null && pathFinding.endsWith("pdf")){
+            try {
+                JPanel p = new JPanel(new BorderLayout());
+
+                //créer le viewer qui va servir à afficher le contenu du pdf
+                Viewer viewer = new Viewer();
+                p.add(viewer, BorderLayout.CENTER);
+                FileInputStream fis = new FileInputStream(pathFinding);
+                viewer.setDocumentInputStream(fis);
+                viewer.activate();
+                //créer le JFrame
+                JFrame f = new JFrame("Lecteur PDF");
+                f.setSize(1024, 768);
+                f.setLocationRelativeTo(self);
+                f.getContentPane().add(p);
+                
+                f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                if (JFrame.DISPOSE_ON_CLOSE >= 0) {
+                    File monfichier = new File(pathFinding);
+                    monfichier.deleteOnExit();
+                }
+                
+                f.setVisible(true);
+            } catch (Exception ex) {
+                Logger.getLogger(Helpers.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 }

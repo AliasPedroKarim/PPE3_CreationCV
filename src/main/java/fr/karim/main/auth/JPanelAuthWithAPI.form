@@ -39,9 +39,9 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="fr.karim.main.auth.JPanelFacebook" name="jPanelFacebook1">
+    <Component class="fr.karim.main.auth.facebook.JPanelFacebook" name="jPanelFacebook1">
     </Component>
-    <Component class="fr.karim.main.auth.JPanelGoogle" name="jPanelGoogle1">
+    <Component class="fr.karim.main.auth.google.JPanelGoogle" name="jPanelGoogle1">
     </Component>
   </SubComponents>
 </Form>
