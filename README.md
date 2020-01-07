@@ -84,7 +84,9 @@ Voici le lien pour [Télécharger](http://argouml-downloads.tigris.org/nonav/arg
   
 #### Dépendance module  
 _pour connaître la liste des dépendances présence sur le logiciel, veuillez vous référer sur le fichier `pom.xml` dans la section dépendance_  
-#####  
-  
+
+#### Plus de documentation
+si vous voulez aller plus dans le détail pour ce projet cliquez ici 
+
 #### Crédit  
 Lycée Jean Lurcat
