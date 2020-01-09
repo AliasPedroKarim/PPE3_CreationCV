@@ -5,6 +5,7 @@
  */
 package com.karimandco.image;
 
+import com.karimandco.auth.Utilisateur;
 import fr.karim.main.utils.Helpers;
 import java.awt.Color;
 import javax.swing.*;
@@ -167,7 +168,11 @@ public class ChoisirImage extends javax.swing.JPanel {
             } else {
 
                 if (idUtilisateur != null) {
-                    create = fr.karim.connexion.DaoSIO.getInstance().uplodImage(idUtilisateur);
+                    
+                    if(!Utilisateur.getInstance().getEstConnecte()){
+                        create = fr.karim.connexion.DaoSIO.getInstance().uplodImage(idUtilisateur);
+                    }
+                    
                 } else {
                     JOptionPane.showMessageDialog(null, Message.MESSAGE_NOT_CONNECT, Message.TITLE_MESSAGE_NOT_CONNECT, JOptionPane.ERROR_MESSAGE);
                 }

@@ -28,7 +28,7 @@ public class Adresse extends Complementaire {
         this.pays = pays;
     }
     
-    public Integer sync(){
+    public Integer sync() {
         if(this.id != null){
             return DaoSIO.getInstance().requeteAction("UPDATE " + super.TABLE + " "
                 + "SET "

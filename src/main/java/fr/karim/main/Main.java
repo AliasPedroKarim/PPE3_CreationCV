@@ -23,20 +23,7 @@ public class Main {
     
     public static void main(String[] args) {
         
-        jFrameConnexion = new JFrameConnexion();
-        jFrameConnexion.setTitle(String.format(Reference.TITLE_NAME_SOFTWARE, "Connexion"));
-        jFrameConnexion.setVisible(true);
-        
-        jFrameConnexion.getHome().getConnexion().getjButtonConnexion().addMouseListener(new MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                if(Utilisateur.getInstance().getEstConnecte()){
-                    jFrameConnexion.setVisible(false);
-                    jFrameConnexion = null;
-                    OpenSoftware();
-                }
-                
-            }
-        });
+        initialize();
         
     }
     
@@ -60,8 +47,23 @@ public class Main {
         jFrameSoftware.setVisible(false);
         jFrameSoftware = null;
         
+        initialize();
+    }
+    
+    public static void initialize(){
         jFrameConnexion = new JFrameConnexion();
         jFrameConnexion.setTitle(String.format(Reference.TITLE_NAME_SOFTWARE, "Connexion"));
         jFrameConnexion.setVisible(true);
+        
+        jFrameConnexion.getHome().getConnexion().getjButtonConnexion().addMouseListener(new MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                if(Utilisateur.getInstance().getEstConnecte()){
+                    jFrameConnexion.setVisible(false);
+                    jFrameConnexion = null;
+                    OpenSoftware();
+                }
+                
+            }
+        });
     }
 }

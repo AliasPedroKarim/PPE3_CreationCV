@@ -5,6 +5,7 @@
  */
 package fr.karim.main.utils.user;
 
+import fr.karim.connexion.DaoSIO;
 import fr.karim.main.utils.Helpers;
 import fr.karim.references.Reference;
 
@@ -49,6 +50,19 @@ public class Utilisateur extends com.karimandco.auth.Utilisateur {
         Utilisateur.getInstance().monUtilisateur = null;
         Utilisateur.setIdentifiant(null);
         return Utilisateur.getInstance().getEstConnecte();
+    }
+    
+    public void reloadUser(){
+        if(Utilisateur.getInstance().getEstConnecte()){
+            try {
+                List<Map<String, Object>> res = Helpers.getIntance().resultSetToList(DaoSIO.getInstance().requeteSelection("SELECT * FROM utilisateurs WHERE identifiant = '" + Utilisateur.getIdentifiant() + "'"));
+                if(res != null && res.get(0) != null){
+                    Utilisateur.getInstance().loadDataUser(res.get(0));
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Utilisateur.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
     
     public Boolean loadDataUser(Map<String, Object> data){
@@ -118,6 +132,7 @@ public class Utilisateur extends com.karimandco.auth.Utilisateur {
         }
 
         if(req != null && req.size() > 0){
+            centreInterets = new ArrayList<CentreInteret>();
             for (Map<String,Object> item : req) {
                 centreInterets.add(
                     new CentreInteret()
@@ -140,6 +155,7 @@ public class Utilisateur extends com.karimandco.auth.Utilisateur {
         }
 
         if(req != null && req.size() > 0){
+            informatiques = new ArrayList<Informatique>();
             for (Map<String,Object> item : req) {
                 informatiques.add(
                     new Informatique()
@@ -162,6 +178,7 @@ public class Utilisateur extends com.karimandco.auth.Utilisateur {
         }
 
         if(req != null && req.size() > 0){
+            langues = new ArrayList<Langue>();
             for (Map<String,Object> item : req) {
                 langues.add(
                     new Langue()
@@ -207,6 +224,7 @@ public class Utilisateur extends com.karimandco.auth.Utilisateur {
         }
 
         if(req != null && req.size() > 0){
+            cv = new ArrayList<CV>();
             for (Map<String,Object> item : req) {
                 cv.add(
                     new CV((Integer) item.get("id"))

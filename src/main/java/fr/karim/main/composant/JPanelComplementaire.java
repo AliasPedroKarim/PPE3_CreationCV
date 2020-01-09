@@ -9,6 +9,7 @@ import fr.karim.main.utils.Helpers;
 import fr.karim.main.utils.user.CentreInteret;
 import fr.karim.main.utils.user.Informatique;
 import fr.karim.main.utils.user.Langue;
+import fr.karim.main.utils.user.Utilisateur;
 import fr.karim.references.Message;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,6 +70,28 @@ public class JPanelComplementaire extends javax.swing.JPanel {
         jTableCentreInteretModel = (DefaultTableModel) jTableCentreInteret.getModel();
         jTableInformatiqueModel = (DefaultTableModel) jTableInformatique.getModel();
         jTableLangueModel = (DefaultTableModel) jTableLangue.getModel();
+        
+        
+        if(Utilisateur.getInstance().getEstConnecte()){
+            List<CentreInteret> cts = Utilisateur.getInstance().getCentreInterets();
+            for(CentreInteret ct : cts){
+                arrayCentreInteret.add(ct);
+            }
+
+            List<Informatique> infos = Utilisateur.getInstance().getInformatiques();
+            for(Informatique info : infos){
+                arrayInformatique.add(info);
+            }
+
+            List<Langue> langues = Utilisateur.getInstance().getLangues();
+            for(Langue langue : langues){
+                arrayLangue.add(langue);
+            }
+            
+            updateTables();
+            
+        }
+        
     }
 
     public List<CentreInteret> getArrayCentreInteret() {
@@ -395,6 +418,7 @@ public class JPanelComplementaire extends javax.swing.JPanel {
                         CentreInteret centreinteret = arrayCentreInteret.get(i[j]);
                         if(centreinteret.getId() != null){
                             centreinteret.delete();
+                            Utilisateur.getInstance().reloadUser();
                         }
                         
                         arrayCentreInteret.remove(i[j]);
@@ -417,6 +441,7 @@ public class JPanelComplementaire extends javax.swing.JPanel {
                         Informatique informatique = arrayInformatique.get(i[j]);
                         if(informatique.getId() != null){
                             informatique.delete();
+                            Utilisateur.getInstance().reloadUser();
                         }
                         
                         arrayInformatique.remove(i[j]);
@@ -448,6 +473,7 @@ public class JPanelComplementaire extends javax.swing.JPanel {
                     Langue langue = arrayLangue.get(i[j]);
                     if(langue.getId() != null){
                         langue.delete();
+                        Utilisateur.getInstance().reloadUser();
                     }
                     
                     arrayLangue.remove(i[j]);
@@ -517,6 +543,38 @@ public class JPanelComplementaire extends javax.swing.JPanel {
                 i.sync();
             }
         }
+        
+    }
+    
+    public void updateTables(){
+        
+        jTableCentreInteret.removeAll();
+        jTableCentreInteretModel.setRowCount(0);
+        for(CentreInteret i : arrayCentreInteret){
+            jTableCentreInteretModel.addRow(new Object[]{ i.getLabel(), i.getDescription() });
+        }
+
+        jTableCentreInteret.setModel(jTableCentreInteretModel);
+        
+        // -----------------------------
+
+        jTableInformatique.removeAll();
+        jTableInformatiqueModel.setRowCount(0);
+        for(Informatique i : arrayInformatique){
+            jTableInformatiqueModel.addRow(new Object[]{ i.getLabel(), i.getDescription() });
+        }
+
+        jTableInformatique.setModel(jTableInformatiqueModel);
+        
+        // -----------------------------
+        
+        jTableLangue.removeAll();
+        jTableLangueModel.setRowCount(0);
+        for(Langue i : arrayLangue){
+            jTableLangueModel.addRow(new Object[]{ i.getLabel(), i.getNiveau(), i.getPercentage() });
+        }
+
+        jTableLangue.setModel(jTableLangueModel);
         
     }
     

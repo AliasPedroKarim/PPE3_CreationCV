@@ -2,7 +2,10 @@ package fr.karim.main.utils.user;
 
 import fr.karim.connexion.DaoSIO;
 import fr.karim.references.Reference;
+import java.sql.SQLException;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Langue extends Complementaire {
 
@@ -38,11 +41,11 @@ public class Langue extends Complementaire {
                     + "label = '" + this.getLabel()
                     + "', niveau = '" + this.getNiveau()
                     + "', percentage = '" + this.getPercentage()
-                    + "', modified_at = '" + Reference.simpleDateDashes3.format(new Date())
+                    + "', modified_at = '" + Reference.simpleDateDashes3.format(new Date()) + "' "
                 + "WHERE id = " + this.getId());
         }
 
-        return DaoSIO.getInstance().requeteAction("INSERT INTO " + this.TABLE + " (id, label, niveau, percentage, id_utilisateur, created_at, modified_at) "
+        DaoSIO.getInstance().requeteAction("INSERT INTO " + this.TABLE + " (id, label, niveau, percentage, id_utilisateur, created_at, modified_at) "
             + "VALUES (null, "
                 + "'" + this.getLabel() + "', "
                 + "'" + this.getNiveau() + "', "
@@ -50,6 +53,13 @@ public class Langue extends Complementaire {
                 + "'" + this.getId_utilisateur() + "', "
                 + "'" + Reference.simpleDateDashes3.format(new Date()) + "', "
                 + "'" + Reference.simpleDateDashes3.format(new Date()) + "')");
+        try {
+            return this.id = DaoSIO.getInstance().getLastID(this.TABLE, "id");
+        } catch (SQLException ex) {
+            Logger.getLogger(CentreInteret.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null;
     }
 
     @Override

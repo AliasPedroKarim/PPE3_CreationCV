@@ -617,96 +617,106 @@ public class PanneauFormInscription extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonInscriptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInscriptionActionPerformed
-        if (nomOK && prenomOK && identifiantOK && courrielOK && numeroTelephoneOK && dateNaissanceOK && mdpOK && mdpConfOK && n_rueOK) {
-            String[] date_split = this.panneauDateNaissance.getChamp2().getText().split("/");
-            String date_newFormat = date_split[2] + "-" + date_split[1] + "-" + date_split[0];
+        checkN_rue();
+        
+        if(n_rueOK){
+            if (nomOK && prenomOK && identifiantOK && courrielOK && numeroTelephoneOK && dateNaissanceOK && ( (mdpOK && mdpConfOK) || Utilisateur.getInstance().getEstConnecte() )) {
+                String[] date_split = this.panneauDateNaissance.getChamp2().getText().split("/");
+                String date_newFormat = date_split[2] + "-" + date_split[1] + "-" + date_split[0];
 
-            String mdp_sha256 = Cryptage.sha256(Cryptage.sha256(String.valueOf(this.panneauMdp.getChampSecret1().getPassword())));
-
-            Integer request = null;
-            
-            if(Utilisateur.getInstance().getEstConnecte() && !this.getCreateNewUser()){
-                request = DaoSIO.getInstance().requeteAction("UPDATE utilisateurs "
-                    + "SET "
-                        + "nom = '" + this.panneauNom.getChamp2().getText() + "', "
-                        + "prenom = '" + this.panneauPrenom.getChamp2().getText() + "', "
-                        + "genre = '" + (String) this.getjComboBoxGenre().getSelectedItem() + "', "
-                        + "identifiant = '" + this.panneauIdentifiant.getChamp2().getText() + "', "
-                        + "courriel = '" + this.panneauCourriel.getChamp2().getText() + "', "
-                        + "num_telephone = '" + this.panneauNumeroTelephone.getChamp2().getText() + "', "
-                        + "date_de_naissance = '" + date_newFormat + "', "
-                        + "mot_de_passe = '" + mdp_sha256 + "', "
-                        + "modified_at = '" + Reference.simpleDateDashes3.format(new Date()) + "' "
-                    + "WHERE "
-                        + "id = " + Utilisateur.getInstance().getId());
-            }else{
-                request = DaoSIO.getInstance().requeteAction("INSERT "
-                    + "INTO utilisateurs (nom, prenom, genre, identifiant, courriel, num_telephone, date_de_naissance, mot_de_passe, created_at, modified_at) "
-                    + "VALUES ('" + this.panneauNom.getChamp2().getText() + "', '" 
-                    + this.panneauPrenom.getChamp2().getText() + "', '" 
-                    + (String) this.getjComboBoxGenre().getSelectedItem() + "', '" 
-                    + this.panneauIdentifiant.getChamp2().getText() + "', '" 
-                    + this.panneauCourriel.getChamp2().getText() + "', '" 
-                    + this.panneauNumeroTelephone.getChamp2().getText() + "', '" 
-                    + date_newFormat + "', '" 
-                    + mdp_sha256 + "', '" 
-                    + Reference.simpleDateDashes3.format(new Date()) + "', '" 
-                    + Reference.simpleDateDashes3.format(new Date()) + "' )");
-            }
-            
-            if (request > 0) {
+                String mdp_sha256 = null;
                 
-                try {
-                    Integer idUtilisateur = null;
-                    
-                    if(Utilisateur.getInstance().getEstConnecte() && !this.getCreateNewUser()){
-                        idUtilisateur = Utilisateur.getInstance().getId();
-                    }else{
-                        idUtilisateur = fr.karim.connexion.DaoSIO.getInstance().getLastID("utilisateurs", "id");
-                    }
-                    
-                    if(idUtilisateur != null){
-                        Integer i = null;
-                        
-                        if(Utilisateur.getInstance().getEstConnecte() && Utilisateur.getInstance().getMedia() != null && !this.getCreateNewUser()){
-                            i = choisirImage1.sendImage(idUtilisateur, Utilisateur.getInstance().getMedia().getId());
-                        }else{
-                            i = choisirImage1.sendImage(idUtilisateur);
-                            
-                            if(!jTextFieldNumRue.getText().isEmpty() 
-                                || !jTextFieldNomRue.getText().isEmpty() 
-                                || !jTextFieldCP.getText().isEmpty() 
-                                || !jTextFieldVille.getText().isEmpty() 
-                                || !jTextFieldPays.getText().isEmpty()){
-                                
-                                adresse
-                                    .setN_rue(!jTextFieldNumRue.getText().isEmpty() ? Integer.parseInt(jTextFieldNumRue.getText()) : null)
-                                    .setNom_rue(jTextFieldNomRue.getText())
-                                    .setCode_postale(jTextFieldCP.getText())
-                                    .setVille(jTextFieldVille.getText())
-                                    .setPays(jTextFieldPays.getText())
-                                    .setId_utilisateur(idUtilisateur);
-                            
-                                adresse.sync();
-                            }
-                            
-                            this.getComplementaire1().sync(idUtilisateur);
-                            
-                        }
-                        this.setInscrit(i != null && i == 1);
-                        
-                        jLabelEtatInscription.setForeground(Color.blue);
-                        jLabelEtatInscription.setText(Utilisateur.getInstance().getEstConnecte() && !this.getCreateNewUser() ? "Modification réussi" : "Inscription réussi");
-                        this.setInscriptionOK(true);
-                    }
-                } catch (SQLException ex) {
-                    Logger.getLogger(PanneauFormInscription.class.getName()).log(Level.SEVERE, null, ex);
+                String pass = String.valueOf(this.panneauMdp.getChampSecret1().getPassword());
+                if(!pass.equals("")){
+                    mdp_sha256 = Cryptage.sha256(Cryptage.sha256( pass ));
                 }
-            } else {
-                jLabelEtatInscription.setForeground(Reference.COLOR_NOT_VALIDATED);
-                jLabelEtatInscription.setText(Utilisateur.getInstance().getEstConnecte() ? "Echec de la modification" : "Echec de l'inscription");
-                this.setInscriptionOK(false);
+
+                Integer request = null;
+
+                if(Utilisateur.getInstance().getEstConnecte() && !this.getCreateNewUser()){
+                    request = DaoSIO.getInstance().requeteAction("UPDATE utilisateurs "
+                        + "SET "
+                            + "nom = '" + this.panneauNom.getChamp2().getText() + "', "
+                            + "prenom = '" + this.panneauPrenom.getChamp2().getText() + "', "
+                            + "genre = '" + (String) this.getjComboBoxGenre().getSelectedItem() + "', "
+                            + "identifiant = '" + this.panneauIdentifiant.getChamp2().getText() + "', "
+                            + "courriel = '" + this.panneauCourriel.getChamp2().getText() + "', "
+                            + "num_telephone = '" + this.panneauNumeroTelephone.getChamp2().getText() + "', "
+                            + "date_de_naissance = '" + date_newFormat + "', "
+                            + (mdp_sha256 != null ? "mot_de_passe = '" + mdp_sha256 + "', " : "")
+                            + "modified_at = '" + Reference.simpleDateDashes3.format(new Date()) + "' "
+                        + "WHERE "
+                            + "id = " + Utilisateur.getInstance().getId());
+                }else{
+                    request = DaoSIO.getInstance().requeteAction("INSERT "
+                        + "INTO utilisateurs (nom, prenom, genre, identifiant, courriel, num_telephone, date_de_naissance, mot_de_passe, created_at, modified_at) "
+                        + "VALUES ('" + this.panneauNom.getChamp2().getText() + "', '" 
+                        + this.panneauPrenom.getChamp2().getText() + "', '" 
+                        + (String) this.getjComboBoxGenre().getSelectedItem() + "', '" 
+                        + this.panneauIdentifiant.getChamp2().getText() + "', '" 
+                        + this.panneauCourriel.getChamp2().getText() + "', '" 
+                        + this.panneauNumeroTelephone.getChamp2().getText() + "', '" 
+                        + date_newFormat + "', '" 
+                        + mdp_sha256 + "', '" 
+                        + Reference.simpleDateDashes3.format(new Date()) + "', '" 
+                        + Reference.simpleDateDashes3.format(new Date()) + "' )");
+                }
+
+                if (request > 0) {
+
+                    try {
+                        Integer idUtilisateur = null;
+
+                        if(Utilisateur.getInstance().getEstConnecte() && !this.getCreateNewUser()){
+                            idUtilisateur = Utilisateur.getInstance().getId();
+                        }else{
+                            idUtilisateur = fr.karim.connexion.DaoSIO.getInstance().getLastID("utilisateurs", "id");
+                        }
+
+                        if(idUtilisateur != null){
+                            Integer i = null;
+
+                            if(Utilisateur.getInstance().getEstConnecte() && Utilisateur.getInstance().getMedia() != null && !this.getCreateNewUser()){
+                                i = choisirImage1.sendImage(idUtilisateur, Utilisateur.getInstance().getMedia().getId());
+                            }else{
+                                i = choisirImage1.sendImage(idUtilisateur);
+
+                                if(!jTextFieldNumRue.getText().isEmpty() 
+                                    || !jTextFieldNomRue.getText().isEmpty() 
+                                    || !jTextFieldCP.getText().isEmpty() 
+                                    || !jTextFieldVille.getText().isEmpty() 
+                                    || !jTextFieldPays.getText().isEmpty()){
+
+                                    adresse
+                                        .setN_rue(!jTextFieldNumRue.getText().isEmpty() ? Integer.parseInt(jTextFieldNumRue.getText()) : null)
+                                        .setNom_rue(jTextFieldNomRue.getText())
+                                        .setCode_postale(jTextFieldCP.getText())
+                                        .setVille(jTextFieldVille.getText())
+                                        .setPays(jTextFieldPays.getText())
+                                        .setId_utilisateur(idUtilisateur);
+
+                                    adresse.sync();
+                                }
+                            }
+                            this.setInscrit(i != null && i == 1);
+                            this.getComplementaire1().sync(idUtilisateur);
+                            Utilisateur.getInstance().reloadUser();
+
+                            jLabelEtatInscription.setForeground(Color.blue);
+                            jLabelEtatInscription.setText(Utilisateur.getInstance().getEstConnecte() && !this.getCreateNewUser() ? "Modification réussi" : "Inscription réussi");
+                            this.setInscriptionOK(true);
+                        }
+                    } catch (SQLException ex) {
+                        Logger.getLogger(PanneauFormInscription.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else {
+                    jLabelEtatInscription.setForeground(Reference.COLOR_NOT_VALIDATED);
+                    jLabelEtatInscription.setText(Utilisateur.getInstance().getEstConnecte() ? "Echec de la modification" : "Echec de l'inscription");
+                    this.setInscriptionOK(false);
+                }
             }
+            
+            
         } else {
             jLabelEtatInscription.setForeground(Reference.COLOR_NOT_VALIDATED);
             jLabelEtatInscription.setText("Champ(s) manquant(s) ou n° de rue invalide");
@@ -739,7 +749,7 @@ public class PanneauFormInscription extends javax.swing.JPanel {
     }//GEN-LAST:event_jTextFieldNumRueKeyReleased
 
     private void jTextFieldNumRueFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldNumRueFocusLost
-        this.setN_rueOK(jTextFieldNumRue.getText().isEmpty() ? true : this.getN_rueOK());
+        checkN_rue();
     }//GEN-LAST:event_jTextFieldNumRueFocusLost
 
     public Boolean getInscrit() {
@@ -752,6 +762,10 @@ public class PanneauFormInscription extends javax.swing.JPanel {
 
     public JPanelComplementaire getComplementaire1() {
         return complementaire1;
+    }
+    
+    public void checkN_rue(){
+        this.setN_rueOK(jTextFieldNumRue.getText().isEmpty() ? true : this.getN_rueOK());
     }
  
     // Variables declaration - do not modify//GEN-BEGIN:variables
