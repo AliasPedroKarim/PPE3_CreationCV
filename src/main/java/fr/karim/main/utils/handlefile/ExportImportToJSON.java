@@ -3,7 +3,6 @@ package fr.karim.main.utils.handlefile;
 import fr.karim.main.utils.Helpers;
 import fr.karim.references.Message;
 import fr.karim.references.Reference;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -173,36 +172,38 @@ public class ExportImportToJSON extends ExportImport {
                     List<Object> subItems = (ArrayList<Object>) item;
                     if (subItems != null && subItems.size() > 0) {
 
-                        int j = 0; // verifier si fromation ou expérience pro
+                        int j = 2; // verifier si fromation ou expérience pro
                         for (Object subItem : subItems) {
 
                             if (subItem instanceof List) {
 
                                 List<Object> subSubItem = (ArrayList<Object>) subItem;
 
-                                generator
-                                        .writeStartArray(indexes_string.get(j == 0 ? 2 : 3));
+                                if(indexes_string.size() > j){
+                                    generator
+                                        .writeStartArray(indexes_string.get(j));
 
-                                for (Object s : subSubItem) {
-                                    if(s instanceof List){
-                                        String[] indexesField1 = (String[]) indexes.get(indexes_string.get(j == 0 ? 2 : 3));
+                                    for (Object s : subSubItem) {
+                                        if(s instanceof List){
+                                            String[] indexesField1 = (String[]) indexes.get(indexes_string.get(j));
 
-                                        generator
-                                                .writeStartObject();
-                                        int k = 0;
-                                        for (String l : (ArrayList<String>) s) {
-
-                                            generator.write(indexesField1[k], l);
-                                            k++;
-
+                                            generator
+                                                    .writeStartObject();
+                                            int k = 0;
+                                            for (String l : (ArrayList<String>) s) {
+                                                if(k < indexesField1.length){
+                                                    generator.write(indexesField1[k], l);
+                                                    k++;
+                                                }
+                                            }
+                                            generator
+                                                    .writeEnd();
                                         }
-                                        generator
-                                                .writeEnd();
                                     }
+                                    j++;
+                                    generator
+                                            .writeEnd();
                                 }
-                                j++;
-                                generator
-                                        .writeEnd();
                             } else {
                                 generator
                                         .write((indexesField[i] != null ? indexesField[i] : "element_" + i), subItem != null ? (String) subItem : "null");

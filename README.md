@@ -1,7 +1,5 @@
-
-  
 <p align="center">  
-<img src="https://image.flaticon.com/icons/svg/942/942782.svg" width="100"></img>  
+    <img src="https://image.flaticon.com/icons/svg/942/942782.svg" width="100"></img>  
 </p>  
 
 ---
@@ -47,18 +45,18 @@ Une fois muni de vos clients ID et de vos clients secrets, pour chacun des fichi
   
 #### Fonctionnalité du Logiciel  
   
-  - **une interface de connexion et inscription**
-	  - Inscription avec les informations de l'API Facebook ou Google  
-	  - Photo de profile  
+- **une interface de connexion et inscription**
+    - Inscription avec les informations de l'API Facebook ou Google  
+    - Photo de profile  
 - **Permet la création de multiples Curriculum Vitae**  
-	- On peut spécifier de multiples données notamment **l'expérience professionnelle**,  **la formation**
+    - On peut spécifier de multiples données notamment **l'expérience professionnelle**,  **la formation**
 	- Le titre, la description du CV, ...
 - **Vous pouvez importer exporter vos données**   
 	- en JSON  
-   - en XML  
-   - en CSV  
+	- en XML  
+	- en CSV  
 - **Vous avez un accès à une espace administration si votre compte est administrateur**
-	- Création, Modification ou Suppression d'un utilisateur  
+    - Création, Modification ou Suppression d'un utilisateur  
 - **Vous avez un accès un espace utilisateur où vous pouvez voir tous les informations actuelles ou même les modifier**  
 - **vous pouvez aussi imprimer en document PDF un Curriculum Vitae**  
   
@@ -66,13 +64,13 @@ Une fois muni de vos clients ID et de vos clients secrets, pour chacun des fichi
   
 **Récupérer le code :**
 + <u>__1er Méthode :__</u> Le code source est téléchargeable avec ce lien [GitHub](https://github.com/AliasPedroKarim/PPE3_CreationCV/archive/master.zip) _(Lien de la branche master)_
-	+ Comme c'est un fichier zip, veuillez le dé-compilé. 
+    + Comme c'est un fichier zip, veuillez le dé-compilé. 
 	+ Sur l'IDE Netbeans ou autre, créer un nouveau projet Maven  
 	+ Une fois créer, ouvrer aussi le projet composant sous Netbeans  
 + <u>__2eme Méthode :__</u> Sous Netbeans, un onglet `Team` est disponible et on peut clone les projets GitHub grâce au lien `.git` disponible en ⬆ de la page `https://github.com/AliasPedroKarim/PPE3_CreationCV.git` :    
      
      ![](https://i.imgur.com/aoDpRMu.png)  
-          ![](https://i.imgur.com/wiwWBJ8.png)  
+     ![](https://i.imgur.com/wiwWBJ8.png)  
   
 #### ArgoUML  (Diagramme des classes)
 Voici le lien pour [Télécharger](http://argouml-downloads.tigris.org/nonav/argouml-0.34/ArgoUML-0.34-setup.exe) ArgoUML pour pouvoir interagir avec le diagramme des classes du projet. un fichier ArgoUML est présent à la racine du projet c'est un fichier `.zargo`, il suffira de l'ouvrir avec ArgoUML.

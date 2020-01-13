@@ -30,6 +30,7 @@ import org.json.simple.JSONObject;
 
 import fr.karim.connexion.DaoSIO;
 import fr.karim.main.utils.handlefile.ExportImportToXML;
+import fr.karim.main.utils.user.CV;
 import fr.karim.references.Message;
 import java.io.IOException;
 
@@ -151,7 +152,7 @@ public class ImportExportFile extends javax.swing.JPanel {
         jSeparator2 = new javax.swing.JSeparator();
         jLabel2 = new javax.swing.JLabel();
         jSeparator3 = new javax.swing.JSeparator();
-        jButton1 = new javax.swing.JButton();
+        jButtonGeneratorPDF = new javax.swing.JButton();
         jComboBoxListCV = new javax.swing.JComboBox<>();
         jLabel3 = new javax.swing.JLabel();
 
@@ -187,10 +188,10 @@ public class ImportExportFile extends javax.swing.JPanel {
         jLabel2.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
         jLabel2.setText("Générer (PDF)");
 
-        jButton1.setText("Générer");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jButtonGeneratorPDF.setText("Générer");
+        jButtonGeneratorPDF.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                jButtonGeneratorPDFActionPerformed(evt);
             }
         });
 
@@ -224,10 +225,10 @@ public class ImportExportFile extends javax.swing.JPanel {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jComboBoxListCV, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(jButton1))
+                                .addComponent(jButtonGeneratorPDF))
                             .addComponent(jLabel3))
                         .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
@@ -260,7 +261,7 @@ public class ImportExportFile extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jComboBoxListCV, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
+                    .addComponent(jButtonGeneratorPDF))
                 .addGap(10, 10, 10))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
@@ -405,50 +406,55 @@ public class ImportExportFile extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_jButtonAddImportActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        
-        JFileChooser chooser = new JFileChooser();
-        chooser.setCurrentDirectory(new File("."));
-        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        int r = chooser.showSaveDialog(null);
+    private void jButtonGeneratorPDFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGeneratorPDFActionPerformed
+        Object cvID = jComboBoxListCV.getSelectedItem();
 
-        if (chooser.getSelectedFile() != null && r == JFileChooser.APPROVE_OPTION) {
+        if(cvID != null){
+            String cvIDSelected = cvID.toString();
+            JFileChooser chooser = new JFileChooser();
+            chooser.setCurrentDirectory(new File("."));
+            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            int r = chooser.showSaveDialog(null);
 
-            String cvIDSelected = jComboBoxListCV.getSelectedItem().toString();
-            
-            if(cvIDSelected.matches("^[0-9]+")){
-                if (!cvIDSelected.equals("")) {
+            if (chooser.getSelectedFile() != null && r == JFileChooser.APPROVE_OPTION) {
 
-                    if (Utilisateur.getInstance().getEstConnecte()) {
+                if(cvIDSelected.matches("^[0-9]+")){
+                    if (!cvIDSelected.equals("")) {
 
-                        GeneratorCVPDF g = new GeneratorCVPDF()
-                                .setPath(chooser.getSelectedFile().toPath().toString())
-                                .setCvID(Integer.parseInt(cvIDSelected));
-                        
-                        try {
-                            if(g.genererPDF()){
-                                
-                                int reply = JOptionPane.showConfirmDialog(this, Message.MESSAGE_GENERATION_PDF_SUCCESS, Message.TITLE_MESSAGE_GENERATION_PDF_SUCCESS, HEIGHT);
-                                
-                                if(reply == JOptionPane.YES_OPTION){
-                                    Helpers.showPDF(this, g.getPath());
+                        if (Utilisateur.getInstance().getEstConnecte()) {
+
+                            GeneratorCVPDF g = new GeneratorCVPDF()
+                                    .setPath(chooser.getSelectedFile().toPath().toString())
+                                    .setCvID(Integer.parseInt(cvIDSelected));
+
+                            try {
+                                if(g.genererPDF()){
+
+                                    int reply = JOptionPane.showConfirmDialog(this, Message.MESSAGE_GENERATION_PDF_SUCCESS, Message.TITLE_MESSAGE_GENERATION_PDF_SUCCESS, HEIGHT);
+
+                                    if(reply == JOptionPane.YES_OPTION){
+                                        Helpers.showPDF(this, g.getPath());
+                                    }
+
+                                }else{
+                                    JOptionPane.showMessageDialog(this, Message.MESSAGE_GENERATION_PDF_SUCCESS, Message.TITLE_MESSAGE_GENERATION_PDF_SUCCESS, HEIGHT);
+
                                 }
-                                
-                            }else{
-                                JOptionPane.showMessageDialog(this, Message.MESSAGE_GENERATION_PDF_SUCCESS, Message.TITLE_MESSAGE_GENERATION_PDF_SUCCESS, HEIGHT);
 
+                            } catch (BadElementException ex) {
+                                Logger.getLogger(ImportExportFile.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (IOException ex) {
+                                Logger.getLogger(ImportExportFile.class.getName()).log(Level.SEVERE, null, ex);
                             }
-                            
-                        } catch (BadElementException ex) {
-                            Logger.getLogger(ImportExportFile.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (IOException ex) {
-                            Logger.getLogger(ImportExportFile.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
                 }
             }
+        } else {
+            JOptionPane.showMessageDialog(this, Message.ID_CV_INVALID, "", JOptionPane.WARNING_MESSAGE);
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+            
+    }//GEN-LAST:event_jButtonGeneratorPDFActionPerformed
 
     public List<Object> buildData(List<Map<String, Object>> cv) {
         List<Object> finalData = new ArrayList<Object>();
@@ -488,11 +494,12 @@ public class ImportExportFile extends javax.swing.JPanel {
                             List<Object> subItemsElement = new ArrayList<Object>();
 
                             for (Map.Entry<String, Object> entry : subItem.entrySet()) {
-                                String type = entry.getValue().getClass().getSimpleName();
+                                Object type = entry.getValue();
+                                
                                 subItemsElement.add(
-                                        type.equals("Integer") ? String.valueOf(entry.getValue())
-                                        : type.equals("Date") ? Reference.simpleDateSlashes.format((Date) entry.getValue())
-                                        : (String) entry.getValue()
+                                    type != null && type.getClass().getSimpleName().equals("Integer") ? String.valueOf(entry.getValue())
+                                    : type != null && type.getClass().getSimpleName().equals("Date") ? Reference.simpleDateSlashes.format((Date) entry.getValue())
+                                    : (entry.getValue() != null ? (String) entry.getValue() : "null")
                                 );
                             }
                             subItemsArray.add(subItemsElement);
@@ -526,9 +533,18 @@ public class ImportExportFile extends javax.swing.JPanel {
         Map<String, Object> indexes = new LinkedHashMap<String, Object>();
 
         indexes.put("utilisateur", new String[]{"id_utilisateur", "identifiant", "nom", "prenom", "genre", "numero_telephone", "courriel", "date_de_naissance"});
-        indexes.put("cv", new String[]{"id", "titre", "description", "signature", "nom_maitrise", "maitrise"});
-        indexes.put("formation", new String[]{"id", "nom", "lieu", "description", "annee_debut", "annee_fin", "id_cv"});
-        indexes.put("experience_pro", new String[]{"id", "entreprise", "adresse", "description", "annee_debut", "annee_fin", "id_cv"});
+        
+        ArrayList<CV> c = Utilisateur.getInstance().getCv();
+        
+        if(c.size() > 0){
+            indexes.put("cv", new String[]{"id", "titre", "description", "signature", "nom_maitrise", "maitrise"});
+            if(c.get(0).getFormations().size() > 0){
+                indexes.put("formation", new String[]{"id", "nom", "lieu", "description", "annee_debut", "annee_fin", "id_cv"});
+            }
+            if(c.get(0).getExperiencePros().size() > 0){
+                indexes.put("experience_pro", new String[]{"id", "entreprise", "adresse", "description", "annee_debut", "annee_fin", "id_cv"});
+            }
+        }
 
         List<Object> builderData = this.buildData(cv);
 
@@ -548,9 +564,17 @@ public class ImportExportFile extends javax.swing.JPanel {
         Map<String, Object> indexes = new LinkedHashMap<String, Object>();
 
         indexes.put("utilisateur", new String[]{"id_utilisateur", "identifiant", "nom", "prenom", "genre", "numero_telephone", "courriel", "date_de_naissance"});
-        indexes.put("cv", new String[]{"id", "titre", "description", "signature", "nom_maitrise", "maitrise"});
-        indexes.put("formation", new String[]{"id", "nom", "lieu", "description", "annee_debut", "annee_fin", "id_cv"});
-        indexes.put("experience_pro", new String[]{"id", "entreprise", "adresse", "description", "annee_debut", "annee_fin", "id_cv"});
+        
+        ArrayList<CV> c = Utilisateur.getInstance().getCv();
+        if(c.size() > 0){
+            indexes.put("cv", new String[]{"id", "titre", "description", "signature", "nom_maitrise", "maitrise"});
+            if(c.get(0).getFormations().size() > 0){
+                indexes.put("formation", new String[]{"id", "nom", "lieu", "description", "annee_debut", "annee_fin", "id_cv"});
+            }
+            if(c.get(0).getExperiencePros().size() > 0){
+                indexes.put("experience_pro", new String[]{"id", "entreprise", "adresse", "description", "annee_debut", "annee_fin", "id_cv"});
+            }
+        }
 
         List<Object> builderData = this.buildData(cv);
 
@@ -572,7 +596,8 @@ public class ImportExportFile extends javax.swing.JPanel {
                     .loadFile()
                     .setIndexes(new String[]{"id_utilisateur", "identifiant", "nom", "prenom", "genre", "numero_telephone", "courriel", "date_de_naissance",
                 "id_cv", "titre", "description", "signature", "nom_maitrise", "maitrise", "formation", "experience_pro"})
-                    .importFile().getData();
+                    .importFile()
+                    .getData();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -717,9 +742,9 @@ public class ImportExportFile extends javax.swing.JPanel {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButtonAddImport;
     private javax.swing.JButton jButtonExport;
+    private javax.swing.JButton jButtonGeneratorPDF;
     private javax.swing.JButton jButtonImport;
     private javax.swing.JComboBox<String> jComboBoxFileExport;
     private javax.swing.JComboBox<String> jComboBoxListCV;

@@ -20,7 +20,8 @@ public class Message {
         MESSAGE_GENERATION_PDF_SUCCESS = "Votre PDF a bien été généré !",
         TITLE_MESSAGE_GENERATION_PDF_SUCCESS = "Génération PDF succès",
         MESSAGE_GENERATION_PDF_FAILED = "Un problème s'est produit lors de la génération du PDF.",
-        TITLE_MESSAGE_GENERATION_PDF_FAILED = "Génération PDF échec"
+        TITLE_MESSAGE_GENERATION_PDF_FAILED = "Génération PDF échec",
+        ID_CV_INVALID = "Attention, il semblerait que aucun identifiant de CV n'a été selectionné.\nSi vous n'en possédez pas de cv, veuillez vous en créer un pour pouvoir utilise cette fonctionnalité."
         ;
     
 }

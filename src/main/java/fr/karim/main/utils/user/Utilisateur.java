@@ -313,20 +313,21 @@ public class Utilisateur extends com.karimandco.auth.Utilisateur {
         this.genre = genre;
     }
 
-	public String getUrl_site() {
-		return url_site;
-	}
+    public String getUrl_site() {
+            return url_site;
+    }
 
-	public void setUrl_site(String url_site) {
-		this.url_site = url_site;
-	}
+    public void setUrl_site(String url_site) {
+            this.url_site = url_site;
+    }
 
-	public boolean isClient(){
+    public boolean isClient(){
         return this.getStatut() == 0;
     }
     
     public boolean isAdmin(){
         return this.getStatut() == 1;
     }
+    
     
 }

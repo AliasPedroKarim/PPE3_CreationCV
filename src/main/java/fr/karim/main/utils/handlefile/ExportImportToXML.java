@@ -150,7 +150,7 @@ public class ExportImportToXML extends ExportImport {
 
                     Element parentElement = doc.createElement(indexes_string.get(0));
                     rootElement.appendChild(parentElement);
-
+                    
                     for (Object value : values) {
                         if (value instanceof List) {
                             items.add(value);
@@ -180,38 +180,43 @@ public class ExportImportToXML extends ExportImport {
                             attr.setValue((String) subItems.get(0));
                             cvElement.setAttributeNode(attr);
 
-                            int j = 0; // verifier si fromation ou expérience pro
+                            int j = 2; // verifier si fromation ou expérience pro
                             for (Object subItem : subItems) {
 
                                 if (subItem instanceof List) {
 
                                     List<Object> subSubItem = (ArrayList<Object>) subItem;
 
-                                    Element formationsElement = doc.createElement(indexes_string.get(j == 0 ? 2 : 3));
-                                    cvElement.appendChild(formationsElement);
+                                    if(indexes_string.size() > j){
+                                        Element formationsElement = doc.createElement(indexes_string.get(j));
+                                        cvElement.appendChild(formationsElement);
 
-                                    for (Object s : subSubItem) {
-                                        if (s instanceof List) {
-                                            String[] indexesField1 = (String[]) indexes.get(indexes_string.get(j == 0 ? 2 : 3));
-                                            List<Object> subAttr = (ArrayList<Object>) s;
+                                        for (Object s : subSubItem) {
+                                            if (s instanceof List) {
+                                                String[] indexesField1 = (String[]) indexes.get(indexes_string.get(j));
+                                                List<Object> subAttr = (ArrayList<Object>) s;
 
-                                            Element formationElement = doc.createElement(indexes_string.get(j == 0 ? 2 : 3) + "Element");
-                                            formationsElement.appendChild(formationElement);
+                                                Element formationElement = doc.createElement(indexes_string.get(j) + "Element");
+                                                formationsElement.appendChild(formationElement);
 
-                                            Attr attrFormation = doc.createAttribute("id");
-                                            attrFormation.setValue((String) subAttr.get(0));
-                                            formationElement.setAttributeNode(attrFormation);
+                                                Attr attrFormation = doc.createAttribute("id");
+                                                attrFormation.setValue((String) subAttr.get(0));
+                                                formationElement.setAttributeNode(attrFormation);
 
-                                            int k = 0;
-                                            for (String l : (ArrayList<String>) s) {
-                                                Element idFormation = doc.createElement(indexesField1[k]);
-                                                idFormation.appendChild(doc.createTextNode(l));
-                                                formationElement.appendChild(idFormation);
-                                                k++;
+                                                int k = 0;
+                                                for (String l : (ArrayList<String>) s) {
+                                                    if(k < indexesField1.length){
+                                                        System.out.println(((List) s).size() + " -> " + k);
+                                                        Element idFormation = doc.createElement(indexesField1[k]);
+                                                        idFormation.appendChild(doc.createTextNode(l));
+                                                        formationElement.appendChild(idFormation);
+                                                        k++;
+                                                    }
+                                                }
                                             }
                                         }
+                                        j++;
                                     }
-                                    j++;
                                 } else {
                                     Element element = doc.createElement((indexesField[i] != null ? indexesField[i] : "element_" + i));
                                     element.appendChild(doc.createTextNode(subItem != null ? (String) subItem : "null"));
@@ -242,6 +247,8 @@ public class ExportImportToXML extends ExportImport {
                     tfe.printStackTrace();
                 }
             }
+            
+            
         } else {
             try {
                 this.loadFile();

@@ -17,17 +17,15 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="creationDuCV1" max="32767" attributes="0"/>
-                  <Group type="102" attributes="0">
-                      <Component id="importExportFile1" min="-2" pref="1119" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                  </Group>
-              </Group>
+              <Component id="creationDuCV1" max="32767" attributes="0"/>
               <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
           </Group>
           <Component id="jPanelListCV" max="32767" attributes="0"/>
           <Component id="jPanelAccueil" alignment="0" max="32767" attributes="0"/>
+          <Group type="102" alignment="0" attributes="0">
+              <Component id="importExportFile1" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+          </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -92,7 +90,7 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="jScrollPane2" alignment="0" pref="1121" max="32767" attributes="0"/>
+              <Component id="jScrollPane2" alignment="0" max="32767" attributes="0"/>
               <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">

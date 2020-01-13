@@ -449,7 +449,7 @@ public class JPanelAccount extends javax.swing.JPanel {
             }
         });
 
-        inscriptionDialog.setTitle(String.format(Reference.TITLE_NAME_SOFTWARE, "Inscription"));
+        inscriptionDialog.setTitle(String.format(Reference.TITLE_NAME_SOFTWARE, Utilisateur.getInstance().getEstConnecte() ? "Modification du compte" : "Inscription"));
         inscriptionDialog.setModal(true);
         inscriptionDialog.setVisible(true);
     }//GEN-LAST:event_jButtonModifyActionPerformed
