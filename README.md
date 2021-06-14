@@ -15,7 +15,7 @@
 
 ---
   
-#### Desctiption  
+#### Description  
   
 Ceci est un Project Personnel Encadrer dans le cadre du lycée Jean Lurçat, pour un BTS SIO SLAM 2éme. Dans le but de créer un logiciel de gestion de Curriculum Vitae, le PPE n°3 de 2e année BTS a été initié. Le logiciel doit principalement être réalisé en Java.  
   
